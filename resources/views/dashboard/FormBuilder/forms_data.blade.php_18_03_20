@@ -1,0 +1,144 @@
+@extends('dashboard.layouts.app')
+
+@section('content_header')
+<section class="content-header">
+      <h1>
+        @if( isset($form_details) )
+        All Records of <strong>{{ $form_details->frm_name }}</strong>
+        @endif
+        <!--small>it all starts here</small-->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{ route('frms') }}"><i class="fa fa-dashboard"></i> All Forms</a></li>
+        <li class="active">All Records</li>
+      </ol>
+    </section>
+@endsection
+
+@section('content')
+<section class="content">
+
+  @if(Session::has('msg'))
+  <div class="ar-hide @if(Session::has('msg_class')){{ Session::get('msg_class') }}@endif">{{ Session::get('msg') }}</div>
+  @endif
+
+  <div class="row">
+    <div class="col-md-6">
+      <a href="{{ route('frms') }}" class="btn btn-primary"> All Forms</a>
+    </div>
+    <div class="col-md-6">
+    </div>
+  </div>
+
+  <!-- Default box -->
+  <div class="box" style="margin-top: 10px;">
+    <div class="box-header with-border">
+      <h3 class="box-title">All Records</h3>
+
+      <div class="box-tools pull-right">
+        @if( isset($form_details) )
+        <a href="javascript:void(0);" id="export" class="btn btn-primary btn-sm">Download Excel</a>
+        @endif
+      </div>
+    </div>
+    <div class="box-body">
+      @if( isset($tbl_headers) && count($tbl_headers) > 1)
+      <table class="table table-bordered table-striped table-hover ar-datatable" id="exportTab" style="width: 100%;">
+        <thead>
+        @if( isset($tbl_headers) )
+        <tr>
+          <th>ID</th>
+          <th>Referral URL</th>
+          <th>Date</th>
+          @foreach( $tbl_headers as $obj )
+            <th>{{ trim(ucfirst($obj->display_text)) }}</th>
+          @endforeach
+          <th style="width: 5%;">#</th>
+        </tr>
+        @endif
+        </thead>
+        <tbody>
+          <?php 
+          if( isset($fields_key) && isset($records) ) {
+            foreach( $records as $obj ) {
+              $data = array();
+              if($obj->post_data != '' && $obj->post_data != null) {
+                $data = @unserialize($obj->post_data);
+              }
+              if( !empty($data) ) {
+                  echo "<tr>";
+                  echo "<td>".$obj->end_id."</td>";
+                  echo "<td>".$obj->rerf_url."</td>";
+                  echo "<td>".date('m-d-Y', strtotime($obj->created_at))."</td>";
+                $arrx = array();
+                foreach( $data as $index=>$vArr ) {
+                 foreach( $vArr as $k=>$v ) {
+                  $arrx[$k] = $v;
+                 }
+                }
+                foreach ($fields_key as $ft=>$fk) {
+                  if( array_key_exists( $fk, $arrx ) ) {
+                    $print = $arrx[$fk];
+                    $arrz = array();
+                    if(is_array($print) && !empty($print)) {
+                      $print = implode(',', $print);
+                    }else {
+                      $arrz = explode('.', $print);
+                    }
+                    if( !empty($arrz) ) {
+                      $ext = strtolower(end($arrz));
+                      if( $ext == 'jpg' || $ext == 'jpeg' || $ext == 'png' || $ext == 'gif' ) {
+                        $print = "<img src='".url('/')."/".$print."' style='width: 30px; height: 30px;'>";
+                      } 
+                      if( $ext == 'doc' || $ext == 'docx' || $ext == 'pdf' || $ext == 'csv' || $ext == 'xls') {
+                        $print = "<a href='".url('/')."/".$print."'>View</a>";
+                      } 
+                    }
+                    echo "<td>".$print."</td>";
+                  } else {
+                    echo "<td>-</td>";
+                  }
+                }
+                echo '<td><a href="'.route('frm_del_data', array('id' => $obj->id)).'" onclick="return confirm(\'Sure To Delete ?\');"><i class="fa fa-times base-red"></i></a></td>';
+                echo "</tr>";
+              }
+            }
+          }
+          ?>
+        </tbody>
+      </table>
+      @else
+      FORM FIELDS ARE NOT SET YET, THANKS.
+      @endif
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+      
+    </div>
+    <!-- /.box-footer-->
+  </div>
+  <!-- /.box -->
+
+    </section>
+@endsection
+
+@push('page_js')
+<script src="{{ asset('public/assets/jquery.table2excel.min.js') }}"></script>
+<script type="text/javascript">
+$(function() {
+  $('.ar-datatable').DataTable({
+    "ordering": false,
+    "scrollX": true
+  });
+  $("#export").click(function(){
+  $("#exportTab").table2excel({
+    // exclude CSS class
+    exclude: ".noExl",
+    name: "Worksheet Name",
+    filename: "SomeFile" //do not include extension
+  }); 
+});
+});
+</script>
+@endpush

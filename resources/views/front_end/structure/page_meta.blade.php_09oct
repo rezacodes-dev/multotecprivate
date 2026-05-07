@@ -1,0 +1,26 @@
+@push('page_meta')
+    @if( isset($page_metadata) && !empty($page_metadata) )
+        @php
+            $robot_txt = '';
+            if( $page_metadata->follow == '1' ) {
+                $robot_txt .= 'follow, ';
+            } else {
+                $robot_txt .= 'nofollow, ';
+            }
+            if( $page_metadata->index_tag == '1' ) {
+                $robot_txt .= 'index, ';
+            } else {
+                $robot_txt .= 'noindex, ';
+            }
+            $robot_txt = rtrim($robot_txt , ', ');
+        @endphp
+        <title>{{ $page_metadata->meta_title }}</title>
+        <meta name="description" content="{{ $page_metadata->meta_desc }}">
+        <meta name="keywords" content="{{ $page_metadata->meta_keyword }}">
+        <meta name="robots" content="{{ $robot_txt }}">
+        @if( $page_metadata->canonical_url != '' )
+        <link rel="canonical" href="{{ $page_metadata->canonical_url }}" />
+        @endif
+        {!! html_entity_decode($page_metadata->json_markup, ENT_QUOTES) !!}
+    @endif
+@endpush

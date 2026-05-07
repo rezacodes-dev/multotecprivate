@@ -1,0 +1,132 @@
+@extends('front_end.layout.layout_master')
+@include('front_end.structure.page_meta')
+
+
+@section('page_content')
+
+@if( isset($extraContent) && $extraContent->image_id != '' && isset($extraContent->imageInfo) )
+<section class="innerpage-banner">
+    <img src="{{ asset('public/uploads/files/media_images/'.$extraContent->imageInfo->image) }}" title="{{ $extraContent->image_title }}" alt="{{ $extraContent->image_alt }}" caption="{{ $extraContent->image_caption }}">
+</section>
+@endif
+
+
+<section class="container">
+
+    <div class="breadcrumb"> <!-- Breadcrumb Segment -->
+        <ul>
+            <li><a href="{{ url('/') }}">Home</a></li>
+            <li>Search</li>
+        </ul>
+    </div>
+
+</section>
+
+<section class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="midblock" id="firstBlock">
+      @php $slug = ''; @endphp
+      @if( isset($_GET['q']) && $_GET['q'] != '' ) <h2>Search Results For "{{ $_GET['q'] }}"</h2> @endif
+      @if( isset($allData) && count($allData) > 0 )
+        @foreach($allData as $v)
+          @if($v->name != '' && $v->slug != '' && $v->type != '')
+          <div class="row">
+            <div class="col-sm-12" style="border-bottom: 1px solid #ccc;">
+              @if($v->type=='fsearch')
+              <h4>{{ $v->description }}</h4>
+              @else
+              <h4>{{ $v->name }}</h4>
+              @endif
+           
+              @if($v->type=='fsearch')
+              <p>{!! trim( html_entity_decode( str_limit($v->name, 80, '...'), ENT_QUOTES ) ) !!}</p>
+              @else
+              <p>{!! trim( html_entity_decode( str_limit($v->description, 150, '...'), ENT_QUOTES ) ) !!}</p>
+              @endif
+        
+             <!--  <p>{{ str_limit($v->description, 150, '...') }}</p> -->
+              @php 
+              
+                if($v->type == 'article') {
+                  $slug = route('front.artCont', array('lng' => 'en', 'slug' => $v->slug));
+                }
+                elseif($v->type == 'event') {
+                  $slug = route('front.evtCont', array('lng' => 'en', 'slug' => $v->slug));
+                }
+                elseif($v->type == 'people') {
+                  $slug = route('front.profCont', array('lng' => 'en', 'slug' => $v->slug));
+                }
+                elseif($v->type == 'wbnar') {
+                  $slug = route('front.webinarCont', array('lng' => 'en', 'id' => $v->slug));
+                }
+                else {
+                  $slug = route('front_cms_page', array('lng' => 'en', 'slug' => $v->slug));
+                }
+              @endphp
+       
+              @if($v->type=='fsearch')
+      
+              <p>   
+                
+                <a class="btn1 btn2-default" href="{{ asset('public/uploads/files/media_files/'. getFileDownloadLinkFront($v->id)) }}" download>
+                Download  File <i class="fa fa-download" aria-hidden="true"></i></a></p>
+              @else
+              <p><a href="{{ $slug }}" class="btn1 btn2-default">Read More</a></p>
+              @endif
+      
+            </div>
+          </div>
+          @endif
+        @endforeach
+      @else
+      <h4>Sorry! No Records Found.</h4>
+      @endif
+      </div>
+      <?php 
+      if( isset($pagination) ) {
+        $search_term = (isset($_GET['q'])? $_GET['q'] : '');
+        echo $pagination->appends(array('q'=>$search_term))->links();
+      }
+      ?>
+    </div>
+    <div class="col-sm-4">
+      <div class="rightpanel">
+      </div>
+    </div>
+  </div>
+</section>
+@endsection
+
+
+
+
+@push('page_js')
+<script type="text/javascript" src="{{ asset('public/front_end/js/ddaccordion.js') }}"></script>
+<script type="text/javascript">
+//Initialize 2nd demo:
+ddaccordion.init({
+  headerclass: "accor_heading", //Shared CSS class name of headers group
+  contentclass: "accor_body", //Shared CSS class name of contents group
+  revealtype: "click", //Reveal content when user clicks or onmouseover the header? Valid value: "click", "clickgo", or "mouseover"
+  mouseoverdelay: 200, //if revealtype="mouseover", set delay in milliseconds before header expands onMouseover
+  collapseprev: false, //Collapse previous content (so only one open at any time)? true/false 
+  defaultexpanded: [true], //index of content(s) open by default [index1, index2, etc]. [] denotes no content.
+  onemustopen: false, //Specify whether at least one header should be open always (so never all headers closed)
+  animatedefault: false, //Should contents open by default be animated into view?
+  scrolltoheader: false, //scroll to header each time after it's been expanded by the user?
+  persiststate: false, //persist state of opened contents within browser session?
+  toggleclass: ["closed_arrow", "open_arrow"], //Two CSS classes to be applied to the header when it's collapsed and expanded, respectively ["class1", "class2"]
+  togglehtml: ["prefix", "<img src='{{ asset('public/front_end/images/arrow_down_accor.png') }}' style='width:24px; height:24px' /> ", "<img src='{{ asset('public/front_end/images/arrow_up_accor.png') }}' style='width:24px; height:24px' /> "],  //Additional HTML added to the header when it's collapsed and expanded, respectively  ["position", "html1", "html2"] (see docs)
+  animatespeed: "normal", //speed of animation: integer in milliseconds (ie: 200), or keywords "fast", "normal", or "slow"
+  oninit:function(expandedindices){ //custom code to run when headers have initalized
+    //do nothing
+  },
+  onopenclose:function(header, index, state, isuseractivated){ //custom code to run whenever a header is opened or closed
+    //do nothing
+  }
+});
+</script>
+@endpush
+
+    
