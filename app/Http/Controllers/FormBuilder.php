@@ -1015,7 +1015,7 @@ class FormBuilder extends Controller
            
 
         if(!empty($saveArray) && !empty($mailArr)) {
-            //   dd($saveArray);
+            //    dd($saveArray);
             foreach($saveArray as $k=>$v) {
                 if(is_array($v) && !empty($v)) {
                     if (isset($v['iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'])) {
@@ -1087,6 +1087,7 @@ class FormBuilder extends Controller
 
                     }
                 }
+             //   dd($mailBODY);
    $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
         $mailBODY .= 'IP = '.$ipAddress.'<br/>';
         $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
@@ -1108,10 +1109,10 @@ class FormBuilder extends Controller
                        $mailBODY = preg_replace('/Selected\s*=\s*.*(\r\n|\r|\n)?/i', '', $mailBODY);
                      // dd($request->all());
                        if(isset($request->selected_email) && !empty($request->selected_email)){
-                      
+                        $mailBODY = str_replace('Multotec Online Enquiry', 'Email form submission', $mailBODY);
                          }
                          else{
-                        $mailBODY = str_replace('Multotec Online Enquiry', 'Email form submission', $mailBODY);
+                        // $mailBODY = str_replace('Multotec Online Enquiry', 'Email form submission', $mailBODY);
                          }
                     //   $mailBODY = str_replace('support@multotec.com', 'marketing@multotec.com', $mailBODY);
                 }
@@ -1119,12 +1120,12 @@ class FormBuilder extends Controller
             //  $mailBODY .= 'IP = '.$ipAddress.'<br/>';
             //  $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
                 // dd($mailBODY);
-              //  echo html_entity_decode($mailBODY); die();
+             //   echo html_entity_decode($mailBODY); die();
                 //  $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","multotecwebenquiry@cubicice.com");
               
               if(!empty($request->selected_email)){
-          $mailArr = array($request->selected_email);  //working
-     
+                $mailArr = array($request->selected_email);  //working
+              //  $sender_mail=$request->selected_email;
                 $updateid=$enq_id;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
@@ -1155,7 +1156,7 @@ class FormBuilder extends Controller
 
                     try {
                         // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-                        //     // $message->from($emailData['from_email'], $emailData['from_name']);
+                        //    //  $message->from($emailData['from_email'], $emailData['from_name']);
                         //     $message->to($emailData['to_email'])->subject($emailData['subject']);
                         // });
 
@@ -1169,22 +1170,131 @@ class FormBuilder extends Controller
 
                 }
 
+// die();
 
-                 $intro = '
-            <p>Dear User,</p>
 
-            <p>Thank you for considering <strong>Multotec</strong> for your mineral processing equipment needs.</p>
+$formattedContent = '';
 
-            <p>This is a copy of your enquiry submission that has been transferred to the correct department.
-            A Multotec representative will be in contact shortly.</p>
+// top ordered fields
+$fieldOrder = [
+    'Enquiry Option',
+    'Name',
+    'Email',
+    'Country',
+    'Contact No',
+    'Company',
+    'Enquiry ID',
+    'Requirements',
+    'Upload'
+];
 
-            <br>
-            ';
+// bottom fields
+$lastFields = [
+    'Terms',
+    'Referral',
+    'IP',
+    'Referral Url'
+];
 
-            $senderContent = $intro . $enquiryContent;
+// convert string into array
+preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
 
-            $senderMailBODY = str_replace("[ENQ_CONTENT]", $senderContent, $content);
+$tempData = [];
 
+foreach ($matches as $match) {
+
+    $key = trim($match[1]);
+    $value = trim($match[2]);
+
+    $tempData[$key] = $value;
+}
+
+// first ordered fields
+foreach ($fieldOrder as $field) {
+
+    if (isset($tempData[$field])) {
+
+        $formattedContent .= '•&emsp;&emsp;<strong>'.$field.'</strong>: '.$tempData[$field].'<br/>';
+        unset($tempData[$field]);
+    }
+}
+
+// middle remaining fields
+foreach ($tempData as $key => $value) {
+
+    if (!in_array($key, $lastFields)) {
+
+        $formattedContent .= '•&emsp;&emsp;<strong>'.$key.'</strong>: '.$value.'<br/>';
+        unset($tempData[$key]);
+    }
+}
+
+// footer text after Upload
+$formattedContent .= '
+<br/><br/>
+
+<p>
+If you have any questions, contact us at 
+<a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.
+</p>
+
+<p>
+Thanks & Regards<br/>
+Multotec
+</p>
+
+<br/>
+';
+
+// last fields at bottom
+foreach ($lastFields as $field) {
+
+    if (isset($tempData[$field])) {
+
+        $formattedContent .= '•&emsp;&emsp;<strong>'.$field.'</strong>: '.$tempData[$field].'<br/>';
+    }
+}
+
+
+             $intro = '
+<p>Dear User,</p>
+
+<p>
+Thank you for considering <strong>Multotec</strong> for your mineral processing equipment needs.
+</p>
+
+<p style="margin:0;">
+This is a copy of your enquiry submission that has been transferred to the correct department.
+A Multotec representative will contact you shortly.
+<span style="font-weight:bold;display:inline;">
+ Your enquiry ID is '.$enq_id.'
+</span>
+</p>
+
+<br>
+';
+
+            // $senderContent = $intro . $enquiryContent;
+
+
+   $senderContent = $intro . '
+<div style="margin-top:15px;">
+    '.$formattedContent.'
+</div>';
+
+
+
+
+          $senderMailBODY = str_replace(
+    "[ENQ_CONTENT]",
+    '<div style="font-family:Aptos, sans-serif; font-size:14px; line-height:1.7; color:#000;">
+        '.$senderContent.'
+    </div>',
+    $content
+);
+
+
+            //  dd($senderMailBODY);
               if(!empty($sender_mail)){
 
                 $senderEmailData = [];
@@ -1197,10 +1307,10 @@ class FormBuilder extends Controller
                     //  echo html_entity_decode($senderMailBODY); die();
                 // die();
                         //enable this on live data
-                    //    Mail::send('emails.accountemail', ['emailData' => $emailData], function ($message) use ($emailData) {
-                    //         // $message->from($emailData['from_email'], $emailData['from_name']);
-                    //         $message->to($emailData['to_email'])->subject($emailData['subject']);
-                    //     });
+                       Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
+                             $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
+                            $message->to($senderEmailData['to_email'])->subject($senderEmailData['subject']);
+                        });
             }
                 
 
