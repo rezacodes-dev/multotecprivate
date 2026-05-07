@@ -1137,6 +1137,17 @@ class FormBuilder extends Controller
                 foreach($mailArr as $vem) {
                     $emailData = array();
                     $emailData['subject'] = $mail_sub . ' '. $rerf_url;
+                    $mailBODY .= '
+                            <p>
+                            If you have any questions, contact us at 
+                            <a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.
+                            </p>
+
+                            <p>
+                            Thanks & Regards<br/>
+                            Multotec
+                            </p>
+                            ';
                     $emailData['body'] = trim($mailBODY);
                     $emailData['to_email'] = trim($vem);
                     $emailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
@@ -1155,10 +1166,10 @@ class FormBuilder extends Controller
 
 
                     try {
-                        // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-                        //    //  $message->from($emailData['from_email'], $emailData['from_name']);
-                        //     $message->to($emailData['to_email'])->subject($emailData['subject']);
-                        // });
+                        Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+                           //  $message->from($emailData['from_email'], $emailData['from_name']);
+                            $message->to($emailData['to_email'])->subject($emailData['subject']);
+                        });
 
                         // If it reaches here, email was sent successfully.
                         // echo "Mail sent successfully.";
@@ -1304,7 +1315,7 @@ A Multotec representative will contact you shortly.
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                 $senderEmailData['from_name'] = "Multotec";
 
-                    //  echo html_entity_decode($senderMailBODY); die();
+                      echo html_entity_decode($senderMailBODY); die();
                 // die();
                         //enable this on live data
                        Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
