@@ -124,6 +124,11 @@
                 <textarea name="description" id="description" class="form-control" placeholder="Short Description">@if( isset($product) ){{ $product->description }}@endif</textarea>
               </div>
 
+                <div class="form-group">
+                <label>Brochure Link : </label>
+                <input type="text" name="product_link" id="product_link" class="form-control" placeholder="Enter Page URL" value="@if( isset($product) ){{ $product->product_link??'' }}@endif">
+               </div>
+
               <div class="form-group">
                 @php
                 if( isset($product) && isset($product->ProductCategoryIds) && count($product->ProductCategoryIds) > 0 ) {

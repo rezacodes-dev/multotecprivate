@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\CmsLinks;
-use App\Models\Media\ImageCategories;
-use App\Models\Media\ImageCategoryMap;
-use App\Models\Media\ImageGalleries;
-use App\Models\Media\ImageGalleryMap;
-use App\Models\Media\Images;
-use App\Models\Media\VideoCategories;
-use App\Models\Media\Videos;
-use App\Models\Media\VideoCategoriesMap;
-use App\Models\Media\FilesMaster;
-use App\Models\Media\FileCategories;
-use App\Models\Media\FileCategoriesMap;
-use App\Models\Media\MediaExtraContent;
-use App\Models\Languages;
+use DB;
+use Auth;
 use File;
 use Storage;
-use Image;
-use Auth;
-use DB;
+use App\Models\CmsLinks;
+use App\Models\Languages;
+use App\Models\Media\Images;
+use App\Models\Media\Videos;
+use Illuminate\Http\Request;
+use App\Models\Media\FilesMaster;
+use App\Models\Media\FileCategories;
+use App\Models\Media\ImageGalleries;
+use App\Models\Media\ImageCategories;
+use App\Models\Media\ImageGalleryMap;
+use App\Models\Media\VideoCategories;
+use Intervention\Image\Facades\Image;
+use App\Models\Media\ImageCategoryMap;
+use App\Models\Media\FileCategoriesMap;
+use App\Models\Media\MediaExtraContent;
+use App\Models\Media\VideoCategoriesMap;
 //use Smalot\PdfParser\Parser;
+
 
 class MediaController extends Controller
 {
@@ -72,7 +73,7 @@ class MediaController extends Controller
     }
 
     public function upload(Request $request) {
-
+           
     	if( $request->hasFile('images') ) {
             
     		foreach( $request->file('images') as $img ) {
@@ -85,13 +86,15 @@ class MediaController extends Controller
 
 	            $destinationPath = public_path('/uploads/files/media_images');
 	            $thumb_path = $destinationPath."/thumb";
-	            
-	            $imgObj = Image::make($real_path);
-	        	$imgObj->resize(100, 100, function ($constraint) {
-			    	$constraint->aspectRatio();
-				})->save($thumb_path.'/'.$file_newname);
-
-	        	$img->move($destinationPath, $file_newname);
+	  
+                $imgObj = Image::make($real_path);
+         
+                $imgObj->resize(100, 100, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($thumb_path . '/' . $file_newname);
+                
+                // Move the original file to the destination
+                $img->move($destinationPath, $file_newname);
 	        	
                 $Images->image = $file_newname;
 	        	$Images->size = $file_size;

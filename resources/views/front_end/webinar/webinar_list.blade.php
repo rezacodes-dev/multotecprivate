@@ -373,8 +373,8 @@ function getWebinars() {
    
  
     $.ajax({
-    url: 'https://www.multotec.com/en/ajaxWebinar',
-    type: "POST",
+    url: '{{route('ajaxWebinar')}}',
+    type: "GET",
     datatype: "json", 
     data: {webinar_category: webinar_category, webinar_topic: webinar_topic, webinar_industry: webinar_industry, _token: '{{ csrf_token() }}'},
 

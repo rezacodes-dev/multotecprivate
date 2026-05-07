@@ -68,7 +68,8 @@
               <a href="{{ route('distr.editloc', array('id' => $lst->id)) }}"><i class="fa fa-pencil-square-o base-green fa-2x"></i></a>
               <a href="{{ route('distr.delloc', array('id' => $lst->id)) }}" onclick="return confirm('Sure To Delete This Distributor ?');">
                 <i class="fa fa-trash-o base-red fa-2x"></i></a>
-       
+              <a href="{{ route('globnet', array('lng' => 'en')) }}" target="_blank">
+              <i class="fa fa-eye fa-2x" aria-hidden="true"></i></a>
             </td>
             <td>
               @if($lst->status == '1')

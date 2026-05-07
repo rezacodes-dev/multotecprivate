@@ -93,22 +93,27 @@
                     @empty
                         <h3>No Record Found</h3>
                     @endforelse
+                 
                 @endif
+                         <div class="col-sm-12 art-pagination">
+                   
+                    @if( isset($listData) ){{ $listData->links() }}@endif
+                </div>
             </div>
         </div>
     </div>
     <div class="col-sm-4">
         <div class="rightpanel">
             <div class="sidebar_block block1">
-                <h2><i class="fa fa-plus" aria-hidden="true"></i> Select Month</h2>
+                <h2><i class="fa fa-plus" aria-hidden="true"></i> Select Year</h2>
                 <div class="calander_bg">
                     <div class="heading">
                      <div class="year">Year</div>
-                     <div class="month">Month</div>
+                   
                     </div>
                     <div class="row no-gutters">
                         <div class="bhoechie-tab-container">
-                            <div class="col-sm-4 col-xs-4 bhoechie-tab-menu">
+                            <div class="col-sm-12 col-xs-12 bhoechie-tab-menu">
                                 @if( isset($yearList) )
 
                                 @php if(!empty( $_GET['year'])){$year22 = $_GET['year'];} @endphp
@@ -125,55 +130,7 @@
                                   </div>
                               @endif
                             </div>
-                            <div class="col-sm-8 col-xs-8 bhoechie-tab">
-                                @if( isset($yearList) )
-                                    @php $i = 0; @endphp
-                                    @foreach( $yearList as $yl )
-                                    <!-- flight section -->
-                                    <div class="bhoechie-tab-content @if( $i == '0' ) active @endif">
-                                        <ul>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=01" @if( isset($_GET['month']) && $_GET['month'] == '01') class="active" @endif>January</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=02" @if( isset($_GET['month']) && $_GET['month'] == '02') class="active" @endif>February</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=03"  @if( isset($_GET['month']) && $_GET['month'] == '03') class="active" @endif>March</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=04"  @if( isset($_GET['month']) && $_GET['month'] == '04') class="active" @endif>April</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=05"  @if( isset($_GET['month']) && $_GET['month'] == '05') class="active" @endif>May</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=06"  @if( isset($_GET['month']) && $_GET['month'] == '06') class="active" @endif>June</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=07"  @if( isset($_GET['month']) && $_GET['month'] == '07') class="active" @endif>July</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=08"  @if( isset($_GET['month']) && $_GET['month'] == '08') class="active" @endif>August</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=09"  @if( isset($_GET['month']) && $_GET['month'] == '09') class="active" @endif>September</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=10"  @if( isset($_GET['month']) && $_GET['month'] == '10') class="active" @endif>October</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=11"  @if( isset($_GET['month']) && $_GET['month'] == '11') class="active" @endif>November</a>
-                                            </li>
-                                            <li>
-                                                <a href="?year={{ $yl }}&month=12"  @if( isset($_GET['month']) && $_GET['month'] == '12') class="active" @endif>December</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    @php $i++; @endphp
-                                    @endforeach
-                                @endif
-                            </div>
+                         
                         </div>
                   </div>
                 </div>

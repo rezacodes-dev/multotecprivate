@@ -667,143 +667,13 @@ ddaccordion.init({
 //     }
 // });
 
-// $(document).ready(function () {
-//     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'] option[value='']").attr("disabled", "disabled");
-
-//     // Hide all fields by default on page load
-//     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']").each(function () {
-//         var container = $(this).closest('.form, .modal'); // Adjust for context (main div or modal)
-        
-//         // Hide all fields initially within the specific container
-//         // container.find('#field_16').hide();
-//         // container.find('#field_23').hide();
-//         // container.find('#field_3').hide();
-//         // container.find('#field_4').hide();
-//         // container.find('#field_17').hide();
-//         // container.find('#field_5').hide();
-//         // container.find('#field_19').hide();
-//         // container.find('#field_24').hide();
-//         // container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//         // container.find('#box2').next('div').hide();
-//         // container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//         // container.find('.custom-file-upload').css('display', 'none');
-//     });
-
-//     // Handle change events for the select element
-//     $(document).on('change', "select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']", function () {
-//         // Remove the option with an empty value
-//         // $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'] option[value='']").remove();
-//         toggleFieldsBasedOnSelection();
-//     });
-
-//     // Call toggle function to handle default selection
-//     toggleFieldsBasedOnSelection();
-
-//     // Function to toggle the visibility of fields based on the selected option
-//     function toggleFieldsBasedOnSelection() {
-//         $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']").each(function () {
-//             var selectedOption = $(this).val();
-//             var container = $(this).closest('.form, .modal'); // Adjust for context (main div or modal)
-            
-
-//             // Hide all fields initially within the specific container
-//             // container.find('#field_16').hide();
-//             // container.find('#field_23').hide();
-//             // container.find('#field_3').hide();
-//             // container.find('#field_4').hide();
-//             // container.find('#field_17').hide();
-//             // container.find('#field_5').hide();
-//             // container.find('#field_19').hide();
-//             // container.find('#field_24').hide();
-//             // container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//             // container.find('#box2').next('div').hide();
-//             // container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//             // container.find('.custom-file-upload').css('display', 'none');
-
-//             // Logic for specific selections
-//             if (selectedOption === '1.-Mineral-processing-products-and-services') {
-//                 container.find('#field_16').show();
-//                 container.find('#field_23').show();
-//                 container.find('#field_3').show();
-//                 container.find('#field_4').show();
-//                 container.find('#field_17').show();
-//                 container.find('#field_5').show();
-//                 container.find('#field_24').show();
-//                 container.find('.custom-file-upload').css('display', 'block');
-//                 container.find('#field_19').show();
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').val('Request a quote');
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'block');
-//                 container.find('#box1').hide();
-//                 container.find('#box2').hide();
-//                 container.find('#box2').next('div').show();
-//                 $('.g-recaptcha').css('display','block');
-//             } 
-//             else if (selectedOption === '4.-Other') {
-//                 container.find('#field_16').show();
-//                 container.find('#field_23').show();
-//                 container.find('#field_3').show();
-//                 container.find('#field_4').show();
-//                 container.find('#field_17').show();
-//                 container.find('#field_5').show();
-//                 container.find('#field_24').show();
-//                 container.find('.custom-file-upload').css('display', 'block');
-//                 container.find('#field_19').show();
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').val('Submit Enquiry');
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'block');
-//                 container.find('#box1').hide();
-//                 container.find('#box2').hide();
-//                 container.find('#box2').next('div').show();
-//                 $('.g-recaptcha').css('display','block');
-//             } else if (selectedOption === '2.-Job-applications') {
-//               //  container.find('#field_19').show();
-//               container.find('#field_16').hide();
-//             container.find('#field_23').hide();
-//             container.find('#field_3').hide();
-//             container.find('#field_4').hide();
-//             container.find('#field_17').hide();
-//             container.find('#field_5').hide();
-//             container.find('#field_19').hide();
-//             container.find('#field_24').hide();
-//             container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//             container.find('#box2').next('div').hide();
-//             container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//             container.find('.custom-file-upload').css('display', 'none');
-//             $('.g-recaptcha').hide()
-//                 container.find('#box2').next('div').hide();
-//                 window.open("https://www.careers24.com/now-hiring/9744-multotec-pty-ltd/", "_blank");
-//             } else if (selectedOption === '3.-Training-Opportunities') {
-//                   container.find('#field_16').hide();
-//             container.find('#field_23').hide();
-//             container.find('#field_3').hide();
-//             container.find('#field_4').hide();
-//             container.find('#field_17').hide();
-//             container.find('#field_5').hide();
-//             container.find('#field_19').hide();
-//             container.find('#field_24').hide();
-//             container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//             container.find('#box2').next('div').hide();
-//             container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//             container.find('.custom-file-upload').css('display', 'none');
-//             $('.g-recaptcha').hide()
-//                 container.find('#box2').next('div').hide();
-//                 window.open("https://www.multotec.com/en/training", "_blank");
-//             } else {
-//                 container.find('#field_19').hide();
-//                 container.find('#box2').next('div').hide();
-//             }
-//         });
-//     }
-// });
-
 $(document).ready(function () {
-    $('#field_18').hide();
-
     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'] option[value='']").attr("disabled", "disabled");
 
     // Hide all fields by default on page load
     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']").each(function () {
         var container = $(this).closest('.form, .modal'); // Adjust for context (main div or modal)
-        container.find('#box2').next('div').show();
+        
         // Hide all fields initially within the specific container
         // container.find('#field_16').hide();
         // container.find('#field_23').hide();
@@ -887,7 +757,6 @@ $(document).ready(function () {
             } else if (selectedOption === '2.-Job-applications') {
               //  container.find('#field_19').show();
               container.find('#field_16').hide();
-              container.find('#field_18').hide();
             container.find('#field_23').hide();
             container.find('#field_3').hide();
             container.find('#field_4').hide();
@@ -904,7 +773,6 @@ $(document).ready(function () {
                 window.open("https://www.careers24.com/now-hiring/9744-multotec-pty-ltd/", "_blank");
             } else if (selectedOption === '3.-Training-Opportunities') {
                   container.find('#field_16').hide();
-                  container.find('#field_18').hide();
             container.find('#field_23').hide();
             container.find('#field_3').hide();
             container.find('#field_4').hide();
@@ -920,12 +788,14 @@ $(document).ready(function () {
                 container.find('#box2').next('div').hide();
                 window.open("https://www.multotec.com/en/training", "_blank");
             } else {
-               // container.find('#field_19').hide();
-              //  container.find('#box2').next('div').show();
+                container.find('#field_19').hide();
+                container.find('#box2').next('div').hide();
             }
         });
     }
 });
+
+
 
 </script>
 <!-- <script>

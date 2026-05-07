@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\DB;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,210 +20,71 @@ now create new controller FrontEndController2
 logic is -> check lng tag is 'en' or not into your current FrontEndController. 
 if en then redirect to FrontEndController2 (where no lng slug)
 **/
-// Route::get('/truncate-brochure-tables', function () {
-
-//     DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-//     DB::table('brochure_type')->truncate();
-//     // DB::table('brochure_content')->truncate();
-//     // DB::table('brochure_details')->truncate();
-//     // DB::table('brochure_enquiry')->truncate();
-//     // DB::table('brochure_master')->truncate();
-//     // DB::table('brochure_products')->truncate();
-//     // DB::table('brochure_product_details')->truncate();
-
-//     DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-//     return response()->json([
-//         'status' => true,
-//         'message' => 'Selected brochure tables truncated successfully'
-//     ]);
-
-// });
-// Route::get('/create-brochure-content-table', function () {
-
-//     $sql = "
-
-//     DROP TABLE IF EXISTS `brochure_content`;
-
-//     CREATE TABLE `brochure_content` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `heading` varchar(500) NOT NULL,
-//       `description` text DEFAULT NULL,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-//     INSERT INTO `brochure_content`
-//     (`id`, `heading`, `description`, `created_at`, `updated_at`) VALUES
-//     (
-//         1,
-//         'Brochure Library',
-//         '&lt;p&gt;Multotec offers a world of mineral processing knowledge at your fingertips! Download, read or share these Multotec brochures and discover how we are moving the global mineral processing industry forward.&lt;/p&gt;\r\n\r\n&lt;p&gt;You can filter these brochures by type, product range, brand or language using the functionality below.&lt;/p&gt;',
-//         '2026-04-02 05:53:29',
-//         '2026-04-27 08:12:59'
-//     );
-
-//     ";
-
-//     DB::unprepared($sql);
-
-//     return 'brochure_content table created successfully';
-
-// });
-// Route::get('/truncate-brochure-language', function () {
-
-//     DB::table('brochure_language')->truncate();
-
-//     return 'brochure_language table truncated successfully';
-// });
-// Route::get('/create-brochure-tables', function () {
-
-//     $sql = "
-
-//     DROP TABLE IF EXISTS `brochure_brand`;
-//     CREATE TABLE `brochure_brand` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `name` varchar(255) NOT NULL,
-//       `status` tinyint(4) DEFAULT 1,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-//     DROP TABLE IF EXISTS `brochure_content`;
-//     CREATE TABLE `brochure_content` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `heading` varchar(500) NOT NULL,
-//       `description` text DEFAULT NULL,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-//     DROP TABLE IF EXISTS `brochure_details`;
-//     CREATE TABLE `brochure_details` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `brochure_id` int(11) NOT NULL,
-//       `language_id` int(11) DEFAULT NULL,
-//       `type_id` int(11) DEFAULT NULL,
-//       `size_id` int(11) DEFAULT NULL,
-//       `brand_id` int(11) DEFAULT NULL,
-//       `download_name` longtext DEFAULT NULL,
-//       `short_url` longtext DEFAULT NULL,
-//       `brochure_pdf` longtext DEFAULT NULL,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-//     DROP TABLE IF EXISTS `brochure_enquiry`;
-//     CREATE TABLE `brochure_enquiry` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `recipient_email` varchar(255) DEFAULT NULL,
-//       `recipient_phone` varchar(20) DEFAULT NULL,
-//       `country` varchar(100) DEFAULT NULL,
-//       `city` varchar(100) DEFAULT NULL,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-//     DROP TABLE IF EXISTS `brochure_language`;
-//     CREATE TABLE `brochure_language` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `name` varchar(255) NOT NULL,
-//       `status` tinyint(4) DEFAULT 1,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-//     INSERT INTO `brochure_language`
-//     (`id`, `name`, `status`, `created_at`, `updated_at`) VALUES
-//     (1,'English',1,'2025-08-04 05:22:58','2025-08-04 05:22:58'),
-//     (2,'Spanish',1,'2025-08-04 05:23:13','2025-09-01 07:17:32'),
-//     (3,'Chinese',1,'2026-03-11 11:10:06','2026-03-11 11:10:06');
-
-//     DROP TABLE IF EXISTS `brochure_master`;
-//     CREATE TABLE `brochure_master` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `size` varchar(255) DEFAULT NULL,
-//       `thumbnail_image` varchar(255) NOT NULL,
-//       `name` varchar(255) NOT NULL,
-//       `slug` longtext DEFAULT NULL,
-//       `description` longtext DEFAULT NULL,
-//       `upload_doc` longtext DEFAULT NULL,
-//       `language_id` int(11) DEFAULT NULL,
-//       `type_id` int(11) DEFAULT NULL,
-//       `brand_id` int(11) DEFAULT NULL,
-//       `status` tinyint(4) DEFAULT 1,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-//     DROP TABLE IF EXISTS `brochure_products`;
-//     CREATE TABLE `brochure_products` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `name` varchar(255) NOT NULL,
-//       `status` tinyint(1) NOT NULL DEFAULT 1,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-//     DROP TABLE IF EXISTS `brochure_product_details`;
-//     CREATE TABLE `brochure_product_details` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `brochure_details_id` int(11) NOT NULL,
-//       `brochure_id` int(11) NOT NULL,
-//       `product_id` int(11) NOT NULL,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-//     DROP TABLE IF EXISTS `brochure_size`;
-//     CREATE TABLE `brochure_size` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `name` varchar(255) DEFAULT NULL,
-//       `status` int(11) NOT NULL DEFAULT 1,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-//     INSERT INTO `brochure_size`
-//     (`id`, `name`, `status`, `created_at`, `updated_at`) VALUES
-//     (1,'A4',1,'2025-09-12 09:04:58','2025-09-12 09:04:58'),
-//     (2,'Letter',1,'2025-09-12 09:05:14','2025-09-12 09:05:14');
-
-//     DROP TABLE IF EXISTS `brochure_type`;
-//     CREATE TABLE `brochure_type` (
-//       `id` int(11) NOT NULL AUTO_INCREMENT,
-//       `name` varchar(255) NOT NULL,
-//       `status` tinyint(4) DEFAULT 1,
-//       `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-//       `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//       PRIMARY KEY (`id`)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-//     ";
-
-//     DB::unprepared($sql);
-
-//     return response()->json([
-//         'status' => true,
-//         'message' => 'All brochure tables created successfully'
-//     ]);
-
-// });
-
-
-
 Route::get('/brazil', 'FrontEndController@landingPagesBrazil')->name('landingPagesBrazil');
+
+// Route::get('/bstable', function () {
+
+//     DB::statement("DROP TABLE IF EXISTS `kh_content`");
+
+//     DB::statement("
+//         CREATE TABLE `kh_content` (
+//           `id` int(11) NOT NULL AUTO_INCREMENT,
+//           `heading` varchar(500) NOT NULL,
+//           `description` text DEFAULT NULL,
+//           `created_at` timestamp NULL DEFAULT current_timestamp(),
+//           `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+//           PRIMARY KEY (`id`)
+//         ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+//     ");
+
+//     return 'Brochure Content Table created successfully!';
+// });
+
+// Route::get('/create-knowledge-hub-table', function () {
+
+//     DB::statement("DROP TABLE IF EXISTS `knowledge_hub`");
+
+//     DB::statement("
+//         CREATE TABLE `knowledge_hub` (
+//           `id` int(11) NOT NULL AUTO_INCREMENT,
+//           `name` longtext DEFAULT NULL,
+//           `image` longtext DEFAULT NULL,
+//           `slug` longtext DEFAULT NULL,
+//           `status` tinyint(1) DEFAULT 1,
+//           `created_at` timestamp NULL DEFAULT current_timestamp(),
+//           `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+//           PRIMARY KEY (`id`)
+//         ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+//     ");
+
+//     return 'Knowledge Hub Table created successfully!';
+// });
+
+// Route::get('/create-knowledge-hub-details-table', function () {
+
+//     DB::statement("DROP TABLE IF EXISTS `knowledge_hub_details`");
+
+//     DB::statement("
+//         CREATE TABLE `knowledge_hub_details` (
+//           `id` int(11) NOT NULL AUTO_INCREMENT,
+// 		  `kh_id` int(11) NOT NULL,
+//           `product_id` int(11) NOT NULL,
+//           `commodity_id` int(11) DEFAULT NULL,
+//           `language_id` int(11) DEFAULT NULL,
+//           `location_id` int(11) DEFAULT NULL,
+//           `short_description` longtext DEFAULT NULL,
+//           `description` longtext DEFAULT NULL,
+//           `webinar_link` longtext DEFAULT NULL,
+//           `podcast_link` longtext DEFAULT NULL,
+//           `brochure_link` longtext DEFAULT NULL,
+//           `created_at` timestamp NULL DEFAULT current_timestamp(),
+//           `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+//           PRIMARY KEY (`id`)
+//         ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+//     ");
+
+//     return 'KH Details Table created successfully!';
+// });
 
 Route::get('/updateapp', function()
 {
@@ -242,7 +104,7 @@ Route::post('/arindam-form-submit', 'FormBuilder@formSubmitData')->name('frm_sub
 Route::get('/whatsapp/{id?}', 'FrontEndController@openBrochure')->name('openBrochure');
 
 Route::post('/ajax-brochure-list', 'FrontEndController@brochureAjax')->name('brochureAjax');
-
+Route::post('/ajax-knowledge-hub-list', 'FrontEndController@knowledgeAjax')->name('knowledgeAjax');
 Route::post('/send-brochure-email', 'FrontEndController@sendEmailBrochure')->name('send.brochure.email');
 Route::get('/test-email', 'TestEmail@test');
 /* By Force admin login redirect */
@@ -272,13 +134,18 @@ Route::get('commodities-api','CommoditiesApiController@fetchApi');
 /********************** FRONT END START ***************************/
 Route::group(['prefix' => '{lng?}'], function () {
 
-	// Route::get('/brochures', 'FrontEndController@brochures')->name('brochure');
-	// Route::get('/brochures', function () {
-	// 	abort(404);
-	// })->name('brochure');
-   	 Route::get('/brochures', 'FrontEndController@brochures')->name('brochure');
+	 Route::get('/brochures', 'FrontEndController@brochures')->name('brochure');
+	//Route::get('/brochures', function () {
+//		abort(404);
+//	})->name('brochure');
+    Route::get('/brochure/{id}', 'FrontEndController@brochureContent')->name('front.brochureCont');
 
-     Route::get('/brochure/{id}', 'FrontEndController@brochureContent')->name('front.brochureCont');
+
+		 Route::get('/knowledgehub', 'FrontEndController@knowledgehub')->name('knowledgehub');
+	//Route::get('/brochures', function () {
+//		abort(404);
+//	})->name('brochure');
+    Route::get('/knowledgehub-content/{id}', 'FrontEndController@knowledgehubContent')->name('front.knowledgehubCont');
  
 	Route::get('/login', 'FrontEndController@login')->name('user_login');
 	Route::post('/login', 'FrontEndController@loginAction')->name('user_login_action');
@@ -291,6 +158,11 @@ Route::group(['prefix' => '{lng?}'], function () {
 
 		Route::get('/webinar', 'FrontEndController@webinar')->name('webinar');
 		Route::get('/webinar/{id}', 'FrontEndController@webinarContent')->name('front.webinarCont');
+
+
+
+	    Route::get('/podcasts', 'FrontEndController@podcast')->name('podcast');
+		Route::get('/podcast/{id}', 'FrontEndController@podcastContent')->name('front.podcastContent');
 		// Route::get('/webinar-video/{id}', 'FrontEndController@webinarVideo')->name('front.webinarVideo');
 		Route::get('/webinar-video/{id}', function () {
 			abort(404);
@@ -298,6 +170,7 @@ Route::group(['prefix' => '{lng?}'], function () {
 		// Route::get('/webinar-video/{id}', 'FrontEndController@webinarVideo')->name('front.webinarVideo');
 
 		Route::post('/ajaxWebinar', 'AjaxController@ajaxWebinar')->name('ajaxWebinar');
+		Route::post('/ajaxPodcast', 'AjaxController@ajaxPodcast')->name('ajaxPodcast');
 		
 		Route::post('/saveWbUser', 'FrontEndController@saveWbUser')->name('saveWbUser');
         
@@ -1027,6 +900,8 @@ Route::group(['prefix' => '/en/admin'], function () {
 			Route::post('/download-webinar-user', 'WebinarController@downloadWebinarUsers')->name('webiDWN');
 			  
 		});
+
+		
  
 
 		/********Event Management *********/
@@ -1470,7 +1345,158 @@ Route::group(['prefix' => '/en/admin'], function () {
 		
 				});
 
+
+
+
+
+
+
+
+					/*************** Podcast TOPIC MANAGEMENT ******************/
+		Route::group(['prefix' => 'podcast-topic'], function() {
+			Route::get('/', 'PodcastTopicController@allWebinarTopics')->name('allPdTp');
+			Route::get('/add', 'PodcastTopicController@addWebinarTopic')->name('addPdTp');
+			Route::post('/save', 'PodcastTopicController@saveWebinarTopic')->name('savePdTp');
+			Route::get('/delete/{id}', 'PodcastTopicController@deleteWebinarTopic')->name('delPdTp');
+			Route::get('/edit/{id}', 'PodcastTopicController@editWebinarTopic')->name('editPdTp');
+			Route::post('/edit/{id}', 'PodcastTopicController@editWebinarTopic')->name('editPdTp');
+			Route::post('/update/{id}', 'PodcastTopicController@updateWebinarTopic')->name('updatePdTp');
+
+		});
+
+		/*************** Podcast INDUSTRY MANAGEMENT ******************/
+		Route::group(['prefix' => 'podcast-industry'], function() {
+			Route::get('/', 'PodcastIndustryController@allWebinarIndustry')->name('allPdId');
+			Route::get('/add', 'PodcastIndustryController@addWebinarIndustry')->name('addPdId');
+			Route::post('/save', 'PodcastIndustryController@saveWebinarIndustry')->name('savePdId');
+			Route::get('/delete/{id}', 'PodcastIndustryController@deleteWebinarIndustry')->name('delPdId');
+			Route::get('/edit/{id}', 'PodcastIndustryController@editWebinarIndustry')->name('editPdId');
+			Route::post('/edit/{id}', 'PodcastIndustryController@editWebinarIndustry')->name('editPdId');
+			Route::post('/update/{id}', 'PodcastIndustryController@updateWebinarIndustry')->name('updatePdId');
+
+		});
+
+		/*************** podcast CATEGORY MANAGEMENT ******************/
+		Route::group(['prefix' => 'podcast-category'], function() {
+			Route::get('/', 'PodcastCategoryController@allWebinarCategorys')->name('allPdCt');
+			Route::get('/add', 'PodcastCategoryController@addWebinarCategory')->name('addPdCt');
+			Route::post('/save', 'PodcastCategoryController@saveWebinarCategory')->name('savePdCt');
+			Route::get('/delete/{id}', 'PodcastCategoryController@deleteWebinarCategory')->name('delPdCt');
+			Route::get('/edit/{id}', 'PodcastCategoryController@editWebinarCategory')->name('editPdCt');
+			Route::post('/edit/{id}', 'PodcastCategoryController@editWebinarCategory')->name('editPdCt');
+			Route::post('/update/{id}', 'PodcastCategoryController@updateWebinarCategory')->name('updatePdCt');
+
+		});
+
+
+		/*************** Podcast MANAGEMENT ******************/
+		Route::group(['prefix' => 'podcast-management'], function() {
+			Route::get('/', 'PodcastController@allWebinars')->name('allPd');
+			Route::get('/ajax-webinar-list', 'PodcastController@ajaxWebinars')->name('ajaxPdocast');
+			Route::get('/ajax-webinar-list-refresh', 'PodcastController@ajaxRefreshWebinars')->name('ajaxRefreshPodcast');
+			Route::get('/add', 'PodcastController@addWebinar')->name('addPd');
+			Route::post('/save', 'PodcastController@saveWebinar')->name('savePd');
+			Route::get('/delete/{id}', 'PodcastController@deleteWebinar')->name('delPd');
+			Route::get('/delWbUser/{id}', 'PodcastController@delWbUser')->name('delPdUser');
+			Route::get('/edit/{id}', 'PodcastController@editWebinar')->name('editPd');
+			Route::post('/edit/{id}', 'PodcastController@editWebinar')->name('editPd');
+			Route::post('/update/{id}', 'PodcastController@updateWebinar')->name('updatePd');
+			Route::post('/updateWbContent/{id}', 'PodcastController@updateWbContent')->name('updatePdContent');
+			 
+			Route::get('/viewWbUser/{id}', 'PodcastController@viewWbUser')->name('viewPdUser');
+			Route::post('/WbWebinarblkAction', 'PodcastController@WbWebinarblkAction')->name('PdWebinarblkAction');
+			Route::get('/ajax-viewWbUser-list/{id}', 'PodcastController@ajaxViewWbUser')->name('ajaxViewPdUser');
+			Route::get('/ajax-viewWbUser-list-refresh/{id}', 'PodcastController@ajaxRefreshViewWbUser')->name('ajaxRefreshViewpdUser');
+
+					Route::get('/allPodcastContent', 'PodcastController@allPodcastContent')->name('allPodcastContent');
+					Route::post('/updatePodcastContent/{id}', 'PodcastController@updatePodcastContent')->name('updatePodcastContent');
+			Route::post('/download-webinar-user', 'PodcastController@downloadWebinarUsers')->name('webiDWN');
+			  
+		});
+
+
+
+
+				Route::group(['prefix' => 'kh-language-management'], function() {
+					Route::get('/', 'KhProductLanguageController@allBrochureIndustry')->name('allKhlgId');
+					Route::get('/add', 'KhProductLanguageController@addBrochureIndustry')->name('addKhlgId');
+					Route::post('/save', 'KhProductLanguageController@saveBrochureIndustry')->name('saveKhlgId');
+					Route::get('/delete/{id}', 'KhProductLanguageController@deleteBrochureIndustry')->name('delKhlgId');
+					Route::get('/edit/{id}', 'KhProductLanguageController@editBrochureIndustry')->name('editKhlgId');
+					Route::post('/edit/{id}', 'KhProductLanguageController@editBrochureIndustry')->name('editKhlgId');
+					Route::post('/update/{id}', 'KhProductLanguageController@updateBrochureIndustry')->name('updateKhlgId');
+		
+				});
+
+
+
+					Route::group(['prefix' => 'kh-product-management'], function() {
+					Route::get('/', 'KhProductController@allBrochureIndustry')->name('allKhprlgId');
+					Route::get('/add', 'KhProductController@addBrochureIndustry')->name('addKhprlgId');
+					Route::post('/save', 'KhProductController@saveBrochureIndustry')->name('saveKhprlgId');
+					Route::get('/delete/{id}', 'KhProductController@deleteBrochureIndustry')->name('delKhprlgId');
+					Route::get('/edit/{id}', 'KhProductController@editBrochureIndustry')->name('editKhprlgId');
+					Route::post('/edit/{id}', 'KhProductController@editBrochureIndustry')->name('editKhprlgId');
+					Route::post('/update/{id}', 'KhProductController@updateBrochureIndustry')->name('updateKhprlgId');
+		
+				});
+
+
+				Route::group(['prefix' => 'kh-commodities-management'], function() {
+					Route::get('/', 'KhProductCommoditiesController@allBrochureIndustry')->name('allKhcolgId');
+					Route::get('/add', 'KhProductCommoditiesController@addBrochureIndustry')->name('addKhcolgId');
+					Route::post('/save', 'KhProductCommoditiesController@saveBrochureIndustry')->name('saveKhcolgId');
+					Route::get('/delete/{id}', 'KhProductCommoditiesController@deleteBrochureIndustry')->name('delKhcolgId');
+					Route::get('/edit/{id}', 'KhProductCommoditiesController@editBrochureIndustry')->name('editKhcolgId');
+					Route::post('/edit/{id}', 'KhProductCommoditiesController@editBrochureIndustry')->name('editKhcolgId');
+					Route::post('/update/{id}', 'KhProductCommoditiesController@updateBrochureIndustry')->name('updateKhcolgId');
+		
+				});
+
+
+						Route::group(['prefix' => 'kh-location-management'], function() {
+					Route::get('/', 'KhProductLocationController@allBrochureIndustry')->name('allKhlolgId');
+					Route::get('/add', 'KhProductLocationController@addBrochureIndustry')->name('addKhlolgId');
+					Route::post('/save', 'KhProductLocationController@saveBrochureIndustry')->name('saveKhlolgId');
+					Route::get('/delete/{id}', 'KhProductLocationController@deleteBrochureIndustry')->name('delKhlolgId');
+					Route::get('/edit/{id}', 'KhProductLocationController@editBrochureIndustry')->name('editKhlolgId');
+					Route::post('/edit/{id}', 'KhProductLocationController@editBrochureIndustry')->name('editKhlolgId');
+					Route::post('/update/{id}', 'KhProductLocationController@updateBrochureIndustry')->name('updateKhlolgId');
+		
+				});
+
+					Route::group(['prefix' => 'all-knowledge-hub'], function() {
+					Route::get('/', 'BackendKnowledgeHubController@allBrochureIndustry')->name('allKhallId');
+					Route::get('/add', 'BackendKnowledgeHubController@addBrochureIndustry')->name('addKhallId');
+					Route::post('/save', 'BackendKnowledgeHubController@saveBrochureIndustry')->name('saveKhallId');
+					Route::get('/delete/{id}', 'BackendKnowledgeHubController@deleteBrochureIndustry')->name('delKhallId');
+					Route::get('/edit/{id}', 'BackendKnowledgeHubController@editBrochureIndustry')->name('editKhallId');
+					Route::post('/edit/{id}', 'BackendKnowledgeHubController@editBrochureIndustry')->name('editKhallId');
+					Route::post('/update/{id}', 'BackendKnowledgeHubController@updateBrochureIndustry')->name('updateKhallId');
+					Route::get('/allKnowledgeContent', 'BackendKnowledgeHubController@allKnowledgeContent')->name('allKnowledgeContent');
+					Route::post('/updateKnowledgeContent/{id}', 'BackendKnowledgeHubController@updateKnowledgeContent')->name('updateKnowledgeContent');
+		
+				});
+
+
+				//knowledge hub product controller
+
+				// Route::group(['prefix' => 'knowledge-hub-product-management'], function() {
+				// 	Route::get('/', 'KnowledgeHubProductController@allBrochureProductIndustry')->name('allKhprId');
+				// 	Route::get('/add', 'KnowledgeHubProductController@addBrochureProduct')->name('addKhprId');
+				// 	Route::post('/save', 'KnowledgeHubProductController@saveBrochureProduct')->name('saveKhprId');
+				// 	Route::get('/delete/{id}', 'KnowledgeHubProductController@deleteBrochureProduct')->name('delKhprId');
+				// 	Route::get('/edit/{id}', 'KnowledgeHubProductController@editBrochureProduct')->name('editKhprId');
+				// 	Route::post('/edit/{id}', 'KnowledgeHubProductController@editBrochureProduct')->name('editKhprId');
+				// 	Route::post('/update/{id}', 'KnowledgeHubProductController@updateBrochureProduct')->name('updateKhprId');
+		
+				// });
+
+
+	
+
 }); //end admin prefix
 
 
+	
 

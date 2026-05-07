@@ -442,14 +442,6 @@ class EventManagementController extends Controller
 		DB::table( 'event_management_type' )->where('id', '=', $id)->update( ['status' => $val] );
 		return back()->with('msg', 'Status Changed Successfully.')->with('msg_class', 'alert alert-success');
 	}
-	// public function getCountries(Request $request){
-	//     $region_id = $request->input('region_id');
-
-    // $countries = DB::table('event_management_countries')->orderBy('country_name','asc')->where('continent_id', $region_id)->get(['id', 'country_name']);
-
-    // return response()->json($countries);
-	// }
-
 	public function getCountries(Request $request)
 {
     $region_id = $request->input('region_id');
@@ -469,5 +461,4 @@ class EventManagementController extends Controller
 
     return response()->json($countries);
 }
-
 }

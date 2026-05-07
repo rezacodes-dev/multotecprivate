@@ -160,6 +160,7 @@ class ProductController extends Controller
     	$ProductCategories->parent_id = trim($request->input('parent_id'));
     	$ProductCategories->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
         $ProductCategories->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+        $ProductCategories->product_link = trim($request->input('product_link'));
     	$ProductCategories->created_by = Auth::user()->id;
         $ProductCategories->language_id = trim( $request->input('language_id') );
         $ProductCategories->insert_id = $insert_id;
@@ -309,7 +310,7 @@ class ProductController extends Controller
         if($language_id!=1){
 
             $DataBag['dynaContent'] = ProductCategories::where('parent_language_id',$category_id)->where('language_id', $language_id)->first();
- 
+        
          if(isset($DataBag['dynaContent']) && $DataBag['dynaContent']!=null){
             $insert_id = trim( $request->input('insert_id') ); // For Page Builder -- Update time
 
@@ -321,6 +322,7 @@ class ProductController extends Controller
             $ProductCategories->parent_id = trim($request->input('parent_id'));
             $ProductCategories->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
             $ProductCategories->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+            $ProductCategories->product_link = trim($request->input('product_link'));
             $ProductCategories->updated_by = Auth::user()->id;
     
             $ProductCategories->meta_title = trim($request->input('meta_title'));
@@ -416,6 +418,7 @@ class ProductController extends Controller
     	$ProductCategories->parent_id = trim($request->input('parent_id'));
     	$ProductCategories->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
         $ProductCategories->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+        $ProductCategories->product_link = trim($request->input('product_link'));
     	$ProductCategories->created_by = Auth::user()->id;
         $ProductCategories->language_id = trim( $request->input('language_id') );
         $ProductCategories->insert_id = $insert_id;
@@ -543,15 +546,17 @@ class ProductController extends Controller
 
         else{
 
- 
+    
         $insert_id = trim( $request->input('insert_id') ); // For Page Builder -- Update time
         
     	$ProductCategories = ProductCategories::find($category_id);
+     
     	$ProductCategories->name = trim( ucfirst($request->input('name')) );
     	$ProductCategories->slug = trim($request->input('slug'));
     	$ProductCategories->parent_id = trim($request->input('parent_id'));
     	$ProductCategories->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
         $ProductCategories->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+        $ProductCategories->product_link = trim($request->input('product_link'));
     	$ProductCategories->updated_by = Auth::user()->id;
 
         $ProductCategories->meta_title = trim($request->input('meta_title'));
@@ -744,6 +749,7 @@ class ProductController extends Controller
         $Products = new Products;
     	$Products->name = trim( ucfirst($request->input('name')) );
         $Products->description = trim( $request->input('description') );
+        $Products->product_link = trim( $request->input('product_link') );
         $Products->insert_id = $insert_id;
     	$Products->slug = trim($request->input('slug'));
     	$Products->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
@@ -852,7 +858,7 @@ class ProductController extends Controller
         if($language_id!=1){
 
         $DataBag['dynaContent'] = Products::where('parent_id',$product_id)->where('language_id', $language_id)->first();
- 
+        
         if(isset($DataBag['dynaContent']) && $DataBag['dynaContent']!=null){
 
             $categoriesMap = array();
@@ -861,9 +867,11 @@ class ProductController extends Controller
             $insert_id = trim( $request->input('insert_id') ); // For Page Builder -- Update time
             $product_id = $DataBag['dynaContent']['id'];
             $Products = Products::find($product_id);
+    
             $Products->insert_id = $insert_id;
             $Products->name = trim( ucfirst($request->input('name')) );
             $Products->description = trim( $request->input('description') );
+            $Products->product_link = trim( $request->input('product_link') );
             $Products->slug = trim($request->input('slug'));
             $Products->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
             $Products->updated_by = Auth::user()->id;
@@ -980,6 +988,7 @@ class ProductController extends Controller
         $parent_id= $product_id;
     	$Products->name = trim( ucfirst($request->input('name')) );
         $Products->description = trim( $request->input('description') );
+        $Products->product_link = trim( $request->input('product_link') );
         $Products->insert_id = $insert_id;
     	$Products->slug = trim($request->input('slug'));
     	$Products->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
@@ -1135,6 +1144,7 @@ class ProductController extends Controller
         $Products->insert_id = $insert_id;
     	$Products->name = trim( ucfirst($request->input('name')) );
         $Products->description = trim( $request->input('description') );
+        $Products->product_link = trim( $request->input('product_link') );
     	$Products->slug = trim($request->input('slug'));
     	$Products->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
     	$Products->updated_by = Auth::user()->id;

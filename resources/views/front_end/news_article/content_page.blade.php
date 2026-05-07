@@ -31,8 +31,8 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-9">
-        <div class="midblock" id="firstBlock">
+    <div class="col-sm-8">
+        <div class="midblock da" id="firstBlock">
 
             @php
                 $atrImage = getArticleNewsImage($allData->id);
@@ -66,9 +66,9 @@
         </div>
     </div>
 
-    <div class="col-sm-3">
-      <div class="rightpanel" style="width:100%">
-        {{-- <div class="sidebar_block block1">
+    <div class="col-sm-4">
+      <div class="rightpanel">
+        <div class="sidebar_block block1">
         <h2><i class="fa fa-plus" aria-hidden="true"></i> Select Month</h2>
         <div class="calander_bg">
         <div class="heading">
@@ -142,43 +142,6 @@
             </div>
       </div>
         </div>
-        </div> --}}
-
-        <div class="sidebar_block block1">
-            <h2><i class="fa fa-plus" aria-hidden="true"></i> Select Year</h2>
-            <div class="calander_bg">
-                <div class="heading">
-                 <div class="year">Year</div>
-               
-                </div>
-                <div class="row no-gutters">
-                    <div class="bhoechie-tab-container">
-                        <div class="col-sm-12 col-xs-12 bhoechie-tab-menu">
-                            @if( isset($yearList) )
-
-                            @php if(!empty( $_GET['year'])){$year22 = $_GET['year'];} @endphp
-                            @php if(!empty( $_GET['month'])){$month33 = $_GET['month'];} @endphp
-
-                              <div class="list-group">
-                              @php $i = 0; @endphp
-
-                              @foreach($yearList as $yl)
-<a href="javascript:void(0);"
-   class="list-group-item {{ request('year', $yearList[array_key_first($yearList)]) == $yl ? 'active' : '' }}"
-   data-url="{{ url('en/news-articles') }}?year={{ $yl }}">
-    {{ $yl }}
-</a>
-@endforeach
-
-
-
-                              </div>
-                          @endif
-                        </div>
-                     
-                    </div>
-              </div>
-            </div>
         </div>
         <div class="sidebar_block block2">
         <h2><i class="fa fa-plus" aria-hidden="true"></i> Select Category</h2>
@@ -257,16 +220,6 @@ $(document).ready(function() {
 
 </script>
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.list-group-item').forEach(function(link) {
-            link.addEventListener('click', function() {
-                window.location.href = this.dataset.url;
-            });
-        });
-    });
-    </script>
 
 @endpush
 

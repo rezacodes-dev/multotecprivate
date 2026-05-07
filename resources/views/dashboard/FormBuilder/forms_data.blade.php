@@ -48,14 +48,33 @@
             <option value="200" @if($selectedItem==200) selected @endif>200</option>
           </select> 
         </div>
-        <div class="col-md-4">
-          <label for=""> Start Date</label>
-          
-         <input class="form-control" type="date" name="startdate" id="startdate" value="{{$startDate??''}}">
-        </div>
-        <div class="col-md-4">
-          <label for="">End Date</label>
-         <input  class="form-control" type="date" name="enddate" id="enddate" value="{{$endDate??''}}">
+       <div class="col-md-3">
+    <label>Start Date</label>
+    <input 
+        class="form-control" 
+        type="date" 
+        name="startdate" 
+        id="startdate" 
+        value="{{ !empty($startDate) ? date('Y-m-d', strtotime($startDate)) : '' }}">
+</div>
+
+<div class="col-md-3">
+    <label>End Date</label>
+    <input  
+        class="form-control" 
+        type="date" 
+        name="enddate" 
+        id="enddate" 
+        value="{{ !empty($endDate) ? date('Y-m-d', strtotime($endDate)) : '' }}">
+</div>
+
+          <div class="col-md-2">
+          <label for="">Pop Up Form</label>
+        <select name="is_regional" class="form-control">
+    <option value="" >Select</option>
+    <option value="1" {{ request()->input('is_regional') == '1' ? 'selected' : '' }}>Yes</option>
+    <option value="0" {{ request()->input('is_regional') == '0' ? 'selected' : '' }}>No</option>
+</select>
         </div>
      
         <div class="col-md-2">
@@ -82,12 +101,11 @@
           <th>ID</th>
           <th>Referral URL</th>
           <th>Date</th>
-       @foreach($tbl_headers as $obj)
-     
-    @if($obj->field_name != "country_9c62720c1b8b66770b57067db53705ce")
-        <th>{{ trim(ucfirst($obj->display_text)) }}</th>
-    @endif
-@endforeach
+  
+          @foreach( $tbl_headers as $obj )
+            <th>{{ trim(ucfirst($obj->display_text)) }}</th>
+          @endforeach
+          <th style="width: 5%;">Pop Up Form</th>
           <th style="width: 5%;">#</th>
         </tr>
         @endif
@@ -105,7 +123,7 @@
                   echo "<tr>";
                   echo "<td>".$i++."</td>";
                   echo "<td  style='word-break: break-word;width:20%;'>".$obj->rerf_url."</td>";
-                  echo "<td>".date('m-d-Y', strtotime($obj->created_at))."</td>";
+                  echo "<td>".date('m/d/Y', strtotime($obj->created_at))."</td>";
                 $arrx = array();
                 foreach( $data as $index=>$vArr ) {
                  foreach( $vArr as $k=>$v ) {
@@ -135,12 +153,17 @@
                     echo "<td>-</td>";
                   }
                 }
+
+               echo '<td>' . ($obj->regional == 1 ? 'Yes' : 'No') . '</td>';
+
                 echo '<td><a href="'.route('frm_del_data', array('record_id' => $obj->id)).'" onclick="return confirm(\'Sure To Delete ?\');"><i class="fa fa-times base-red"></i></a></td>';
+           
                 echo "</tr>";
               }
             }
           }
           ?>
+      
         </tbody>
       </table>
       @else

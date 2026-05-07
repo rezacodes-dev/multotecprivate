@@ -2,28 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Pagination\LengthAwarePaginator as Paginator;
-use Illuminate\Http\Request;
+use App\Models\BrochureDetails;
+use App\Models\BrochureLanguage;
+use App\Models\BrochureMaster;
+use App\Models\BrochureProduct;
+use App\Models\BrochureProductDetails;
+use App\Models\CmsLinks;
+use App\Models\KnowledgeHubMaster;
 use App\Models\Menu\MenuMaster;
 use App\Models\Menu\NaviMaster;
 use App\Models\Referral;
-use App\Models\CmsLinks;
-use App\Models\WebinarUser;
 use App\Models\Webinar;
-use Jenssegers\Agent\Agent;
+use App\Models\WebinarUser;
 use Carbon\Carbon;
+use DB;
+use File;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator as Paginator;
+use Illuminate\Support\Facades\Cache;
+use Jenssegers\Agent\Agent;
+use Mail;
 use Redirect;
 use Session;
 use View;
-use DB;
-use File;
-use Mail;
-use Illuminate\Support\Facades\Cache;
-use App\Models\BrochureLanguage;
-use App\Models\BrochureProduct;
-use App\Models\BrochureDetails;
-use App\Models\BrochureMaster;
-use App\Models\BrochureProductDetails;
 
 class FrontEndController extends Controller
 {
@@ -457,7 +458,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
     public function cmsPage($lng, $slug)
     {
             
-       
+      
 
         if (isset($_SERVER['HTTP_REFERER'])) {
 
@@ -532,10 +533,10 @@ $DataBag['map'] = \App\Models\HomeMap::first();
         $cms = CmsLinks::where('slug_url', '=', trim($slug))->first();
        
         if (!empty($cms)) {
-          //    dd($cms);
+           
             $table_id = $cms->table_id;
             $table_type = $cms->table_type;
-        
+   
             /** PRODUCT **/
             if ($table_type == 'PRODUCT') {
 
@@ -598,14 +599,14 @@ $DataBag['map'] = \App\Models\HomeMap::first();
                     
                 $data = \App\Models\Content\Contents::with(['pageBuilderContent'])
                     ->where('id', '=', $table_id)->where('status', 1)->first();
-
+          
                 if (empty($data)) {
                     abort(404);
                 }
 
 
                 $DataBag['allData'] = $data;
-
+              //  dd($DataBag['allData']);
                 $DataBag['page_metadata'] = $DataBag['allData'];
 
                 $DataBag['breadcrumbs'] = $breadcrumbs;
@@ -1988,7 +1989,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
     /************************************************Distributor Section****************************************/
     public function distributorMap($lng)
     {
-
+            
         $DataBag = array();
 
         $device = 1;
@@ -2148,7 +2149,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
         //         'slug' => $distbr_slug
         //     ]);
         // }
-        
+  
         $DataBag = array();
 
         $device = 1;
@@ -2204,7 +2205,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
     public function distributorContent($lng, $cat_slug, $distbr_slug, $cont_slug)
     {
-
+     
         $DataBag = array();
 
         $device = 1;
@@ -2220,8 +2221,11 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
         $data = \App\Models\Distributor\DistributorContents::with(['pageBuilderContent'])
             ->where('language_id', '=', $getlngid)->where('slug', '=', $cont_slug)->where('status', '=', '1')->first();
-
+      //  dd($data);
         $DataBag['allData'] = $data;
+
+        $DataBag['country'] = $distbr_slug??'';
+        $DataBag['country_alt'] = $cont_slug??'';
 
         $DataBag['page_metadata'] = $DataBag['allData'];
 
@@ -2834,7 +2838,7 @@ $results_page = DB::select($query_page);
     }
 
 
-   public function brochures($lng)
+    public function brochures($lng)
     {
 
         $DataBag = array();
@@ -3145,12 +3149,12 @@ $query = BrochureMaster::with([
             'from_name'  => "Multotec",
             'subject'    => "Your Requested Brochure",
         ];
-     //    echo html_entity_decode($mailBODY); die;
+       //  echo html_entity_decode($mailBODY); die;
         // Send email
-        Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-            $message->from($emailData['from_email'], $emailData['from_name']);
-            $message->to($emailData['to_email'])->subject($emailData['subject']);
-        });
+        // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+        //     $message->from($emailData['from_email'], $emailData['from_name']);
+        //     $message->to($emailData['to_email'])->subject($emailData['subject']);
+        // });
     
         // JSON response for AJAX
         return response()->json([
@@ -3276,6 +3280,665 @@ $html .= '</div>';
     return response()->json([
         'success' => true,
         'html' => $html
+    ]);
+}
+
+
+
+
+
+  public function podcast($lng)
+    {
+
+        $DataBag = array();
+
+        $device = 1;
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            $device = 2;
+        }
+        $DataBag['device'] = $device;
+
+        $DataBag['lng'] = $lng;
+        $getlngid = getLngIDbyCode($lng);
+        $DataBag['lng_id'] = $getlngid;
+
+        $query = \App\Models\Podcast::where('status', '=', '1')->with('WebinarCategory')->orderBy('webinar_start_date', 'desc');
+
+        //dd($query);
+
+        // $query = Webinar::where('status', '=', '1')->with('WebinarCategory');
+        // $viewWebinars = $query->orderBy('webinar_start_date', 'desc')->paginate(9);
+
+        // $DataBag['viewWebinars'] = $viewWebinars;
+
+        // if( isset($_GET['catid']) && $_GET['catid'] != '' ) {
+        //     $query = $query->where( function($query) {
+        //         $query = $query->whereHas('categoryIds', function ($query) {
+        //             $query->where( 'article_category_id', '=', trim($_GET['catid']) );
+        //         });
+        //     } );
+        // }
+
+        // if( isset($_GET['year']) && isset($_GET['month']) ) {
+        //     $query = $query->where( function($query) {
+        //         $query = $query->whereMonth( 'publish_date', '=', trim($_GET['month']) );
+        //         $query = $query->whereYear( 'publish_date', '=', trim($_GET['year']) );
+        //     } );
+        // }
+
+
+
+        if (isset($_GET['start_date']) && $_GET['start_date'] != '' && isset($_GET['end_date']) && $_GET['end_date'] != '') {
+
+            $query = $query->where(function ($query) {
+
+                $start_date = $_GET['start_date'];
+                $end_date = $_GET['end_date'];
+
+                $query =  $query->whereBetween('created_at', [$start_date, $end_date]);
+            });
+        }
+
+        if (isset($_GET['webinar_category']) && $_GET['webinar_category'] != '') {
+            $query = $query->where(function ($query) {
+                $query = $query->where('webinar_category', 'like', '%' . $_GET['webinar_category'] . ',%');
+            });
+        }
+
+
+        if (isset($_GET['webinar_topic']) && $_GET['webinar_topic'] != '') {
+            $query = $query->where(function ($query) {
+                $query = $query->where('webinar_topic', 'like', '%' . $_GET['webinar_topic'] . ',%');
+            });
+        }
+
+        if (isset($_GET['webinar_industry']) && $_GET['webinar_industry'] != '') {
+            $query = $query->where(function ($query) {
+                $query = $query->where('webinar_industry', 'like', '%' . $_GET['webinar_industry'] . ',%');
+            });
+        }
+
+
+        if (isset($_GET['search']) && $_GET['search'] != '') {
+            $query = $query->where(function ($query) {
+                $query = $query->where('name', 'LIKE', '%' . trim($_GET['search']) . '%');
+            });
+        }
+
+        $articlesData = $query->orderBy('id', 'desc')->paginate(12);
+        $DataBag['listData'] = $articlesData;
+
+
+        foreach ($DataBag['listData'] as $key => $val) {
+
+            $cat = explode(',', $val['webinar_category']);
+
+            $allcat = '';
+
+            foreach ($cat as $row) {
+                if ($row != '') {
+                    $wbcat = \App\Models\PodcastCategory::where('id', '=', $row)->first();
+                    $allcat .= $wbcat->name . ',';
+                }
+            }
+
+
+
+
+            $DataBag['listData'][$key]['webinarcat'] = $allcat;
+            //  $DataBag['listData'][$key]['webinarcat']= $allcat;
+
+
+        }
+
+        $DataBag['page_tag'] = 'Podcast';
+
+        $articlesCats = \App\Models\PodcastCategory::where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+        $DataBag['listCats'] = $articlesCats;
+
+        $DataBag['listTopic'] = \App\Models\PodcastTopic::where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+        $DataBag['listIndustry'] = \App\Models\PodcastIndustry::where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+
+        $DataBag['webinarContent'] = \App\Models\PodcastContent::where('id', '=', '1')->first();
+
+
+        // $yearArr = array();
+        // $createdAt = \App\Models\Article\Articles::where('status', '=', '1')
+        // ->where('parent_language_id', '=', '0')->where('publish_date', '!=', '')
+        // ->orderBy('publish_date', 'desc')->pluck('publish_date')->toArray();
+
+        // if( !empty($createdAt) ) {
+        //     foreach( $createdAt as $v ) {
+        //         $onlyYear = Carbon::createFromFormat('Y-m-d H:i:s', $v)->year;
+        //         array_push( $yearArr , $onlyYear );
+        //     }
+        // }
+
+        // $uniqueYear = array_unique( $yearArr );
+        // $DataBag['yearList'] = $uniqueYear;
+
+        $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'PODCAST')->first();
+
+        $DataBag['page_metadata'] = $DataBag['extraContent'];
+
+        return view('front_end.podcast.webinar_list', $DataBag);
+    }
+
+
+
+
+ public function podcastContent($lng, $id)
+    {
+        //echo "id" .$id;
+        $DataBag = array();
+
+        $device = 1;
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            $device = 2;
+        }
+        $DataBag['device'] = $device;
+
+        $DataBag['lng'] = $lng;
+        $getlngid = getLngIDbyCode($lng);
+        $DataBag['lng_id'] = $getlngid;
+
+
+        $data = \App\Models\Podcast::where('slug', '=', $id)->where('status', '=', '1')->first();
+
+
+
+
+
+        $webinar_has = Session::get('webinar_has_' . $data->id);
+        //   dd($webinar_has,$data->id);
+        if (isset($webinar_has) && $webinar_has == $data->id) {
+        } else {
+
+            $WB = \App\Models\Podcast::find($data->id);
+
+            $hit = $WB->hit;
+            $hit = $hit + 1;
+            $WB->hit = $hit;
+
+            $WB->save();
+
+            session(['webinar_has_' . $data->id => $data->id]);
+        }
+
+        $DataBag['allData'] = $data;
+        // Adding 'meta_title' array to $DataBag['allData']
+        $DataBag['allData']['meta_title'] = $data->name ?? '';
+        $DataBag['page_metadata'] = $DataBag['allData'];
+        //  meta_title
+        //   dd($DataBag['page_metadata']);
+
+        //$WB->hit++; 
+
+        //$WB->update(); 
+        $contactdata = \App\Models\Content\Contents::with(['pageBuilderContent'])
+        ->where('id', '=', 77)->where('status', 1)->first();
+
+ 
+        // dd($DataBag['allData']);
+
+         $DataBag['contactdata'] = $contactdata;
+        return view('front_end.podcast.webinar_content', $DataBag);
+    }
+
+
+
+
+     public function knowledgehub($lng,Request $request)
+    {
+
+        $DataBag = array();
+
+        $device = 1;
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            $device = 2;
+        }
+        $DataBag['device'] = $device;
+
+        $DataBag['lng'] = $lng;
+        $getlngid = getLngIDbyCode($lng);
+        $DataBag['lng_id'] = $getlngid;
+        $fetchlanguage=DB::table('kh_language')->where('name','English')->first();
+        $DataBag['language_id'] = $fetchlanguage->id;
+
+    
+
+        $query= DB::table('knowledge_hub')
+             ->select('knowledge_hub.name','knowledge_hub.slug','knowledge_hub.id','knowledge_hub.image','knowledge_hub_details.description','knowledge_hub_details.short_description','knowledge_hub_details.webinar_link','knowledge_hub_details.podcast_link','knowledge_hub_details.brochure_link')
+             ->leftJoin('knowledge_hub_details','knowledge_hub_details.kh_id','knowledge_hub.id')
+             ->leftJoin('kh_language','kh_language.id','knowledge_hub_details.language_id')
+             ->where('knowledge_hub.status',1);
+            //  ->where('kh_language.name','English');
+
+
+              // ✅ Filters
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where('knowledge_hub.name', 'like', '%' . $search . '%');
+        }
+
+    if ($request->filled('kh_language')) {
+        $query->where('knowledge_hub_details.language_id', $request->kh_language);
+    }
+    else{
+        $query->where('kh_language.name','English');
+    }
+
+    if ($request->filled('kh_product')) {
+        $query->where('knowledge_hub_details.product_id', $request->kh_product);
+    }
+
+    if ($request->filled('kh_commodity')) {
+        $query->where('knowledge_hub_details.commodity_id', $request->kh_commodity);
+    }
+    if($request->filled('kh_type')){
+        if($request->kh_type == 1){
+        $query->whereNotNull('knowledge_hub_details.brochure_link');
+        }
+        if($request->kh_type == 2){
+        $query->whereNotNull('knowledge_hub_details.podcast_link');
+        }
+        if($request->kh_type == 3){
+        $query->whereNotNull('knowledge_hub_details.webinar_link');
+        }
+    }
+
+    if ($request->filled('kh_location')) {
+        $query->where('knowledge_hub_details.location_id', $request->kh_location);
+    }
+
+      
+        
+        // if (isset($_GET['brochure_type']) && $_GET['brochure_type'] != '') {
+        //     $brochureType = trim($_GET['brochure_type']);
+        
+        //     $query->whereHas('brochureDetails', function ($q) use ($brochureType) {
+        //         $q->where('type_id', $brochureType);
+        //     });
+        // }
+        
+        // if (isset($_GET['brochure_brand']) && $_GET['brochure_brand'] != '') {
+        //     $brochureBrand = trim($_GET['brochure_brand']);
+        
+        //     $query->whereHas('brochureDetails', function ($q) use ($brochureBrand) {
+        //         $q->where('brand_id', $brochureBrand);
+        //     });
+        // }
+
+
+        //   if (isset($_GET['brochure_language']) && $_GET['brochure_language'] != '') {
+        //     $brochureLanguage = trim($_GET['brochure_language']);
+        
+        //     $query->whereHas('brochureDetails', function ($q) use ($brochureLanguage) {
+        //         $q->where('language_id', $brochureLanguage);
+        //     });
+        // }
+
+        // if (isset($_GET['borchure_products']) && $_GET['borchure_products'] != '') {
+        //     $brochureProducts = trim($_GET['borchure_products']);
+        
+        //     $query->whereHas('brochureDetails.brochureProducts', function ($q) use ($brochureProducts) {
+        //         $q->where('product_id', $brochureProducts);
+        //     });
+        // }
+
+        // if (isset($_GET['search']) && $_GET['search'] != '') {
+        //     $query = $query->where(function ($query) {
+        //         $query = $query->where('brochure_master.name', 'LIKE', '%' . trim($_GET['search']) . '%');
+        //     });
+        // }
+ 
+        $articlesData = $query->orderBy('knowledge_hub.created_at','desc')->paginate(6);
+      
+        $DataBag['listData'] = $articlesData;
+       
+
+        foreach ($DataBag['listData'] as $key => $val) {
+
+            // $cat = explode(',', $val['webinar_category']);
+
+            // $allcat = '';
+
+            // foreach ($cat as $row) {
+            //     if ($row != '') {
+            //         $wbcat = \App\Models\WebinarCategory::where('id', '=', $row)->first();
+            //         $allcat .= $wbcat->name . ',';
+            //     }
+            // }
+
+
+
+
+            // $DataBag['listData'][$key]['webinarcat'] = $allcat;
+            //  $DataBag['listData'][$key]['webinarcat']= $allcat;
+
+
+        }
+  
+        $DataBag['page_tag'] = 'KnowledgeHub';
+
+        $articlesCats = \App\Models\WebinarCategory::where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+        $DataBag['listCats'] = $articlesCats;
+
+        $DataBag['brochureType'] = DB::table('brochure_type')->where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+        $DataBag['brochureBrand'] = DB::table('brochure_brand')->where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+
+        $DataBag['brochureLanguage'] = DB::table('brochure_language')->where('status', '=', '1')->get();
+        $DataBag['brochureProduct'] = DB::table('brochure_products')->where('status', '=', '1')->get();
+
+        $DataBag['brochureContent'] = \App\Models\KnowledgeContent::where('id', '=', '1')->first();
+
+
+
+             $DataBag['knowledgeProduct'] = DB::table('kh_products')->where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+        $DataBag['knowledgeCommodity'] = DB::table('kh_commodities')->where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+
+        $DataBag['knowledgeLocation'] = DB::table('kh_location')->where('status', '=', '1')->get();
+        $DataBag['knowledgeLanguage'] = DB::table('kh_language')->where('status', '=', '1')->get();
+        // $yearArr = array();
+        // $createdAt = \App\Models\Article\Articles::where('status', '=', '1')
+        // ->where('parent_language_id', '=', '0')->where('publish_date', '!=', '')
+        // ->orderBy('publish_date', 'desc')->pluck('publish_date')->toArray();
+
+        // if( !empty($createdAt) ) {
+        //     foreach( $createdAt as $v ) {
+        //         $onlyYear = Carbon::createFromFormat('Y-m-d H:i:s', $v)->year;
+        //         array_push( $yearArr , $onlyYear );
+        //     }
+        // }
+
+        // $uniqueYear = array_unique( $yearArr );
+        // $DataBag['yearList'] = $uniqueYear;
+          
+        $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'KnowledgeHub')->first();
+
+        $DataBag['page_metadata'] = $DataBag['extraContent'];
+        // dd($DataBag['listData'] );
+        return view('front_end.knowledgehub.knowledge_list', $DataBag);
+    }
+
+     public function knowledgehubContent(Request $request,$lng="en",$id='NULL'){
+        $DataBag = array();
+
+        $device = 1;
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            $device = 2;
+        }
+        $DataBag['device'] = $device;
+
+        $DataBag['lng'] = $lng;
+        $getlngid = getLngIDbyCode($lng);
+        $DataBag['lng_id'] = $getlngid;
+
+        $query =DB::table('knowledge_hub')
+             ->select('knowledge_hub.name','knowledge_hub.slug','knowledge_hub.id','knowledge_hub.image','knowledge_hub_details.description','knowledge_hub_details.short_description','knowledge_hub_details.webinar_link','knowledge_hub_details.podcast_link','knowledge_hub_details.brochure_link')
+             ->leftJoin('knowledge_hub_details','knowledge_hub_details.kh_id','knowledge_hub.id')
+             ->leftJoin('kh_language','kh_language.id','knowledge_hub_details.language_id')
+             ->where('knowledge_hub.slug',$id);
+
+             if(isset($request->language_id)  && !empty($request->language_id)) {
+            $query=$query->where('kh_language.id',$request->language_id);
+             }
+           
+
+
+        // $query = DB::table('brochure_master')
+        // ->select('brochure_master.name','brochure_master.id as brochure_id','brochure_master.description','brochure_language.name as lang_name','brochure_type.name as brochure_type','brochure_master.thumbnail_image','brochure_details.brochure_pdf as upload_doc','brochure_details.download_name','brochure_brand.name as brand_name')
+        // ->leftjoin('brochure_details','brochure_details.brochure_id','brochure_master.id')
+        // ->leftjoin('brochure_type','brochure_type.id','brochure_details.type_id')
+        // ->leftjoin('brochure_brand','brochure_brand.id','brochure_details.brand_id')
+        // ->leftjoin('brochure_language','brochure_language.id','brochure_details.language_id')
+        // ->where('brochure_master.slug',$id)->where('brochure_master.status', '=', '1')->orderBy('brochure_master.created_at', 'desc');
+
+
+       
+        $articlesData = $query->first();
+        $brochure_id=$articlesData->brochure_id??'';
+      
+
+        $DataBag['listData'] = $articlesData;
+        
+        $DataBag['fetchBrochureDetails'] = [];
+      
+  
+        $DataBag['page_tag'] = 'Brochures';
+
+        $articlesCats = \App\Models\WebinarCategory::where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+        $DataBag['listCats'] = $articlesCats;
+
+        $DataBag['brochureType'] = DB::table('brochure_type')->where('brochure_type.id',$id)->where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+        $DataBag['brochureBrand'] = DB::table('brochure_brand')->where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+        $DataBag['brochureSize'] = DB::table('brochure_size')->where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+
+        $DataBag['brochureLanguage'] = DB::table('brochure_language')->where('brochure_language.id',$id)->where('status', '=', '1')->get();
+
+
+        // $yearArr = array();
+        // $createdAt = \App\Models\Article\Articles::where('status', '=', '1')
+        // ->where('parent_language_id', '=', '0')->where('publish_date', '!=', '')
+        // ->orderBy('publish_date', 'desc')->pluck('publish_date')->toArray();
+
+        // if( !empty($createdAt) ) {
+        //     foreach( $createdAt as $v ) {
+        //         $onlyYear = Carbon::createFromFormat('Y-m-d H:i:s', $v)->year;
+        //         array_push( $yearArr , $onlyYear );
+        //     }
+        // }
+
+        // $uniqueYear = array_unique( $yearArr );
+        // $DataBag['yearList'] = $uniqueYear;
+
+        $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'ARTICLE')->first();
+
+        $DataBag['page_metadata'] = $DataBag['extraContent'];
+        // dd($DataBag['listData'] );
+        return view('front_end.knowledgehub.knowledge', $DataBag);
+    
+    }
+
+   public function knowledgeAjax(Request $request)
+{
+    $lng = app()->getLocale();
+
+    // ✅ Build Query
+    $query = DB::table('knowledge_hub')
+        ->select(
+            'knowledge_hub.id',
+            'knowledge_hub.name',
+            'knowledge_hub.slug',
+            'knowledge_hub.image',
+            'knowledge_hub_details.description',
+            'knowledge_hub_details.short_description',
+            'knowledge_hub_details.webinar_link',
+            'knowledge_hub_details.podcast_link',
+            'knowledge_hub_details.brochure_link',
+            'knowledge_hub_details.product_id',
+            'knowledge_hub_details.commodity_id',
+            'knowledge_hub_details.language_id',
+            'knowledge_hub_details.location_id'
+        )
+        ->leftJoin('knowledge_hub_details', 'knowledge_hub_details.kh_id', '=', 'knowledge_hub.id')
+        ->leftJoin('kh_language', 'kh_language.id', '=', 'knowledge_hub_details.language_id')
+        ->where('knowledge_hub.status', 1);
+
+
+          if ($request->filled('search')) {
+        $query->where('knowledge_hub.name','like', '%'. $request->search .'%');
+       }
+    // ✅ Filters
+    if ($request->filled('kh_language')) {
+        $query->where('knowledge_hub_details.language_id', $request->kh_language);
+    }
+
+    if ($request->filled('kh_product')) {
+        $query->where('knowledge_hub_details.product_id', $request->kh_product);
+    }
+
+    if ($request->filled('kh_commodity')) {
+        $query->where('knowledge_hub_details.commodity_id', $request->kh_commodity);
+    }
+    if($request->filled('kh_type')){
+        if($request->kh_type == 1){
+        $query->whereNotNull('knowledge_hub_details.brochure_link');
+        }
+        if($request->kh_type == 2){
+        $query->whereNotNull('knowledge_hub_details.podcast_link');
+        }
+        if($request->kh_type == 3){
+        $query->whereNotNull('knowledge_hub_details.webinar_link');
+        }
+    }
+
+    if ($request->filled('kh_location')) {
+        $query->where('knowledge_hub_details.location_id', $request->kh_location);
+    }
+
+    // ✅ Pagination
+    $listData = $query
+    ->orderBy('knowledge_hub.created_at','desc')
+    ->paginate(6)->appends($request->except('page'));
+        
+    // ✅ Start HTML
+    $html = '<div class="row" id="listWebinars">';
+
+    if ($listData->count() > 0) {
+
+     foreach ($listData as $v) {
+
+    $imageURL = !empty($v->image)
+        ? asset('public/' . $v->image)
+        : asset('public/images/default_multotec.jpg');
+
+    $url = route('front.knowledgehubCont', [
+        'lng' => $lng,
+        'id'  => $v->slug,
+        'language_id' => $request->kh_language??'' // new query param
+    ]);
+
+   $html .= '
+<div class="col-sm-4 col-md-4">
+    <div class="product-card" style="border:1px solid #ddd; background:#f5f5f5; padding:10px; text-align:center;">
+        
+        <div>
+            <a href="' . $url . '">
+                <img src="' . $imageURL . '" alt="Knowledge Hub" style="width:100%; height:200px;object-fit: cover;">
+            </a>
+        </div>
+
+        <div style="padding:15px;">
+            
+            <h5 style="font-weight:600; margin-bottom:10px;font-size: 16px !important;">
+                <a href="' . $url . '" style="text-decoration:none; color:#000;font-weight: 500;line-height: 1.4;">
+                    ' . e($v->name ?? '') . '
+                </a>
+            </h5>
+
+            <p style="font-size: 13px;line-height: 1.6;font-weight: 500;color: #646464;overflow: hidden;">
+                ' . e($v->short_description ?? '') . '
+            </p>';
+            
+
+// ✅ Icons section (same as Blade)
+if (!empty($v->brochure_link) || !empty($v->webinar_link) || !empty($v->podcast_link)) {
+
+    $html .= '<div style="display:flex; justify-content:center; gap:15px;">';
+
+
+
+        $html .= '<a href="' . $url . '" 
+                    target="_blank" 
+                    title="Read" 
+                    class="knowledgeicon"
+                    style="">
+                    <img src="' . asset('public/icons/book.png') . '">
+                    <span>Read</span>
+                </a>';
+
+    // if (!empty($v->brochure_link)) {
+    //     $html .= '<a href="' . htmlspecialchars($v->brochure_link, ENT_QUOTES) . '" 
+    //                 target="_blank" 
+    //                 title="Read" 
+    //                 class="knowledgeicon"
+    //                 style="">
+    //                 <img src="' . asset('public/icons/book.png') . '">
+    //                 <span>Read</span>
+    //             </a>';
+
+
+               
+    // }
+
+    if (!empty($v->webinar_link)) {
+        $html .= '<a href="' . htmlspecialchars($v->webinar_link, ENT_QUOTES) . '" 
+                    target="_blank" 
+                    title="Watch" 
+                    class="open-video knowledgeicon"
+                    style="">
+                    <img src="' . asset('public/icons/play-button.png') . '">
+                    <span>Watch</span>
+                </a>';
+    }
+
+    if (!empty($v->podcast_link)) {
+        $html .= '<a href="' . htmlspecialchars($v->podcast_link, ENT_QUOTES) . '" 
+                    title="Listen" 
+                    class="open-audio knowledgeicon"
+                    style="">
+                    <img src="' . asset('public/icons/headphones.png') . '">
+                    <span>Listen</span>
+                </a>';
+    }
+
+    $html .= '</div>';
+}
+
+$html .= '
+        </div>
+    </div>
+</div>';
+}
+
+    } else {
+        $html .= '<div class="col-12 text-center"><h4>No Record Found</h4></div>';
+    }
+
+    $html .= '</div>'; // ✅ close row
+
+    // ✅ Pagination
+    $html .= '<div class="text-center mt-3">';
+
+    if ($listData->previousPageUrl()) {
+        $html .= '<a style="background-color:#fff;color: #008d5c;" href="' . $listData->previousPageUrl() . '" class="btn btn-outline-secondary me-2">&lt; Prev</a>';
+    }
+
+    if ($listData->nextPageUrl()) {
+        $html .= '<a style="background-color:#fff;color: #008d5c;" href="' . $listData->nextPageUrl() . '" class="btn btn-outline-secondary">Next &gt;</a>';
+    }
+
+    $html .= '</div>';
+
+    // ✅ Response
+    return response()->json([
+        'success' => true,
+        'html'    => $html
     ]);
 }
 

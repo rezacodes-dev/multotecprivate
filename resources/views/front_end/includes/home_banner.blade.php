@@ -1,4 +1,4 @@
-@if(isset($home_banners) && count($home_banners) > 0)
+@if(isset($home_banners))
 <section class="banner">
     <div class="owl-carousel">
         @foreach($home_banners as $hb)
@@ -9,13 +9,10 @@
                          alt="{{ $hb->BannerImages->alt_title }}"
                          title="{{ $hb->BannerImages->title }}"
                          fetchpriority="high"
-                         loading="eager"
-                    />
-                    @if(!empty($hb->BannerImages->caption))
-                        <div class="caption">
-                            <p>{{ $hb->BannerImages->caption }}</p>
-                        </div>
-                    @endif
+                         loading="eager" />
+                    <div class="caption">
+                        <p>{{ $hb->BannerImages->caption }}</p>
+                    </div>
                 </div>
             </div>
             @endif

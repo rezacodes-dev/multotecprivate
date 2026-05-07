@@ -34,7 +34,6 @@ background-color: inherit;
 @endpush
 
 @section('page_content')
-
 @php
     $isDesktop = !request()->header('User-Agent') || !preg_match('/(android|iphone|ipad|mobile)/i', request()->header('User-Agent'));
 @endphp
@@ -42,6 +41,7 @@ background-color: inherit;
 @if($isDesktop)
     @include('front_end.includes.home_banner')
 @endif
+
 @if(isset($commodities) && !empty($commodities))
 @include('front_end.includes.commodities_ticker')
 @else
@@ -51,19 +51,9 @@ background-color: inherit;
 	<h1 class="m_top30">@if(isset($allData)){{ $allData->name }}@endif</h1>
 	<div class="row">
 		<div class="col-sm-6">
-			<!-- <div class="hp_block1">
-			@if(isset($allData)){!! trim( html_entity_decode( $allData->page_content, ENT_QUOTES ) ) !!}@endif	
-			</div> -->
 			<div class="hp_block1">
-    @if(isset($allData))
-        {!! preg_replace(
-            '/<img(?![^>]*fetchpriority)/i', 
-            '<img fetchpriority="high"', 
-            trim(html_entity_decode($allData->page_content, ENT_QUOTES))
-        ) !!}
-    @endif
-</div>
-
+			@if(isset($allData)){!! trim( html_entity_decode( $allData->page_content, ENT_QUOTES ) ) !!}@endif	
+			</div>
 		</div>
 		<div class="col-sm-6">
 			<div class="newsblock home_nblock">
@@ -86,7 +76,7 @@ background-color: inherit;
 				@if(isset($map) && $map->small_image != '')
 				<div class="mapbox">
 					<a href="@if($map->small_link != ''){{ $map->small_link }}@else #bigmap @endif"><h3>{{ $map->small_heading }}</h3>
-						<img src="{{ asset('public/uploads/files/media_images/'. $map->small_image) }}">
+						<img src="{{ asset('public/uploads/files/media_images/'. $map->small_image) }}"  alt="Media Image">
 					</a>
 				</div>
 				@endif
@@ -104,54 +94,44 @@ background-color: inherit;
 
 
 
-	<div class="midblock">
-    <h2 class="text-center">
-        @if(isset($allData)){{ $allData->mineral_processing_heading }}@endif
-    </h2>
+<div class="midblock">
+	<h2 class="text-center">@if(isset($allData)){{ $allData->mineral_processing_heading }}@endif</h2>
+	<div class="row">
+		@if( isset($mps) && !empty($mps) )
+			@php $x = 1; @endphp
+			@foreach($mps as $v)
+			<div class="col-sm-4" style="padding-bottom: 15px;">
+				<div class="imgblock">
+					<div class="hoverdiv">
+						<p>{{ $v->description }}</p>
+					    <a href="{{ $v->view_link }}" target="_self">View more</a>      
+					</div>
+					@if( isset($v->imageInfo) && !empty($v->imageInfo) )
+						<img 
+							src="{{ asset('public/uploads/files/media_images/' . $v->imageInfo->image) }}" 
+							loading="lazy" 
+							alt="Media Image"
+						> 
+					@endif
 
-    <div class="row">
-        @if(isset($mps) && !empty($mps))
-            @foreach($mps as $index => $v)
-                <div class="col-sm-4 mb-4">
-                    <div class="imgblock">
-                        <div class="hoverdiv">
-                            <p>{{ $v->description }}</p>
-                            <a href="{{ $v->view_link }}" target="_self" aria-label="View more about {{ $v->title }}">
-                                View more
-                            </a>      
-                        </div>
-
-                        @if(isset($v->imageInfo) && !empty($v->imageInfo))
-                            <img 
-                                src="{{ asset('public/uploads/files/media_images/'. $v->imageInfo->image) }}" 
-                                alt="{{ $v->title }}" 
-                                width="400" height="250" 
-                                class="img-fluid"
-                                @if($loop->first) 
-                                    fetchpriority="high" decoding="async"
-                                @else 
-                                    loading="lazy" decoding="async" fetchpriority="low"
-                                @endif
-                            > 
-                        @endif
-                    </div>
-
-                    <div class="imgblock_title">
-                        <a href="{{ $v->view_link }}">{{ $v->title }}</a>
-                    </div>
-                </div>
-            @endforeach
-        @endif
-    </div>
+				</div>
+				<div class="imgblock_title"><a href="{{ $v->view_link }}">{{ $v->title }}</a></div>
+			</div>
+			@if($x % 3 == 0)
+				<div class="clearfix"></div>
+			@endif
+			@php $x++; @endphp
+			@endforeach
+		@endif
+	</div>
 </div>
-
 
 
 @if( isset($allData) ){!! contentHtmlGenerator( $allData->reuse_content1 ) !!}@endif
 
 </section>
 
-@if( isset($allData) ){!! contentHtmlGenerator( $allData->reuse_content2 ) !!}@endif
+<!-- @if( isset($allData) ){!! contentHtmlGenerator( $allData->reuse_content2 ) !!}@endif -->
 
 
 <section class="container minarel_secc">
@@ -167,7 +147,8 @@ background-color: inherit;
 				<a href="{{ $v->view_link }}">
 					<div class="metalbox">
 						@if( isset($v->imageInfo) && !empty($v->imageInfo) )
-		              	<img src="{{ asset('public/uploads/files/media_images/'. $v->imageInfo->image) }}" loading="lazy" alt=""> 
+		              	<img loading="lazy" src="{{ asset('public/uploads/files/media_images/'. $v->imageInfo->image) }}" 
+						  alt="Media Image"> 
 		              	@endif
 						<div class="overlay">{{ $v->name }}</div>
 					</div>
@@ -192,7 +173,7 @@ background-color: inherit;
 	@if(isset($map) && $map->big_image != '')
 	<div style="text-align:center">
 		<a href="{{ $map->big_link }}">
-			<img src="{{ asset('public/uploads/files/media_images/'. $map->big_image) }}" loading="lazy">
+			<img loading="lazy" src="{{ asset('public/uploads/files/media_images/'. $map->big_image) }}"  alt="Media Image">
 		</a>
 	</div>
 	@endif
@@ -202,56 +183,20 @@ background-color: inherit;
 
 @if(isset($logos) && count($logos) > 0 )
 <section class="container text-center home_logos">
-    <ul class="ul_logos list-unstyled d-flex flex-wrap justify-content-center">
-        @foreach($logos as $index => $lg)
-        <li class="m-2">
-            @php
-                $imagePath = 'public/uploads/files/media_images/'. $lg->image;
-                $webpPath = 'public/uploads/files/media_images/'. pathinfo($lg->image, PATHINFO_FILENAME) . '.webp';
-            @endphp
-
-            @if($lg->link_file != '')
-                <a href="{{ $lg->link_file }}" aria-label="{{ $lg->image_alt ?? $lg->image_title }}">
-                    <picture>
-                        @if(file_exists(public_path($webpPath)))
-                            <source srcset="{{ asset($webpPath) }}" type="image/webp">
-                        @endif
-                        <img 
-                            src="{{ asset($imagePath) }}"  
-                            width="380" height="180"
-                            class="li_logo_img img-fluid"
-                            title="{{ $lg->image_title }}"
-                            alt="{{ $lg->image_alt }}"
-                            decoding="async"
-                            @if($loop->first)
-                                fetchpriority="high"
-                            @else
-                                loading="lazy" fetchpriority="low"
-                            @endif
-                        >
-                    </picture>
-                </a>
-            @else
-                <picture>
-                    @if(file_exists(public_path($webpPath)))
-                        <source srcset="{{ asset($webpPath) }}" type="image/webp">
-                    @endif
-                    <img 
-                        src="{{ asset($imagePath) }}"  
-                        width="380" height="180"
-                        class="li_logo_img img-fluid"
-                        title="{{ $lg->image_title }}"
-                        alt="{{ $lg->image_alt }}"
-                        decoding="async"
-                        loading="lazy" fetchpriority="low"
-                    >
-                </picture>
-            @endif
-        </li>
-        @endforeach
-    </ul>
+	<ul class="ul_logos">
+		@foreach($logos as $lg)
+		<li>
+			@if($lg->link_file != '')
+				<a  href="{{ $lg->link_file }}">
+				<img loading="lazy" src="{{ asset('public/uploads/files/media_images/'. $lg->image) }}" class="li_logo_img" title="{{ $lg->image_title }}" alt="{{ $lg->image_alt }}">
+				</a>
+			@else
+				<img loading="lazy" src="{{ asset('public/uploads/files/media_images/'. $lg->image) }}" class="li_logo_img" title="{{ $lg->image_title }}" alt="{{ $lg->image_alt }}">
+			@endif
+		</li>
+		@endforeach
+	</ul>
 </section>
 @endif
-
 	
 @endsection

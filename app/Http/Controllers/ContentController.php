@@ -281,6 +281,7 @@ class ContentController extends Controller
     	$Contents->name = trim( ucfirst($request->input('name')) );
     	$Contents->slug = trim($request->input('slug'));
     	$Contents->description = trim( $request->input('description') );
+    	$Contents->product_link = trim( $request->input('product_link') );
     	$Contents->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
     	//$Contents->status = trim($request->input('status'));
     	//$Contents->publish_status = trim($request->input('publish_status'));

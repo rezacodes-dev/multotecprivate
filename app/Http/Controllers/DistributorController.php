@@ -508,7 +508,6 @@ class DistributorController extends Controller
         $DataBag['childMenu'] = 'distributorContns';
         $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('parent_language_id', '=', '0')
         ->orderBy('created_at', 'desc')->get();
-      
         return view('dashboard.distributors.all_contents', $DataBag);
     }
 
