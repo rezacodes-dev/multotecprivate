@@ -24,6 +24,7 @@ use App\Models\BrochureProduct;
 use App\Models\BrochureDetails;
 use App\Models\BrochureMaster;
 use App\Models\BrochureProductDetails;
+use Illuminate\Support\Facades\Config;
 
 class FrontEndController extends Controller
 {
@@ -3122,46 +3123,70 @@ $query = BrochureMaster::with([
     }
 
  public function sendEmailBrochure(Request $request)
-    {
-       
-    
-        // Insert enquiry into DB
-        DB::table('brochure_enquiry')->insert([
-            'recipient_email' => $request->recipient_email,
-            'recipient_phone' => $request->recipient_phone ?? NULL,
-            'country'         => $request->country ?? NULL,
-            'city'            => $request->city ?? NULL,
-            'created_at'      => now(),
-            'updated_at'      => now(),
-        ]);
-    
-        // Prepare email body
-        $brochure_link = $request->brochure_link;
-        $mailBODY  = 'Dear ' . e($request->recipient_name) . ',<br/><br/>';
-        $mailBODY .= 'Here is your requested brochure:<br/>';
-        $mailBODY .= '<a href="' . e($brochure_link) . '" target="_blank">Click Here</a><br/><br/>';
-        $mailBODY .= 'Thank you,<br/>Multotec';
-  
-        // Email data
-        $emailData = [
-            'body'       => $mailBODY,
-            'to_email'   => trim($request->recipient_email),
-            'from_email' => env('MAIL_FROM_ADDRESS', "support@multotec.com"),
-            'from_name'  => "Multotec",
-            'subject'    => "Your Requested Brochure",
-        ];
-     //    echo html_entity_decode($mailBODY); die;
-        // Send email
-        // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-        //     $message->from($emailData['from_email'], $emailData['from_name']);
-        //     $message->to($emailData['to_email'])->subject($emailData['subject']);
-        // });
-    
-        // JSON response for AJAX
-        return response()->json([
-            'message' => 'Email Sent Successfully!'
-        ]);
-    }
+{
+    // Insert enquiry into DB
+    DB::table('brochure_enquiry')->insert([
+        'recipient_email' => $request->recipient_email,
+        'recipient_phone' => $request->recipient_phone ?? null,
+        'country'         => $request->country ?? null,
+        'city'            => $request->city ?? null,
+        'created_at'      => now(),
+        'updated_at'      => now(),
+    ]);
+
+    // Prepare email body
+    $brochure_link = $request->brochure_link;
+
+    $mailBODY  = 'Dear ' . e($request->recipient_name) . ',<br><br>';
+    $mailBODY .= 'Here is your requested brochure:<br>';
+    $mailBODY .= '<a href="' . e($brochure_link) . '" target="_blank">Click Here</a><br><br>';
+    $mailBODY .= 'Thank you,<br>Multotec';
+
+    // Email data
+    $emailData = [
+        'body'       => $mailBODY,
+        'to_email'   => trim($request->recipient_email),
+        'subject'    => 'Your Requested Brochure',
+    ];
+
+    // // Dynamic mail configuration
+    // Config::set('mail.mailers.smtp', [
+    //     'transport'  => 'smtp',
+    //     'host'       => 'smtp.office365.com',
+    //     'port'       => 587,
+    //     'encryption' => 'tls',
+    //     'username'   => 'NoReplyLeads@multotec.com',
+    //     'password'   => '5h[7#q~IWj]9',
+    //     'timeout'    => null,
+    //     'auth_mode'  => null,
+    // ]);
+
+    // Config::set('mail.from', [
+    //     'address' => 'NoReplyLeads@multotec.com',
+    //     'name'    => 'Multotec',
+    // ]);
+
+    // // Send email using only Mail::mailer()
+    // Mail::mailer('smtp')->send(
+    //     'emails.accountVerification',
+    //     ['emailData' => $emailData],
+    //     function ($message) use ($emailData) {
+
+    //         $message->from(
+    //             'NoReplyLeads@multotec.com',
+    //             'Multotec'
+    //         );
+
+    //         $message->to($emailData['to_email'])
+    //                 ->subject($emailData['subject']);
+    //     }
+    // );
+
+    // JSON response
+    return response()->json([
+        'message' => 'Email Sent Successfully!'
+    ]);
+}
     
     
    public function brochureAjax(Request $request)
