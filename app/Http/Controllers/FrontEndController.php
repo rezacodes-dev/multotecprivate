@@ -3012,7 +3012,7 @@ $query = BrochureMaster::with([
         // $uniqueYear = array_unique( $yearArr );
         // $DataBag['yearList'] = $uniqueYear;
 
-        $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'ARTICLE')->first();
+        $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'Brochures')->first();
 
         $DataBag['page_metadata'] = $DataBag['extraContent'];
         // dd($DataBag['listData'] );
