@@ -465,7 +465,7 @@ a.filterbut {
             $type = $value->brochure_size ?? '';
             $typeSingle = str_replace(' ', '', trim($type)); // remove ALL spaces
 
-            $message = urlencode("Hello, please check this brochure: $brochureLink");
+            $message = urlencode("Here is a link to the Multotec brochure , which I thought you might find interesting: $brochureLink");
         @endphp
        
         <a href="https://wa.me/{{ env('WHATSAPP_NUMBER','') }}?text={{ $message }}" 
