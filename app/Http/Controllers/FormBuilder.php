@@ -807,7 +807,7 @@ class FormBuilder extends Controller
         return view('dashboard.FormBuilder.captcha_settings', $DataBag);
     }
 
-    public function formSubmitData(Request $request) {
+     public function formSubmitData(Request $request) {
         $postData = $request->all();
 
         // dd($postData);
@@ -847,7 +847,6 @@ class FormBuilder extends Controller
 
          
         // if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
-         if( !empty($postData)) {
             
             // $captcha = $postData['g-recaptcha-response'];
             // $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
@@ -931,7 +930,7 @@ class FormBuilder extends Controller
         $FrmData->ip_address = $request->ip();
         $res = $FrmData->save();
         $ipAddress=$request->ip();
-        }
+      //  }
 
 
         $source_typename='';
@@ -980,8 +979,7 @@ class FormBuilder extends Controller
             //  ->first();
 
  
-            //  if( $r[2]=='multotec.com' && !isset($hits->name)){
-       if (
+            if (
                 ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
                 && !isset($hits->name)
             ) {
@@ -1228,7 +1226,7 @@ $mailBODY = $formattedContent;
             //  $mailBODY .= 'IP = '.$ipAddress.'<br/>';
             //  $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
                 // dd($mailBODY);
-             //   echo html_entity_decode($mailBODY); die();
+           
                 //  $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","multotecwebenquiry@cubicice.com");
               
               if(!empty($request->selected_email)){
@@ -1292,11 +1290,65 @@ $mailBODY = $formattedContent;
     
 
                     try {
+    //   Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+    //                        //  $message->from($emailData['from_email'], $emailData['from_name']);
+    //                         $message->to($emailData['to_email'])->subject($emailData['subject']);
+    //                     });
+                      // $tempmailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com");
+                     //  $tempmailArr = array("tarryn@cubicice.com");
+                  //     $tempmailArr = array("syedalireza@karmicksolutions.com");
+                    
+
+                     //    foreach($tempmailArr as $temp){
+                        //  Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData,$temp) {
+                        //    //  $message->from($emailData['from_email'], $emailData['from_name']);
+                        //     $message->to($temp)->subject($emailData['subject']);
+                        // });
+
+                        Config::set('mail', [
+    'default' => 'smtp',
+
+    'mailers' => [
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.office365.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => 'NoReplyLeads@multotec.com',
+            'password' => '5h[7#q~IWj]9',
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
+    ],
+
+    'from' => [
+        'address' => 'NoReplyLeads@multotec.com',
+        'name' => 'Multotec',
+    ],
+]);
+
+// Mail::mailer('smtp')->send(
+//     'emails.accountVerification',
+//     ['emailData' => $emailData],
+//     function ($message) use ($emailData) {
+
+//         $message->from(
+//             'NoReplyLeads@multotec.com',
+//             'Multotec'
+//         );
+
+//         $message->to($emailData['to_email'])
+//                 ->subject($emailData['subject']);
+//     }
+// );
+
+                 //        }
+
                         // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
                         //    //  $message->from($emailData['from_email'], $emailData['from_name']);
                         //     $message->to($emailData['to_email'])->subject($emailData['subject']);
                         // });
-                      //   die();
+               
                         // If it reaches here, email was sent successfully.
                         // echo "Mail sent successfully.";
                     } catch (\Exception $e) { 
@@ -1307,7 +1359,7 @@ $mailBODY = $formattedContent;
 
                 }
 
-// die();
+
 
 
 $formattedContent = '';
@@ -1475,13 +1527,48 @@ A Multotec representative will contact you shortly.
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                 $senderEmailData['from_name'] = "Multotec";
 
-                      echo html_entity_decode($senderMailBODY); die();
-                // die();
+          
+              
                         //enable this on live data
-                    //    Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
-                    //          $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
-                    //         $message->to($senderEmailData['to_email'])->subject($senderEmailData['subject']);
-                    //     });
+    // Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
+    //                          $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
+    //                         $message->to($senderEmailData['to_email'])->subject($senderEmailData['subject']);
+    //                     });
+
+                     //    $tempmailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com");
+                        //  $tempmailArr = array("tarryn@cubicice.com");
+                    
+
+                        //  foreach($tempmailArr as $temp){
+                        // //    Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData,$temp) {
+                        // //      $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
+                        // //     $message->to($temp)->subject($senderEmailData['subject']);
+                        // // });
+                        //  }
+
+//                         $tempmailArr = array(
+//     "tarryn@cubicice.com"
+// );
+
+// foreach ($tempmailArr as $temp) {
+
+    // Mail::mailer('smtp')->send(
+    //     'emails.accountemail',
+    //     ['emailData' => $senderEmailData],
+    //     function ($message) use ($senderEmailData) {
+
+    //         $message->from(
+    //             $senderEmailData['from_email'],
+    //             $senderEmailData['from_name']
+    //         );
+
+    //         $message->to($senderEmailData['to_email'])
+    //                 ->subject($senderEmailData['subject']);
+    //     }
+    // );
+// }
+                    
+                      
             }
                 
 
