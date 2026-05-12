@@ -160,6 +160,7 @@ class ProductController extends Controller
     	$ProductCategories->parent_id = trim($request->input('parent_id'));
     	$ProductCategories->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
         $ProductCategories->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+        $ProductCategories->product_link = trim($request->input('product_link'));
     	$ProductCategories->created_by = Auth::user()->id;
         $ProductCategories->language_id = trim( $request->input('language_id') );
         $ProductCategories->insert_id = $insert_id;
@@ -304,7 +305,7 @@ class ProductController extends Controller
     /**** UPDATE PRODUCT CATEGORY ***/
 
     public function updateCategory(Request $request, $category_id) {
-
+       
         $language_id=$request->input('language_id');
         if($language_id!=1){
 
@@ -321,6 +322,7 @@ class ProductController extends Controller
             $ProductCategories->parent_id = trim($request->input('parent_id'));
             $ProductCategories->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
             $ProductCategories->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+            $ProductCategories->product_link = trim($request->input('product_link'));
             $ProductCategories->updated_by = Auth::user()->id;
     
             $ProductCategories->meta_title = trim($request->input('meta_title'));
@@ -416,6 +418,7 @@ class ProductController extends Controller
     	$ProductCategories->parent_id = trim($request->input('parent_id'));
     	$ProductCategories->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
         $ProductCategories->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+        $ProductCategories->product_link = trim($request->input('product_link'));
     	$ProductCategories->created_by = Auth::user()->id;
         $ProductCategories->language_id = trim( $request->input('language_id') );
         $ProductCategories->insert_id = $insert_id;
@@ -552,6 +555,7 @@ class ProductController extends Controller
     	$ProductCategories->parent_id = trim($request->input('parent_id'));
     	$ProductCategories->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
         $ProductCategories->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+        $ProductCategories->product_link = trim($request->input('product_link'));
     	$ProductCategories->updated_by = Auth::user()->id;
 
         $ProductCategories->meta_title = trim($request->input('meta_title'));
@@ -744,11 +748,13 @@ class ProductController extends Controller
         $Products = new Products;
     	$Products->name = trim( ucfirst($request->input('name')) );
         $Products->description = trim( $request->input('description') );
+        $Products->product_link = trim( $request->input('product_link') );
         $Products->insert_id = $insert_id;
     	$Products->slug = trim($request->input('slug'));
     	$Products->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
     	$Products->created_by = Auth::user()->id;
         $Products->language_id = trim( $request->input('language_id') );
+    
 
         $productImageJson = json_decode( trim( $request->input('main_image_infos') ) );
         $bannerCatImageJson = json_decode( trim( $request->input('banner_image_infos') ) );
@@ -864,6 +870,7 @@ class ProductController extends Controller
             $Products->insert_id = $insert_id;
             $Products->name = trim( ucfirst($request->input('name')) );
             $Products->description = trim( $request->input('description') );
+            $Products->product_link = trim( $request->input('product_link') );
             $Products->slug = trim($request->input('slug'));
             $Products->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
             $Products->updated_by = Auth::user()->id;
@@ -980,6 +987,7 @@ class ProductController extends Controller
         $parent_id= $product_id;
     	$Products->name = trim( ucfirst($request->input('name')) );
         $Products->description = trim( $request->input('description') );
+        $Products->product_link = trim( $request->input('product_link') );
         $Products->insert_id = $insert_id;
     	$Products->slug = trim($request->input('slug'));
     	$Products->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
@@ -1135,6 +1143,7 @@ class ProductController extends Controller
         $Products->insert_id = $insert_id;
     	$Products->name = trim( ucfirst($request->input('name')) );
         $Products->description = trim( $request->input('description') );
+         $Products->product_link = trim( $request->input('product_link') );
     	$Products->slug = trim($request->input('slug'));
     	$Products->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
     	$Products->updated_by = Auth::user()->id;

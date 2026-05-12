@@ -3,6 +3,14 @@
 
 
 @section('page_content')
+<style>
+    .open-email-modal {
+    cursor: pointer;
+}
+.fbg * {
+    color: #fff !important;
+}
+</style>
 
 @if( isset($allData) && !empty($allData) )
 
@@ -102,6 +110,50 @@
                                 <h1>{!! trim( html_entity_decode( $pgd->main_title, ENT_QUOTES ) ) !!}{{-- $pgd->main_title --}}<span>{!! trim( html_entity_decode( $pgd->sub_title, ENT_QUOTES ) ) !!}{{-- $pgd->sub_title --}}</span></h1>
                                 {!! getHtmlFormBySCODE( $pgd->main_content ) !!}
                             </div>
+                            <div class="modal fade" id="desktop_eform_modal_email" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2email">
+                          <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content modal-bacg">
+                              <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6 greenbg">
+                                        <div class="fbg">
+                                                                                                                                 <h3>Get in touch with Multotec</h3>
+                                                                                      <div class="frm-data-cbox">
+                                                                                              <p style="text-align:left; font-size:19px; padding-bottom:28px;"><span>Our engineers and metallurgists will help you process minerals faster and more efficiently.</span></p>
+
+<ul>
+	<li>
+	<p style="text-align:left;"><span style="font-size:21px; font-weight:500;">Full range of process equipment</span><br />
+	<span style="font-size:17px;">to optimise your mineral processing plant</span></p>
+	</li>
+	<li>
+	<p style="text-align:left"><span style="font-size:21px; font-weight:500;">Large stockholdings &amp; fast delivery</span><br />
+	<span style="font-size:17px;">of equipment and spares to support your plant </span></p>
+	</li>
+	<li>
+      <p style="text-align:left"><span style="font-size:21px; font-weight:500;">24-hour field services, </span><br />
+	<span style="font-size:17px;">technical and maintenance support</span></p>
+	</li>
+	<li>
+	<p style="text-align:left"><span style="font-size:21px; font-weight:500;">Metallurgical &amp; engineering support</span><br />
+	<span style="font-size:17px;">to optimise your process and plant</span></p>
+	</li>
+</ul>
+                                                                                          </div> 
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 dsk-modal-frm">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <div class="dsk-modal-frmright">
+                                            <h2 class="sph2">Need more info?<span>Contact Multotec</span></h2>
+                                            <div class='ar_frm_container' style='background-color:#eaeaea; color:#000000;'><form name='general' action='https://www.multotec.com/arindam-form-submit' method='post' class='ar_vali_class '  enctype='multipart/form-data' ><input type='hidden' name='receive_email[]' value='heathl@cubicice.com' /><input type='hidden' name='receive_email[]' value='KoenaL@multotec.com' /><input type='hidden' name='receive_email[]' value='AnnahV@multotec.com' /><input type='hidden' name='receive_email[]' value='VivienneM@multotec.com' /><input type='hidden' name='receive_email[]' value='tarryn@cubicice.com' /><input type='hidden' name='receive_email[]' value='heatherr@Multotec.com' /><div class='row fd_box' id='field_22'><div class='col-md-12 col-sm-12'><div class='form-group'><label>I want to enquire about :</label> <em>*</em> <select name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185' required class='form-control'  ><option value=''>I want to enquire about:</option><option value='1.-Mineral-processing-products-and-services'>1. Mineral processing products and services</option><option value='2.-Job-applications'>2. Job applications</option><option value='3.-Training-Opportunities'>3. Training Opportunities</option><option value='4.-Other'>4. Other</option></select><div id='ed_action_box_22'></div></div></div></div><div class='row fd_box' id='field_24'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Country :</label> <em>*</em> <select name='country_bdf6b0663c3d12b26de9d64a0331d39f' required class='form-control'  ><option value=''>Select Country</option><option value='USA'>USA</option></select><div id='ed_action_box_24'></div></div></div></div><div class='row fd_box' id='field_16'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Name :</label> <em>*</em> <input type='text' name='name-full_e07b31bd420ff4b70e17fe441e78461b' placeholder='Name' required class='form-control'  /><div id='ed_action_box_16'></div></div></div></div><div class='row fd_box' id='field_3'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Your Email-id :</label> <em>*</em> <input type='email' name='email_61226fd4585429e623016599e6fb44e1' placeholder='Email:' required class='form-control'  /><div id='ed_action_box_3'></div></div></div></div><div class='row fd_box' id='field_4'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Phone Number :</label> <em>*</em> <input type='text' name='contactno_07351a4ae50ef96a1c50a5cc650473f3' placeholder='Phone:' required class='form-control onlyPHNO'  /><div id='ed_action_box_4'></div></div></div></div><div class='row fd_box' id='field_17'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Company :</label> <em>*</em> <input type='text' name='company_8d9f1569b3d5a8fba1a5463bc280b601' placeholder='Company' required class='form-control'  /><div id='ed_action_box_17'></div></div></div></div><div class='row fd_box' id='field_5'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Your Requirements :</label> <textarea name='requirements_8fa7670f330845d9f75c72ef098ad774' placeholder='What equipment or solutions does your mineral processing operation require from Multotec?' class='form-control'  ></textarea><div id='ed_action_box_5'></div></div></div></div><div class='row fd_box' id='field_19'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Acceptance Info :</label> <br/><p style='font-size:13px!important; '  ><input type='checkbox'  name='terms_f1b78704ea2449a379eaaf6c129751cb[]'  class='ar-ckb'  value='I-agree-to-receive-Multotec-training-and-event-info'  > I agree to receive Multotec training and event info</p> <div id='ed_action_box_19'></div></div></div></div><div class='row fd_box' id='field_6'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Upload :</label> <label class='custom-file-upload'><i class='fa fa-upload' aria-hidden='true'></i> Upload supporting documents (optional)<input type='file' name='upload_fba14c8b01e43a8e2c25745ee78746df'  style='display:none;' /></label><div id='ed_action_box_6'></div></div></div></div><div class='form-group'><div class='g-recaptcha mt5 mb5' data-sitekey='6LfRP74UAAAAAB3GY81dorfwC6HLGoNyG69DUI8n'></div></div><div class='ar-captcha-vali'></div><div class='row fd_box btnf' id='field_1'><div class='col-md-12 col-sm-12'><div class='form-group'><input type='submit' name='ok_d5d8517aae26dc072e04284ffdd0d267' value='Request a quote' class='submit-btn' style=''  /><div id='ed_action_box_1'></div></div></div></div><input type='hidden' name='referral' id='referral'><input type='hidden' name='ar_frm_id' value='d5d8517aae26dc072e04284ffdd0d267'><input type='hidden' name='thankyou_url' value='https://www.multotec.com/en/thank-you-for-contacting-multotec'></form></div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>   
                             <a href="javascript:void(0);" class="mob-frm-sbt" data-toggle="modal" data-target="#eform_modal">Submit & Enquiry</a>
                             <div class="modal fade" id="eform_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document">
@@ -120,6 +172,30 @@
                 @endforeach
             @endif
         </div>
+
+           {{-- expanded form --}}
+                        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
 </div>
 </section>
@@ -665,144 +741,13 @@ function initMap() {
 //     }
 // });
 
-// $(document).ready(function () {
-//     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'] option[value='']").attr("disabled", "disabled");
-
-//     // Hide all fields by default on page load
-//     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']").each(function () {
-//         var container = $(this).closest('.form, .modal'); // Adjust for context (main div or modal)
-//         container.find('#box2').next('div').show();
-//         // Hide all fields initially within the specific container
-//         // container.find('#field_16').hide();
-//         // container.find('#field_23').hide();
-//         // container.find('#field_3').hide();
-//         // container.find('#field_4').hide();
-//         // container.find('#field_17').hide();
-//         // container.find('#field_5').hide();
-//         // container.find('#field_19').hide();
-//         // container.find('#field_24').hide();
-//         // container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//         // container.find('#box2').next('div').hide();
-//         // container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//         // container.find('.custom-file-upload').css('display', 'none');
-//     });
-
-//     // Handle change events for the select element
-//     $(document).on('change', "select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']", function () {
-//         // Remove the option with an empty value
-//         // $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'] option[value='']").remove();
-//         toggleFieldsBasedOnSelection();
-//     });
-
-//     // Call toggle function to handle default selection
-//     toggleFieldsBasedOnSelection();
-
-//     // Function to toggle the visibility of fields based on the selected option
-//     function toggleFieldsBasedOnSelection() {
-//         $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']").each(function () {
-//             var selectedOption = $(this).val();
-//             var container = $(this).closest('.form, .modal'); // Adjust for context (main div or modal)
-            
-
-//             // Hide all fields initially within the specific container
-//             // container.find('#field_16').hide();
-//             // container.find('#field_23').hide();
-//             // container.find('#field_3').hide();
-//             // container.find('#field_4').hide();
-//             // container.find('#field_17').hide();
-//             // container.find('#field_5').hide();
-//             // container.find('#field_19').hide();
-//             // container.find('#field_24').hide();
-//             // container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//             // container.find('#box2').next('div').hide();
-//             // container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//             // container.find('.custom-file-upload').css('display', 'none');
-
-//             // Logic for specific selections
-//             if (selectedOption === '1.-Mineral-processing-products-and-services') {
-//                 container.find('#field_16').show();
-//                 container.find('#field_23').show();
-//                 container.find('#field_3').show();
-//                 container.find('#field_4').show();
-//                 container.find('#field_17').show();
-//                 container.find('#field_5').show();
-//                 container.find('#field_24').show();
-//                 container.find('.custom-file-upload').css('display', 'block');
-//                 container.find('#field_19').show();
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').val('Request a quote');
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'block');
-//                 container.find('#box1').hide();
-//                 container.find('#box2').hide();
-//                 container.find('#box2').next('div').show();
-//                 $('.g-recaptcha').css('display','block');
-//             } 
-//             else if (selectedOption === '4.-Other') {
-//                 container.find('#field_16').show();
-//                 container.find('#field_23').show();
-//                 container.find('#field_3').show();
-//                 container.find('#field_4').show();
-//                 container.find('#field_17').show();
-//                 container.find('#field_5').show();
-//                 container.find('#field_24').show();
-//                 container.find('.custom-file-upload').css('display', 'block');
-//                 container.find('#field_19').show();
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').val('Submit Enquiry');
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'block');
-//                 container.find('#box1').hide();
-//                 container.find('#box2').hide();
-//                 container.find('#box2').next('div').show();
-//                 $('.g-recaptcha').css('display','block');
-//             } else if (selectedOption === '2.-Job-applications') {
-//               //  container.find('#field_19').show();
-//               container.find('#field_16').hide();
-//             container.find('#field_23').hide();
-//             container.find('#field_3').hide();
-//             container.find('#field_4').hide();
-//             container.find('#field_17').hide();
-//             container.find('#field_5').hide();
-//             container.find('#field_19').hide();
-//             container.find('#field_24').hide();
-//             container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//             container.find('#box2').next('div').hide();
-//             container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//             container.find('.custom-file-upload').css('display', 'none');
-//             $('.g-recaptcha').hide()
-//                 container.find('#box2').next('div').hide();
-//                 window.open("https://www.careers24.com/now-hiring/9744-multotec-pty-ltd/", "_blank");
-//             } else if (selectedOption === '3.-Training-Opportunities') {
-//                   container.find('#field_16').hide();
-//             container.find('#field_23').hide();
-//             container.find('#field_3').hide();
-//             container.find('#field_4').hide();
-//             container.find('#field_17').hide();
-//             container.find('#field_5').hide();
-//             container.find('#field_19').hide();
-//             container.find('#field_24').hide();
-//             container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//             container.find('#box2').next('div').hide();
-//             container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//             container.find('.custom-file-upload').css('display', 'none');
-//             $('.g-recaptcha').hide()
-//                 container.find('#box2').next('div').hide();
-//                 window.open("https://www.multotec.com/en/training", "_blank");
-//             } else {
-//                 container.find('#field_19').hide();
-//                 container.find('#box2').next('div').hide();
-//             }
-//         });
-//     }
-// });
-
-
 $(document).ready(function () {
-    $('#field_18').hide();
-
     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'] option[value='']").attr("disabled", "disabled");
 
     // Hide all fields by default on page load
     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']").each(function () {
         var container = $(this).closest('.form, .modal'); // Adjust for context (main div or modal)
-        container.find('#box2').next('div').show();
+        
         // Hide all fields initially within the specific container
         // container.find('#field_16').hide();
         // container.find('#field_23').hide();
@@ -886,7 +831,6 @@ $(document).ready(function () {
             } else if (selectedOption === '2.-Job-applications') {
               //  container.find('#field_19').show();
               container.find('#field_16').hide();
-              container.find('#field_18').hide();
             container.find('#field_23').hide();
             container.find('#field_3').hide();
             container.find('#field_4').hide();
@@ -903,7 +847,6 @@ $(document).ready(function () {
                 window.open("https://www.careers24.com/now-hiring/9744-multotec-pty-ltd/", "_blank");
             } else if (selectedOption === '3.-Training-Opportunities') {
                   container.find('#field_16').hide();
-                  container.find('#field_18').hide();
             container.find('#field_23').hide();
             container.find('#field_3').hide();
             container.find('#field_4').hide();
@@ -919,8 +862,8 @@ $(document).ready(function () {
                 container.find('#box2').next('div').hide();
                 window.open("https://www.multotec.com/en/training", "_blank");
             } else {
-               // container.find('#field_19').hide();
-              //  container.find('#box2').next('div').show();
+                container.find('#field_19').hide();
+                container.find('#box2').next('div').hide();
             }
         });
     }
@@ -949,6 +892,292 @@ $('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').on('click', function(even
 
 
 </script> -->
+
+<script>
+// $(document).on('click', '#firstBlock a[href], .open-email-modal', function (e) {
+
+//     e.preventDefault();
+
+//     // fetch ONLY visible anchor text
+//     let email = $.trim($(this).text());
+
+//     // fallback if text empty
+//     if (email === '') {
+
+//         email = $(this).data('email') || '';
+//     }
+
+//     // fetch country
+//     let countryName = `{{ trim($country ?? '') }}`;
+//     let countryAlt = `{{ trim($country_alt ?? '') }}`;
+
+//     // modal
+//     let modal = $('#desktop_eform_modal_email');
+
+//     // form
+//     let form = modal.children().find('form').first();
+
+//     // hidden email field
+//     let hiddenInput = form.find('input[name="selected_email"]');
+
+//     if (hiddenInput.length === 0) {
+
+//         $('<input>', {
+//             type: 'hidden',
+//             name: 'selected_email',
+//             value: email
+//         }).appendTo(form);
+
+//     } else {
+
+//         hiddenInput.val(email);
+//     }
+
+//     // country select
+//     let countrySelect = form.find(
+//         'select[name="country_bdf6b0663c3d12b26de9d64a0331d39f"]'
+//     ).first();
+
+//     // clear previous selection
+//     countrySelect.val('');
+
+//     let matchedOption = null;
+
+//     /*
+//     |--------------------------------------------------------------------------
+//     | Try matching using existing blade variables
+//     |--------------------------------------------------------------------------
+//     */
+
+//     // first try main country
+//     if (countryName !== '') {
+
+//         matchedOption = countrySelect.find('option').filter(function () {
+
+//             return $.trim($(this).text()).toLowerCase() === countryName.toLowerCase();
+
+//         });
+
+//     }
+
+//     // if no match then try alt country
+//     if ((!matchedOption || matchedOption.length === 0) && countryAlt !== '') {
+
+//         matchedOption = countrySelect.find('option').filter(function () {
+
+//             return $.trim($(this).text()).toLowerCase() === countryAlt.toLowerCase();
+
+//         });
+
+//     }
+
+//     /*
+//     |--------------------------------------------------------------------------
+//     | If still not matched -> fetch from map lat/lng
+//     |--------------------------------------------------------------------------
+//     */
+
+//     if ((!matchedOption || matchedOption.length === 0)
+//         && $('#mLat').length
+//         && $('#mLng').length
+//     ) {
+
+//         let getMLat = $('#mLat').val();
+//         let getMLng = $('#mLng').val();
+
+//         if (getMLat !== '' && getMLng !== '') {
+
+//             let geocoder = new google.maps.Geocoder();
+
+//             let latlng = {
+//                 lat: parseFloat(getMLat),
+//                 lng: parseFloat(getMLng)
+//             };
+
+//             geocoder.geocode({ location: latlng }, function(results, status) {
+
+//                 if (status === "OK" && results[0]) {
+
+//                     let detectedCountry = '';
+
+//                     results[0].address_components.forEach(function(component) {
+
+//                         if (component.types.includes('country')) {
+
+//                             detectedCountry = component.long_name;
+//                         }
+
+//                     });
+
+//                     if (detectedCountry !== '') {
+
+//                         let geoMatchedOption = countrySelect.find('option').filter(function () {
+
+//                             return $.trim($(this).text()).toLowerCase() === detectedCountry.toLowerCase();
+
+//                         });
+
+//                         if (geoMatchedOption.length) {
+
+//                             countrySelect.val(geoMatchedOption.val());
+//                             countrySelect.trigger('change');
+//                         }
+//                     }
+
+//                     modal.modal('show');
+
+//                 } else {
+
+//                     modal.modal('show');
+//                 }
+
+//             });
+
+//             return;
+//         }
+//     }
+
+//     /*
+//     |--------------------------------------------------------------------------
+//     | Existing match found
+//     |--------------------------------------------------------------------------
+//     */
+
+//     if (matchedOption && matchedOption.length) {
+
+//         countrySelect.val(matchedOption.val());
+//     }
+
+//     // trigger select change
+//     countrySelect.trigger('change');
+
+//     // show modal
+//     modal.modal('show');
+
+// });
+
+$(document).on('click', '#firstBlock a[href], .open-email-modal', function (e) {
+
+    e.preventDefault();
+
+    // fetch ONLY visible anchor text
+    let email = $.trim($(this).text());
+
+    // fallback if text empty
+    if (email === '') {
+
+        email = $(this).data('email') || '';
+    }
+
+    // modal
+    let modal = $('#desktop_eform_modal_email');
+
+    // form
+    let form = modal.children().find('form').first();
+
+    // hidden email field
+    let hiddenInput = form.find('input[name="selected_email"]');
+
+    if (hiddenInput.length === 0) {
+
+        $('<input>', {
+            type: 'hidden',
+            name: 'selected_email',
+            value: email
+        }).appendTo(form);
+
+    } else {
+
+        hiddenInput.val(email);
+    }
+
+    // country select
+    let countrySelect = form.find(
+        'select[name="country_bdf6b0663c3d12b26de9d64a0331d39f"]'
+    ).first();
+
+    // clear previous selection
+    countrySelect.val('');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fetch country using latitude / longitude
+    |--------------------------------------------------------------------------
+    */
+
+    if ($('#mLat').length && $('#mLng').length) {
+
+        let getMLat = $('#mLat').val();
+        let getMLng = $('#mLng').val();
+
+        if (getMLat !== '' && getMLng !== '') {
+
+            let geocoder = new google.maps.Geocoder();
+
+            let latlng = {
+                lat: parseFloat(getMLat),
+                lng: parseFloat(getMLng)
+            };
+
+            geocoder.geocode({ location: latlng }, function(results, status) {
+
+                if (status === "OK" && results[0]) {
+
+                    let detectedCountry = '';
+
+                    results[0].address_components.forEach(function(component) {
+
+                        if (component.types.includes('country')) {
+
+                            detectedCountry = component.long_name;
+                        }
+
+                    });
+
+                    if (detectedCountry !== '') {
+
+                        let matchedOption = countrySelect.find('option').filter(function () {
+
+                            return $.trim($(this).text()).toLowerCase() === detectedCountry.toLowerCase();
+
+                        });
+
+                        if (matchedOption.length) {
+
+                            countrySelect.val(matchedOption.val());
+                            countrySelect.trigger('change');
+                        }
+                    }
+                }
+
+                modal.modal('show');
+
+            });
+
+            return;
+        }
+    }
+
+    // show modal fallback
+    modal.modal('show');
+
+});
+</script>
+
+<script>
+$(document).ready(function () {
+
+    $('#desktop_eform_modal_email').on('hidden.bs.modal', function () {
+
+        let form = $(this).children().find('form').first();
+
+        // completely remove hidden field
+        form.find('input[name="selected_email"]').remove();
+
+    });
+
+});
+</script>
 @endpush
 
     

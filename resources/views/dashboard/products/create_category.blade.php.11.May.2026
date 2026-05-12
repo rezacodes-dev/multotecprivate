@@ -37,7 +37,7 @@
     <div class="col-md-6">
       <a href="{{ route('prodCats') }}" class="btn btn-primary"> All Categories</a>
       @if(isset($prodCat) && $prodCat->is_duplicate == '0')
- <a href="{{ url('en/' . $prodCat->slug) }}" target="_blank" class="btn btn-primary">
+      <a href="{{ url('en/' . $prodCat->slug) }}" target="_blank" class="btn btn-primary">
     View Page
 </a>
       @endif
@@ -126,11 +126,6 @@
                 <label>Short Description :</label>
                 <textarea name="description" class="form-control">@if( isset($prodCat) ){{ html_entity_decode($prodCat->description, ENT_QUOTES) }}@endif</textarea>
               </div>
-
-               <div class="form-group">
-                <label>Brochure Link : </label>
-                <input type="text" name="product_link" id="product_link" class="form-control" placeholder="Enter Page URL" value="@if( isset($prodCat) ){{ $prodCat->product_link??'' }}@endif">
-               </div>
 
               <div class="form-group">
                 <label>Any Parent Category :</label>

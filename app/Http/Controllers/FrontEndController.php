@@ -2140,7 +2140,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
     }
 
     public function distributor($lng, $cat_slug, $distbr_slug)
-    {
+    { 
         // dd($distbr_slug);
         // if ($distbr_slug === 'multotec-chile') {
         //     return redirect()->route('distributorChile', [
@@ -2169,6 +2169,8 @@ $DataBag['map'] = \App\Models\HomeMap::first();
         $DataBag['allData'] = $data;
 
         $DataBag['page_metadata'] = $DataBag['allData'];
+        $DataBag['country'] = $distbr_slug??'';
+        $DataBag['country_alt'] = $cont_slug??'';
 
         return view('front_end.distributor.distributor', $DataBag);
     }
@@ -2204,7 +2206,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
     public function distributorContent($lng, $cat_slug, $distbr_slug, $cont_slug)
     {
-
+     
         $DataBag = array();
 
         $device = 1;
@@ -2220,8 +2222,11 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
         $data = \App\Models\Distributor\DistributorContents::with(['pageBuilderContent'])
             ->where('language_id', '=', $getlngid)->where('slug', '=', $cont_slug)->where('status', '=', '1')->first();
-
+      //  dd($data);
         $DataBag['allData'] = $data;
+
+        $DataBag['country'] = $distbr_slug??'';
+        $DataBag['country_alt'] = $cont_slug??'';
 
         $DataBag['page_metadata'] = $DataBag['allData'];
 
@@ -3147,10 +3152,10 @@ $query = BrochureMaster::with([
         ];
      //    echo html_entity_decode($mailBODY); die;
         // Send email
-        Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-            $message->from($emailData['from_email'], $emailData['from_name']);
-            $message->to($emailData['to_email'])->subject($emailData['subject']);
-        });
+        // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+        //     $message->from($emailData['from_email'], $emailData['from_name']);
+        //     $message->to($emailData['to_email'])->subject($emailData['subject']);
+        // });
     
         // JSON response for AJAX
         return response()->json([

@@ -119,6 +119,11 @@
                 <textarea name="description" class="form-control" placeholder="Enter Sort Description">@if( isset($dynaContent) ){{ $dynaContent->description }}@endif</textarea>
               </div>
 
+                <div class="form-group">
+                <label>Brochure Link : </label>
+                <input type="text" name="product_link" id="product_link" class="form-control" placeholder="Enter Page URL" value="@if( isset($dynaContent) ){{ $dynaContent->product_link??'' }}@endif">
+               </div>
+
               <div class="form-group">
                 <label>Page Display Layout :</label>
                 <input type="checkbox" name="is_full_width" value="1" @if( isset($dynaContent) && $dynaContent->is_full_width == '1') checked="checked" @endif>

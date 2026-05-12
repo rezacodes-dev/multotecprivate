@@ -19,6 +19,54 @@ now create new controller FrontEndController2
 logic is -> check lng tag is 'en' or not into your current FrontEndController. 
 if en then redirect to FrontEndController2 (where no lng slug)
 **/
+// Route::get('/clear-all-cache', function () {
+
+//     Artisan::call('view:clear');
+//     Artisan::call('cache:clear');
+//     Artisan::call('config:clear');
+//     Artisan::call('route:clear');
+
+//     return "All caches cleared";
+// });
+// Route::get('/clear-cache', function () {
+
+//     Artisan::call('optimize:clear');
+
+//     return "Application cache cleared successfully.";
+// });
+// Route::get('/run-brochure-sql', function () {
+
+//     DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+//     $sql = file_get_contents(public_path('brochure.sql'));
+
+//     // Fix invalid timestamps automatically
+//     $sql = str_replace(
+//         [
+//             "timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp()",
+//             "timestamp NOT NULL",
+//             "timestamp NULL DEFAULT current_timestamp()",
+//             "timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()"
+//         ],
+//         [
+//             "timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+//             "timestamp NULL DEFAULT CURRENT_TIMESTAMP",
+//             "timestamp NULL DEFAULT CURRENT_TIMESTAMP",
+//             "timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+//         ],
+//         $sql
+//     );
+
+//     DB::unprepared($sql);
+
+//     DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+//     return response()->json([
+//         'status' => true,
+//         'message' => 'All brochure SQL executed successfully'
+//     ]);
+
+// });
 // Route::get('/truncate-brochure-tables', function () {
 
 //     DB::statement('SET FOREIGN_KEY_CHECKS=0;');
