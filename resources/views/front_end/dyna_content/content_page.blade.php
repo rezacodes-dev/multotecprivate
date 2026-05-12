@@ -17,6 +17,7 @@
 @php
     $banner = getContentBanner($allData->content_type_id);
 @endphp
+
 @if( isset($banner) && !empty($banner) )
 <section class="innerpage-banner">
     <img src="{{ asset('public/uploads/files/media_images/'. $banner['image']) }}" alt="{{$banner['alt_tag']}}" 
@@ -112,8 +113,8 @@
                                     <div class="col-md-6 dsk-modal-frm">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                         <div class="dsk-modal-frmright">
-                                            <h2 class="sph2">{{ $pgd->main_title }}<span>{{ $pgd->sub_title }}</span></h2>
-                                            {!! getHtmlFormBySCODE( $pgd->main_content ) !!}
+                                            <h2 class="sph2">{{ $pgd->main_title??'' }}<span>{{ $pgd->sub_title??'' }}</span></h2>
+                                            {!! getHtmlFormBySCODE( $pgd->main_content??'' ) !!}
                                         </div>
                                     </div>
                                 </div>
