@@ -80,19 +80,7 @@
     @if( $allData->is_full_width != '1' )
     <div class="col-sm-4">
         <div class="rightpanel">
-            <!-- Loop -->
-            @if( isset($allData->pageBuilderContent) && !empty($allData->pageBuilderContent) && isset($device) )
-                @foreach( $allData->pageBuilderContent as $pgd )
-                    
-                    <!-- Eform -->
-                    @if( $pgd->builder_type == 'EFORM' && $pgd->position == 'RIGHT' )
-                        
-                        @if( $device == '1' ) <!-- Device Checking -->
-                        <div class="sidebar_block form" id="EFORM">
-                            <h1>{{ $pgd->main_title }}<span>{!! $pgd->sub_title !!}</span></h1>
-                            {!! getHtmlFormBySCODE( $pgd->main_content ) !!}
-                        </div>
-                        <!-- For Desktop Popup -->
+          <!-- For Desktop Popup -->
                         <div class="modal fade" id="desktop_eform_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
                           <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content modal-bacg">
@@ -125,6 +113,19 @@
                             </div>
                           </div>
                         </div>
+            <!-- Loop -->
+            @if( isset($allData->pageBuilderContent) && !empty($allData->pageBuilderContent) && isset($device) )
+                @foreach( $allData->pageBuilderContent as $pgd )
+                    
+                    <!-- Eform -->
+                    @if( $pgd->builder_type == 'EFORM' && $pgd->position == 'RIGHT' )
+                        
+                        @if( $device == '1' ) <!-- Device Checking -->
+                        <div class="sidebar_block form" id="EFORM">
+                            <h1>{{ $pgd->main_title }}<span>{!! $pgd->sub_title !!}</span></h1>
+                            {!! getHtmlFormBySCODE( $pgd->main_content ) !!}
+                        </div>
+                      
                      
 
 
@@ -230,6 +231,58 @@
                         @endif
 
                         @if( $device == '2' ) <!-- Device Checking -->
+                      
+                      
+                      
+                         <div class="modal fade" id="desktop_eform_modal_email" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2email">
+                          <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content modal-bacg">
+                              <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6 greenbg">
+                                        <div class="fbg">
+                                                                                                                                 <h3>Get in touch with Multotec</h3>
+                                                                                      <div class="frm-data-cbox">
+                                                                                              <p style="text-align:left; font-size:19px; padding-bottom:28px;"><span>Our engineers and metallurgists will help you process minerals faster and more efficiently.</span></p>
+
+<ul>
+	<li>
+	<p style="text-align:left;"><span style="font-size:21px; font-weight:500;">Full range of process equipment</span><br />
+	<span style="font-size:17px;">to optimise your mineral processing plant</span></p>
+	</li>
+	<li>
+	<p style="text-align:left"><span style="font-size:21px; font-weight:500;">Large stockholdings &amp; fast delivery</span><br />
+	<span style="font-size:17px;">of equipment and spares to support your plant </span></p>
+	</li>
+	<li>
+      <p style="text-align:left"><span style="font-size:21px; font-weight:500;">24-hour field services, </span><br />
+	<span style="font-size:17px;">technical and maintenance support</span></p>
+	</li>
+	<li>
+	<p style="text-align:left"><span style="font-size:21px; font-weight:500;">Metallurgical &amp; engineering support</span><br />
+	<span style="font-size:17px;">to optimise your process and plant</span></p>
+	</li>
+</ul>
+                                                                                          </div> 
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 dsk-modal-frm">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <div class="dsk-modal-frmright">
+                                            <h2 class="sph2">Need more info?<span>Contact Multotec</span></h2>
+                                            <div class='ar_frm_container' style='background-color:#eaeaea; color:#000000;'><form name='general' action='https://www.multotec.icedev.co.za/arindam-form-submit' method='post' class='ar_vali_class '  enctype='multipart/form-data' ><input type='hidden' name='receive_email[]' value='heathl@cubicice.com' /><input type='hidden' name='receive_email[]' value='KoenaL@multotec.com' /><input type='hidden' name='receive_email[]' value='AnnahV@multotec.com' /><input type='hidden' name='receive_email[]' value='VivienneM@multotec.com' /><input type='hidden' name='receive_email[]' value='tarryn@cubicice.com' /><input type='hidden' name='receive_email[]' value='heatherr@Multotec.com' /><div class='row fd_box' id='field_22'><div class='col-md-12 col-sm-12'><div class='form-group'><label>I want to enquire about :</label> <em>*</em> <select name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185' required class='form-control'  ><option value=''>I want to enquire about:</option><option value='1.-Mineral-processing-products-and-services'>1. Mineral processing products and services</option><option value='2.-Job-applications'>2. Job applications</option><option value='3.-Training-Opportunities'>3. Training Opportunities</option><option value='4.-Other'>4. Other</option></select><div id='ed_action_box_22'></div></div></div></div><div class='row fd_box' id='field_24'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Country :</label> <em>*</em> <select name='country_bdf6b0663c3d12b26de9d64a0331d39f' required class='form-control'  ><option value=''>Select Country</option><option value='USA'>USA</option></select><div id='ed_action_box_24'></div></div></div></div><div class='row fd_box' id='field_16'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Name :</label> <em>*</em> <input type='text' name='name-full_e07b31bd420ff4b70e17fe441e78461b' placeholder='Name' required class='form-control'  /><div id='ed_action_box_16'></div></div></div></div><div class='row fd_box' id='field_3'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Your Email-id :</label> <em>*</em> <input type='email' name='email_61226fd4585429e623016599e6fb44e1' placeholder='Email:' required class='form-control'  /><div id='ed_action_box_3'></div></div></div></div><div class='row fd_box' id='field_4'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Phone Number :</label> <em>*</em> <input type='text' name='contactno_07351a4ae50ef96a1c50a5cc650473f3' placeholder='Phone:' required class='form-control onlyPHNO'  /><div id='ed_action_box_4'></div></div></div></div><div class='row fd_box' id='field_17'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Company :</label> <em>*</em> <input type='text' name='company_8d9f1569b3d5a8fba1a5463bc280b601' placeholder='Company' required class='form-control'  /><div id='ed_action_box_17'></div></div></div></div><div class='row fd_box' id='field_5'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Your Requirements :</label> <textarea name='requirements_8fa7670f330845d9f75c72ef098ad774' placeholder='What equipment or solutions does your mineral processing operation require from Multotec?' class='form-control'  ></textarea><div id='ed_action_box_5'></div></div></div></div><div class='row fd_box' id='field_19'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Acceptance Info :</label> <br/><p style='font-size:13px!important; '  ><input type='checkbox'  name='terms_f1b78704ea2449a379eaaf6c129751cb[]'  class='ar-ckb'  value='I-agree-to-receive-Multotec-training-and-event-info'  > I agree to receive Multotec training and event info</p> <div id='ed_action_box_19'></div></div></div></div><div class='row fd_box' id='field_6'><div class='col-md-12 col-sm-12'><div class='form-group'><label>Upload :</label> <label class='custom-file-upload'><i class='fa fa-upload' aria-hidden='true'></i> Upload supporting documents (optional)<input type='file' name='upload_fba14c8b01e43a8e2c25745ee78746df'  style='display:none;' /></label><div id='ed_action_box_6'></div></div></div></div><div class='form-group'><div class='g-recaptcha mt5 mb5' data-sitekey='6LfRP74UAAAAAB3GY81dorfwC6HLGoNyG69DUI8n'></div></div><div class='ar-captcha-vali'></div><div class='row fd_box btnf' id='field_1'><div class='col-md-12 col-sm-12'><div class='form-group'><input type='submit' name='ok_d5d8517aae26dc072e04284ffdd0d267' value='Request a quote' class='submit-btn' style=''  /><div id='ed_action_box_1'></div></div></div></div><input type='hidden' name='referral' id='referral'><input type='hidden' name='ar_frm_id' value='d5d8517aae26dc072e04284ffdd0d267'><input type='hidden' name='thankyou_url' value='https://www.multotec.com/en/thank-you-for-contacting-multotec'></form></div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>    
+                      
+                      
+                      
+                      
+                      
                         <a href="javascript:void(0);" class="mob-frm-sbt" data-toggle="modal" data-target="#eform_modal">Submit & Enquiry</a>
                         <div class="modal fade" id="eform_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                           <div class="modal-dialog" role="document">
@@ -242,6 +295,7 @@
                             </div>
                           </div>
                         </div>
+                        
                         @endif
 
                     @endif

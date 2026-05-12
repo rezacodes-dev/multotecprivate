@@ -980,9 +980,13 @@ class FormBuilder extends Controller
             //  ->first();
 
  
-             if( $r[2]=='multotec.com' && !isset($hits->name)){
-                $source_typename='Direct';
-             }
+            //  if( $r[2]=='multotec.com' && !isset($hits->name)){
+       if (
+                ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
+                && !isset($hits->name)
+            ) {
+                $source_typename = 'Direct';
+            }
  
            }
  
@@ -1065,24 +1069,17 @@ class FormBuilder extends Controller
                             }
                             $mailBODY .= '<br/>';
                               // ADD THIS ONLY
-            // $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
-            // $mailBODY .= 'IP = '.$ipAddress.'<br/>';
-            // $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
+           
 
- 
-            // if($source_typename!=''){
-            //     $mailBODY .= 'Traffic Source = '.$source_typename.'<br/>';
-            // }
+                  if($k1 == 'country_9c62720c1b8b66770b57067db53705ce'){
+                        //   $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
+                        //     $mailBODY .= 'IP = '.$ipAddress.'<br/>';
+                        //     $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
 
-               if($k1 == 'country_9c62720c1b8b66770b57067db53705ce'){
-    //   $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
-    //     $mailBODY .= 'IP = '.$ipAddress.'<br/>';
-    //     $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
-
-    //     if($source_typename!=''){
-    //         $mailBODY .= 'Traffic Source = '.$source_typename.'<br/>';
-    //     }
-    }
+                        //     if($source_typename!=''){
+                        //         $mailBODY .= 'Traffic Source = '.$source_typename.'<br/>';
+                        //     }
+                        }
                         }
 
                     }
@@ -1097,6 +1094,117 @@ class FormBuilder extends Controller
         }
 
                  $enquiryContent = $mailBODY;
+
+
+                 // display order
+$fieldOrder = [
+    'Enquiry Option',
+    'Name',
+    'Email',
+    'Country',
+    'Contact No',
+    'Company',
+    'Enquiry ID',
+    'Requirements',
+    'Upload'
+];
+
+
+
+// custom labels
+$customLabels = [
+    'Enquiry Option' => 'Enquiry Option',
+    'Country' => 'Country',
+    'Name' => 'Full Name',
+    'Email' => 'Email Address',
+    'Contact No' => 'Contact Number',
+    'Company' => 'Company Name',
+    'Requirements' => 'Requirements',
+    'Terms' => 'Terms & Conditions',
+    'Upload' => 'Uploaded File',
+    'Enquiry ID' => 'Enquiry ID',
+    'IP' => 'IP Address',
+    'Referral Url' => 'Referral URL',
+    'Traffic Source' => 'Traffic Source'
+];
+
+preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
+
+$tempData = [];
+$formattedContent = '';
+
+foreach ($matches as $match) {
+
+    $key = trim($match[1]);
+    $value = trim($match[2]);
+
+    if ($key == 'Referral' && empty(trim($value))) {
+        continue;
+    }
+
+    $tempData[$key] = $value;
+}
+
+// ordered fields
+foreach ($fieldOrder as $field) {
+
+    if (isset($tempData[$field])) {
+
+        $value = $tempData[$field];
+
+        if ($field == 'Upload' && !empty($value)) {
+
+            $value = '<a href="'.$value.'" target="_blank" style="word-break:break-all;">'.$value.'</a>';
+        }
+
+        if ($field == 'Requirements') {
+
+            $formattedContent .= '
+            <div style="margin-bottom:8px;">
+                •&emsp;&emsp;<strong>'.($customLabels[$field] ?? $field).'</strong>: 
+                <span style="word-break:break-word;">
+                    '.$value.'
+                </span>
+            </div>';
+
+        } else {
+
+            $formattedContent .= '•&emsp;&emsp;<strong>'.($customLabels[$field] ?? $field).'</strong>: '.$value.'<br/>';
+        }
+
+        unset($tempData[$field]);
+    }
+}
+
+// remaining fields except bottom fields
+foreach ($tempData as $key => $value) {
+
+   
+
+        $formattedContent .= '•&emsp;&emsp;<strong>'.($customLabels[$key] ?? $key).'</strong>: '.$value.'<br/>';
+
+        unset($tempData[$key]);
+    
+}
+
+// footer
+$formattedContent .= '
+
+<div style="margin-top:10px; line-height:1.5;">
+    <p style="margin:0 0 6px 0;">
+        If you have any questions, contact us at 
+        <a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.
+    </p>
+
+    <p style="margin:0;">
+        Thanks & Regards<br/>
+        Multotec
+    </p>
+</div><br/>';
+
+
+
+$mailBODY = $formattedContent;
                // $mailBODY .= 'IP Address = '.$request->ip().'<br/>';
                 $mail_sub = "New Multotec Enquiry - " . $enq_id;
                 $empTemp = \App\Models\EmailTemplate::find(3);
@@ -1137,17 +1245,35 @@ class FormBuilder extends Controller
                 foreach($mailArr as $vem) {
                     $emailData = array();
                     $emailData['subject'] = $mail_sub . ' '. $rerf_url;
-                    $mailBODY .= '
-                            <p>
-                            If you have any questions, contact us at 
-                            <a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.
-                            </p>
+                //   $mailBODY .= '
 
-                            <p>
-                            Thanks & Regards<br/>
-                            Multotec
-                            </p>
-                            ';
+                //     <div style="margin-top:10px; line-height:1.5;">
+                //         <p style="margin:0 0 6px 0;">
+                //             If you have any questions, contact us at 
+                //             <a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.
+                //         </p>
+
+                //         <p style="margin:0;">
+                //             Thanks & Regards<br/>
+                //             Multotec
+                //         </p>
+                //     </div>
+                //     ';
+                //     $emailData['body'] = trim($mailBODY);
+                //    $finalMailBody = $mailBODY . '
+
+                //     <div style="margin-top:10px; line-height:1.5;">
+                //         <p style="margin:0 0 6px 0;">
+                //             If you have any questions, contact us at 
+                //             <a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.
+                //         </p>
+
+                //         <p style="margin:0;">
+                //             Thanks & Regards<br/>
+                //             Multotec
+                //         </p>
+                //     </div>';
+
                     $emailData['body'] = trim($mailBODY);
                     $emailData['to_email'] = trim($vem);
                     $emailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
@@ -1163,14 +1289,14 @@ class FormBuilder extends Controller
                         
                     // //     // Do nothing 
                     // // }
-
+    
 
                     try {
-                        Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-                           //  $message->from($emailData['from_email'], $emailData['from_name']);
-                            $message->to($emailData['to_email'])->subject($emailData['subject']);
-                        });
-
+                        // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+                        //    //  $message->from($emailData['from_email'], $emailData['from_name']);
+                        //     $message->to($emailData['to_email'])->subject($emailData['subject']);
+                        // });
+                      //   die();
                         // If it reaches here, email was sent successfully.
                         // echo "Mail sent successfully.";
                     } catch (\Exception $e) { 
@@ -1199,12 +1325,14 @@ $fieldOrder = [
     'Upload'
 ];
 
+// add static field
+// $tempData['Traffic Source'] = 'Direct';
 // bottom fields
 $lastFields = [
-    'Terms',
-    'Referral',
+    'Terms',  
     'IP',
-    'Referral Url'
+    'Referral Url',
+    'Traffic Source'
 ];
 
 // convert string into array
@@ -1217,6 +1345,11 @@ foreach ($matches as $match) {
     $key = trim($match[1]);
     $value = trim($match[2]);
 
+        // skip empty referral
+    if ($key == 'Referral') {
+        continue;
+    }
+
     $tempData[$key] = $value;
 }
 
@@ -1225,7 +1358,34 @@ foreach ($fieldOrder as $field) {
 
     if (isset($tempData[$field])) {
 
-        $formattedContent .= '•&emsp;&emsp;<strong>'.$field.'</strong>: '.$tempData[$field].'<br/>';
+    $value = $tempData[$field];
+
+if ($field == 'Upload' && !empty($value)) {
+
+    // $value = '<a href="'.$value.'" target="_blank">'.$value.'</a>';
+    $value = '<a href="'.$value.'" target="_blank" style="display:inline; word-break:break-all;">
+    '.$value.'
+    </a>';
+}
+
+if ($field == 'Requirements') {
+
+    $formattedContent .= '
+    <div style="margin-bottom:8px;">
+        •&emsp;&emsp;<strong>'.$field.'</strong>: 
+        <span style="word-break:break-word;">
+            '.$value.'
+        </span>
+    </div>';
+
+} else {
+
+    $formattedContent .= '•&emsp;&emsp;<strong>'.$field.'</strong>: '.$value.'<br/>';
+}
+
+// $formattedContent .= '•&emsp;&emsp;<strong>'.$field.'</strong>: '.$value.'<br/>';
+
+        // $formattedContent .= '•&emsp;&emsp;<strong>'.$field.'</strong>: '.$tempData[$field].'<br/>';
         unset($tempData[$field]);
     }
 }
@@ -1271,7 +1431,7 @@ foreach ($lastFields as $field) {
 <p>Dear User,</p>
 
 <p>
-Thank you for considering <strong>Multotec</strong> for your mineral processing equipment needs.
+Thank you for considering Multotec for your mineral processing equipment needs.
 </p>
 
 <p style="margin:0;">
@@ -1318,10 +1478,10 @@ A Multotec representative will contact you shortly.
                       echo html_entity_decode($senderMailBODY); die();
                 // die();
                         //enable this on live data
-                       Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
-                             $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
-                            $message->to($senderEmailData['to_email'])->subject($senderEmailData['subject']);
-                        });
+                    //    Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
+                    //          $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
+                    //         $message->to($senderEmailData['to_email'])->subject($senderEmailData['subject']);
+                    //     });
             }
                 
 
