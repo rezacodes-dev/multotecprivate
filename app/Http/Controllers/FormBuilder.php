@@ -1034,6 +1034,7 @@ class FormBuilder extends Controller
                         unset($v['contactno_07351a4ae50ef96a1c50a5cc650473f3']);
                     }
                       if (isset($v['country_9c62720c1b8b66770b57067db53705ce'])) {
+                            $v['Country'] = $v['country_9c62720c1b8b66770b57067db53705ce'];
                         // $v['Enquiry Option'] = $v['iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'];
                         unset($v['country_9c62720c1b8b66770b57067db53705ce']);
                     }
@@ -1093,7 +1094,8 @@ class FormBuilder extends Controller
         }
 
                  $enquiryContent = $mailBODY;
-
+        
+            //  dd($enquiryContent);
 
                  // display order
 $fieldOrder = [
@@ -1126,8 +1128,10 @@ $customLabels = [
     'Referral Url' => 'Referral URL',
     'Traffic Source' => 'Traffic Source'
 ];
+// dd($enquiryContent);
+// preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
+preg_match_all('/(.+?)\s=\s(.*?)<br\/>/i', $enquiryContent, $matches, PREG_SET_ORDER);
 
-preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
 
 $tempData = [];
 $formattedContent = '';
@@ -1136,6 +1140,16 @@ foreach ($matches as $match) {
 
     $key = trim($match[1]);
     $value = trim($match[2]);
+
+
+        // prevent empty Country from overwriting actual value
+    if (
+        $key == 'Country'
+        && isset($tempData['Country'])
+        && empty(trim($value))
+    ) {
+        continue;
+    }
 
     if ($key == 'Referral' && empty(trim($value))) {
         continue;
@@ -1204,6 +1218,7 @@ $formattedContent .= '
 
 
 $mailBODY = $formattedContent;
+//    echo html_entity_decode($mailBODY); die();
                // $mailBODY .= 'IP Address = '.$request->ip().'<br/>';
                 $mail_sub = "New Multotec Enquiry - " . $enq_id;
                 $empTemp = \App\Models\EmailTemplate::find(3);
@@ -1216,13 +1231,15 @@ $mailBODY = $formattedContent;
                        $mailBODY = preg_replace('/Selected\s*=\s*.*(\r\n|\r|\n)?/i', '', $mailBODY);
                      // dd($request->all());
                        if(isset($request->selected_email) && !empty($request->selected_email)){
+                        $thankyou="https://www.multotec.com/en/thank-you-email-pop-up";
                         $mailBODY = str_replace('Multotec Online Enquiry', 'Email form submission', $mailBODY);
                          }
                          else{
                         // $mailBODY = str_replace('Multotec Online Enquiry', 'Email form submission', $mailBODY);
                          }
                     //   $mailBODY = str_replace('support@multotec.com', 'marketing@multotec.com', $mailBODY);
-                }
+                }       
+                
             //  $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
             //  $mailBODY .= 'IP = '.$ipAddress.'<br/>';
             //  $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
@@ -1272,7 +1289,7 @@ $mailBODY = $formattedContent;
                 //             Multotec
                 //         </p>
                 //     </div>';
-
+     
                     $emailData['body'] = trim($mailBODY);
                     $emailData['to_email'] = trim($vem);
                     $emailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
@@ -1288,7 +1305,7 @@ $mailBODY = $formattedContent;
                         
                     // //     // Do nothing 
                     // // }
-    
+    // echo html_entity_decode($mailBODY); die();
 
                     try {
     //   Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
@@ -1397,7 +1414,13 @@ foreach ($matches as $match) {
 
     $key = trim($match[1]);
     $value = trim($match[2]);
-
+ if (
+        $key == 'Country'
+        && isset($tempData['Country'])
+        && empty(trim($value))
+    ) {
+        continue;
+    }
         // skip empty referral
     if ($key == 'Referral') {
         continue;
@@ -1528,7 +1551,7 @@ A Multotec representative will contact you shortly.
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                 $senderEmailData['from_name'] = "Multotec";
 
-          
+        //   echo html_entity_decode($senderMailBODY);die();
               
                         //enable this on live data
     // Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
