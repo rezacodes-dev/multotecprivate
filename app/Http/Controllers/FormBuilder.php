@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use DB;
 use App\Models\Languages;
+use Illuminate\Support\Facades\Config;
 
 class FormBuilder extends Controller
 {
@@ -807,7 +808,7 @@ class FormBuilder extends Controller
         return view('dashboard.FormBuilder.captcha_settings', $DataBag);
     }
 
-     public function formSubmitData(Request $request) {
+    public function formSubmitData(Request $request) {
         $postData = $request->all();
 
         // dd($postData);
@@ -892,11 +893,12 @@ class FormBuilder extends Controller
 
             $saveArray = array();
             $mailArr = array();
-            
+       
             foreach( $postData as $key => $val ) {
                 $arr = array();
-                if( $key != 'receive_email' && $key != 'ar_frm_id' && $key != $subButt && $key != 'g-recaptcha-response' && $key != 'thankyou_url' ) {
 
+                if( $key != 'receive_email' && $key != 'ar_frm_id' && $key != $subButt && $key != 'g-recaptcha-response' && $key != 'thankyou_url' ) {
+                      
                     if( $request->hasFile($key) ) {
                         $file = $request->file($key);
                         $file_orgname = $file->getClientOriginalName();
@@ -919,7 +921,7 @@ class FormBuilder extends Controller
             }
         //echo "<pre>";
         //print_r($saveArray); die;
-    //    dd($saveArray);
+      //  dd($saveArray);
         $post_data = serialize( $saveArray );
         $FrmData = new FrmData;
         $FrmData->frm_id = $frmID;
@@ -935,7 +937,7 @@ class FormBuilder extends Controller
 
         $source_typename='';
         $hits=array();
-
+       
         if( isset($res) && $res == 1 ) {
  
            $r= explode('/',$rerf_fullurl);
@@ -1017,7 +1019,7 @@ class FormBuilder extends Controller
            
 
         if(!empty($saveArray) && !empty($mailArr)) {
-            //    dd($saveArray);
+             //   dd($saveArray);
             foreach($saveArray as $k=>$v) {
                 if(is_array($v) && !empty($v)) {
                     if (isset($v['iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'])) {
@@ -1033,6 +1035,7 @@ class FormBuilder extends Controller
                         unset($v['contactno_07351a4ae50ef96a1c50a5cc650473f3']);
                     }
                       if (isset($v['country_9c62720c1b8b66770b57067db53705ce'])) {
+                            $v['Country'] = $v['country_9c62720c1b8b66770b57067db53705ce'];
                         // $v['Enquiry Option'] = $v['iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'];
                         unset($v['country_9c62720c1b8b66770b57067db53705ce']);
                     }
@@ -1092,7 +1095,8 @@ class FormBuilder extends Controller
         }
 
                  $enquiryContent = $mailBODY;
-
+        
+            //  dd($enquiryContent);
 
                  // display order
 $fieldOrder = [
@@ -1125,8 +1129,10 @@ $customLabels = [
     'Referral Url' => 'Referral URL',
     'Traffic Source' => 'Traffic Source'
 ];
+// dd($enquiryContent);
+// preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
+preg_match_all('/(.+?)\s=\s(.*?)<br\/>/i', $enquiryContent, $matches, PREG_SET_ORDER);
 
-preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
 
 $tempData = [];
 $formattedContent = '';
@@ -1135,6 +1141,16 @@ foreach ($matches as $match) {
 
     $key = trim($match[1]);
     $value = trim($match[2]);
+
+
+        // prevent empty Country from overwriting actual value
+    if (
+        $key == 'Country'
+        && isset($tempData['Country'])
+        && empty(trim($value))
+    ) {
+        continue;
+    }
 
     if ($key == 'Referral' && empty(trim($value))) {
         continue;
@@ -1203,6 +1219,7 @@ $formattedContent .= '
 
 
 $mailBODY = $formattedContent;
+//    echo html_entity_decode($mailBODY); die();
                // $mailBODY .= 'IP Address = '.$request->ip().'<br/>';
                 $mail_sub = "New Multotec Enquiry - " . $enq_id;
                 $empTemp = \App\Models\EmailTemplate::find(3);
@@ -1215,13 +1232,15 @@ $mailBODY = $formattedContent;
                        $mailBODY = preg_replace('/Selected\s*=\s*.*(\r\n|\r|\n)?/i', '', $mailBODY);
                      // dd($request->all());
                        if(isset($request->selected_email) && !empty($request->selected_email)){
+                        $thankyou="https://www.multotec.com/en/thank-you-email-pop-up";
                         $mailBODY = str_replace('Multotec Online Enquiry', 'Email form submission', $mailBODY);
                          }
                          else{
                         // $mailBODY = str_replace('Multotec Online Enquiry', 'Email form submission', $mailBODY);
                          }
                     //   $mailBODY = str_replace('support@multotec.com', 'marketing@multotec.com', $mailBODY);
-                }
+                }       
+                
             //  $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
             //  $mailBODY .= 'IP = '.$ipAddress.'<br/>';
             //  $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
@@ -1271,7 +1290,7 @@ $mailBODY = $formattedContent;
                 //             Multotec
                 //         </p>
                 //     </div>';
-
+     
                     $emailData['body'] = trim($mailBODY);
                     $emailData['to_email'] = trim($vem);
                     $emailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
@@ -1287,7 +1306,7 @@ $mailBODY = $formattedContent;
                         
                     // //     // Do nothing 
                     // // }
-    
+    // echo html_entity_decode($mailBODY); die();
 
                     try {
     //   Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
@@ -1396,7 +1415,13 @@ foreach ($matches as $match) {
 
     $key = trim($match[1]);
     $value = trim($match[2]);
-
+ if (
+        $key == 'Country'
+        && isset($tempData['Country'])
+        && empty(trim($value))
+    ) {
+        continue;
+    }
         // skip empty referral
     if ($key == 'Referral') {
         continue;
@@ -1527,7 +1552,7 @@ A Multotec representative will contact you shortly.
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                 $senderEmailData['from_name'] = "Multotec";
 
-          
+        //   echo html_entity_decode($senderMailBODY);die();
               
                         //enable this on live data
     // Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
@@ -1570,7 +1595,7 @@ A Multotec representative will contact you shortly.
                     
                       
             }
-                
+               // dd($thankyou);
 
                 // $emailData['to_email'] = trim('multotecmailingserve@gmail.com'); 
                 // $emailDataSender['to_email'] = $sender_mail??''; 
@@ -1584,9 +1609,9 @@ A Multotec representative will contact you shortly.
             }
 
             
-
+            // dd($thankyou);
             if( $thankyou != '' && $thankyou != NULL) {
-
+                   
                 return redirect()->to($thankyou);
                 
             } else {
@@ -1641,81 +1666,42 @@ A Multotec representative will contact you shortly.
     }
 
 
-   public function showFormData(Request $request,$form_id) {
+    public function showFormData(Request $request,$form_id) {
 
-    $DataBag = array();
-    $DataBag['parentMenu'] = 'FrmB';
-    $DataBag['childMenu'] = 'frms';
-
-    $startDate = !empty($request->startdate) 
-        ? date('Y-m-d', strtotime($request->startdate)) 
-        : '';
-
-    $endDate = !empty($request->enddate) 
-        ? date('Y-m-d', strtotime($request->enddate)) 
-        : '';
-
-    $is_regional = $request->is_regional ?? 0;
-
-    if($form_id != '' && $form_id != null) {
-
-        $items = $request->items ?? 25;
-
-        $DataBag['form_details'] = FrmMaster::where('frm_auto_id', '=', $form_id)->first();
-
-        $DataBag['records'] = FrmData::where('frm_id', '=', $form_id)
-            ->orderBy('id', 'desc')
-
-            ->where(function ($query) use ($startDate, $endDate) {
-
-                if(!empty($startDate) && !empty($endDate)) {
-
-                    $query->whereBetween('created_at', [
-                        $startDate . ' 00:00:00',
-                        $endDate . ' 23:59:59'
-                    ]);
+        $DataBag = array();
+        $DataBag['parentMenu'] = 'FrmB';
+        $DataBag['childMenu'] = 'frms';
+        $startDate=$request->startdate;
+        $endDate=$request->enddate;
+        if( $form_id != '' && $form_id != null) {
+         $items=$request->items??25;
+            $DataBag['form_details'] = FrmMaster::where('frm_auto_id', '=', $form_id)->first();
+            $DataBag['records'] = FrmData::where('frm_id', '=', $form_id)->orderBy('id', 'desc')
+            ->where(function ($query) use ($startDate,$endDate) {
+                if(!empty($startDate) && !empty($endDate))
+                {
+                    $query->whereBetween('created_at', [$startDate, $endDate]);     
                 }
             })
-
-            ->where(function ($query) use ($is_regional) {
-
-                if($is_regional == 1) {
-                    $query->where('regional', 1);
-                } else {
-                    $query->whereNull('regional');
-                }
-            })
-
             ->paginate($items);
-
-        $DataBag['tbl_headers'] = FrmFields::where('form_id', '=', $form_id)
-            ->where('status', '=', '1')
-            ->where('field_type', '!=', 'BUTTON')
-            ->orderBy('field_order', 'asc')
-            ->get();
-
-        $DataBag['fields_key'] = FrmFields::where('form_id', '=', $form_id)
-            ->where('status', '=', '1')
-            ->where('field_type', '!=', 'BUTTON')
-            ->orderBy('field_order', 'asc')
-            ->pluck('field_name')
-            ->toArray();
-
-        if(!empty($items)){
-            $DataBag['selectedItem'] = $items;
+            $DataBag['tbl_headers'] = FrmFields::where('form_id', '=', $form_id)
+            ->where('status', '=', '1')->where('field_type', '!=', 'BUTTON')->orderBy('field_order', 'asc')->get();
+            $DataBag['fields_key'] = FrmFields::where('form_id', '=', $form_id)
+            ->where('status', '=', '1')->where('field_type', '!=', 'BUTTON')->orderBy('field_order', 'asc')
+            ->pluck('field_name')->toArray();
+            if(!empty($items)){
+                $DataBag['selectedItem']=$items;  
+            }
+            if(!empty($startDate)){
+                $DataBag['startDate']=$startDate;  
+            }
+            if(!empty($endDate)){
+                $DataBag['endDate']=$endDate;  
+            }
         }
-
-        if(!empty($request->startdate)){
-            $DataBag['startDate'] = date('m/d/Y', strtotime($request->startdate));
-        }
-
-        if(!empty($request->enddate)){
-            $DataBag['endDate'] = date('m/d/Y', strtotime($request->enddate));
-        }
+        //dd($DataBag['fields_key']);
+        return view('dashboard.FormBuilder.forms_data', $DataBag);
     }
-
-    return view('dashboard.FormBuilder.forms_data', $DataBag);
-}
 
     public function deleteFormData($record_id) {
 
