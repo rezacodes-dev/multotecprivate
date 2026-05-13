@@ -1249,12 +1249,16 @@ $mailBODY = $formattedContent;
               
               if(!empty($request->selected_email)){
                 $mailArr = array($request->selected_email);  //working
+                  $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
+
+                    $mailArr = array("syedalireza@karmicksolutions.com");  //working
               //  $sender_mail=$request->selected_email;
                 $updateid=$enq_id;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
               else{
-          $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com");  //working
+                //   $mailArr = array("mailtosyedreza@gmail.com");  //working
+                $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
               }
              
                 // $mailArr = array("syedalireza@karmicksolutions.com");
@@ -1576,20 +1580,20 @@ A Multotec representative will contact you shortly.
 
 // foreach ($tempmailArr as $temp) {
 
-    Mail::mailer('smtp')->send(
-        'emails.accountemail',
-        ['emailData' => $senderEmailData],
-        function ($message) use ($senderEmailData) {
+    // Mail::mailer('smtp')->send(
+    //     'emails.accountemail',
+    //     ['emailData' => $senderEmailData],
+    //     function ($message) use ($senderEmailData) {
 
-            $message->from(
-                $senderEmailData['from_email'],
-                $senderEmailData['from_name']
-            );
+    //         $message->from(
+    //             $senderEmailData['from_email'],
+    //             $senderEmailData['from_name']
+    //         );
 
-            $message->to($senderEmailData['to_email'])
-                    ->subject($senderEmailData['subject']);
-        }
-    );
+    //         $message->to($senderEmailData['to_email'])
+    //                 ->subject($senderEmailData['subject']);
+    //     }
+    // );
 // }
                     
                       
