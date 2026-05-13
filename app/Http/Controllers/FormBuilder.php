@@ -1580,20 +1580,20 @@ A Multotec representative will contact you shortly.
 
 // foreach ($tempmailArr as $temp) {
 
-    // Mail::mailer('smtp')->send(
-    //     'emails.accountemail',
-    //     ['emailData' => $senderEmailData],
-    //     function ($message) use ($senderEmailData) {
+    Mail::mailer('smtp')->send(
+        'emails.accountemail',
+        ['emailData' => $senderEmailData],
+        function ($message) use ($senderEmailData) {
 
-    //         $message->from(
-    //             $senderEmailData['from_email'],
-    //             $senderEmailData['from_name']
-    //         );
+            $message->from(
+                $senderEmailData['from_email'],
+                $senderEmailData['from_name']
+            );
 
-    //         $message->to($senderEmailData['to_email'])
-    //                 ->subject($senderEmailData['subject']);
-    //     }
-    // );
+            $message->to($senderEmailData['to_email'])
+                    ->subject($senderEmailData['subject']);
+        }
+    );
 // }
                     
                       
