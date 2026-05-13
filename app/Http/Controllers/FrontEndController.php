@@ -3138,7 +3138,7 @@ $query = BrochureMaster::with([
     $brochure_link = $request->brochure_link;
 
     $mailBODY  = 'Dear ' . e($request->recipient_name) . ',<br><br>';
-    $mailBODY .= 'Here is your requested brochure:<br>';
+    $mailBODY .= 'Here is a link to the Multotec brochure, which I thought you might find interesting:<br>';
     $mailBODY .= '<a href="' . e($brochure_link) . '" target="_blank">Click Here</a><br><br>';
     $mailBODY .= 'Thank you,<br>Multotec';
 
@@ -3149,38 +3149,43 @@ $query = BrochureMaster::with([
         'subject'    => 'Your Requested Brochure',
     ];
 
-    // // Dynamic mail configuration
-    // Config::set('mail.mailers.smtp', [
-    //     'transport'  => 'smtp',
-    //     'host'       => 'smtp.office365.com',
-    //     'port'       => 587,
-    //     'encryption' => 'tls',
-    //     'username'   => 'NoReplyLeads@multotec.com',
-    //     'password'   => '5h[7#q~IWj]9',
-    //     'timeout'    => null,
-    //     'auth_mode'  => null,
-    // ]);
+      Config::set('mail', [
+    'default' => 'smtp',
 
-    // Config::set('mail.from', [
-    //     'address' => 'NoReplyLeads@multotec.com',
-    //     'name'    => 'Multotec',
-    // ]);
+    'mailers' => [
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.office365.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => 'NoReplyLeads@multotec.com',
+            'password' => '5h[7#q~IWj]9',
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
+    ],
+
+    'from' => [
+        'address' => 'NoReplyLeads@multotec.com',
+        'name' => 'Multotec',
+    ],
+]);
 
     // // Send email using only Mail::mailer()
-    // Mail::mailer('smtp')->send(
-    //     'emails.accountVerification',
-    //     ['emailData' => $emailData],
-    //     function ($message) use ($emailData) {
+    Mail::mailer('smtp')->send(
+        'emails.accountVerification',
+        ['emailData' => $emailData],
+        function ($message) use ($emailData) {
 
-    //         $message->from(
-    //             'NoReplyLeads@multotec.com',
-    //             'Multotec'
-    //         );
+            $message->from(
+                'NoReplyLeads@multotec.com',
+                'Multotec'
+            );
 
-    //         $message->to($emailData['to_email'])
-    //                 ->subject($emailData['subject']);
-    //     }
-    // );
+            $message->to($emailData['to_email'])
+                    ->subject($emailData['subject']);
+        }
+    );
 
     // JSON response
     return response()->json([

@@ -450,31 +450,37 @@ a.filterbut {
                 @endforeach
             </div> -->
             <div class="outerinner">
-    <img src="{{ asset('public/icons/whatsapp-icon.svg') }}">
-    <strong>Whatsapp</strong><br>
-    @foreach($brochures as $value) 
-   
-    @if(!empty($value->brochure_pdf))
-        @php
-          $shorturl=$value->short_url??'';
-            // Remove spaces from file path
-            // $brochurePdf = str_replace(' ', '', trim($value->brochure_pdf));
-            $brochurePdf = $value->brochure_pdf??'';
-            $brochureLink = asset('public/' . $brochurePdf);
-            
-            $type = $value->brochure_size ?? '';
-            $typeSingle = str_replace(' ', '', trim($type)); // remove ALL spaces
+  <img src="{{ asset('public/icons/whatsapp-icon.svg') }}">
+<strong>Whatsapp</strong><br>
 
-            $message = urlencode("Here is a link to the Multotec brochure , which I thought you might find interesting: $brochureLink");
+@foreach($brochures as $value) 
+
+    @if(!empty($value->brochure_pdf))
+
+        @php
+            $brochurePdf = $value->brochure_pdf ?? '';
+
+            // Encode spaces and special characters properly
+            $encodedPdf = str_replace('%2F', '/', rawurlencode($brochurePdf));
+
+            $brochureLink = asset('public/' . $encodedPdf);
+
+            $type = $value->brochure_size ?? '';
+            $typeSingle = str_replace(' ', '', trim($type));
+
+            $message = urlencode(
+                "Here is a link to the Multotec brochure, which I thought you might find interesting.\n\nClick Here: $brochureLink"
+            );
         @endphp
-       
+
         <a href="https://wa.me/{{ env('WHATSAPP_NUMBER','') }}?text={{ $message }}" 
            target="_blank">
-           {{ $typeSingle }}
+            {{ $typeSingle }}
         </a>
-    @endif
-@endforeach
 
+    @endif
+
+@endforeach
 
 
 
