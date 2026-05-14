@@ -1251,7 +1251,7 @@ $mailBODY = $formattedContent;
                 $mailArr = array($request->selected_email);  //working
                   $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
 
-                    $mailArr = array("syedalireza@karmicksolutions.com");  //working
+                  //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
               //  $sender_mail=$request->selected_email;
                 $updateid=$enq_id;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
