@@ -1060,12 +1060,38 @@ class FormBuilder extends Controller
                                 if($ext == 'jpg' || $ext == 'jpeg' || $ext == 'png' || $ext == 'gif' || $ext == 'doc' || $ext == 'docx' || $ext == 'pdf' || $ext == 'csv' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'zip' || $ext == 'rar') {
 
                                         $mailBODY .= ' = '.url('/').'/'.$v1;    
-                                    } else {
-                                        $mailBODY .= ' = '.$v1;
-                                    }
-                                } else {
-                                    $mailBODY .= ' = '.$v1;
-                                }
+                                  } else {
+
+    // FIX MULTILINE REQUIREMENTS FIELD
+    if(strtolower(trim($arr[0])) == 'requirements') {
+
+        $mailBODY .= ' = '.str_replace(
+            ["\r\n", "\r", "\n"],
+            '[[BR]]',
+            trim($v1)
+        );
+
+    } else {
+
+        $mailBODY .= ' = '.$v1;
+    }
+}
+                               } else {
+
+    // FIX MULTILINE REQUIREMENTS FIELD
+    if(strtolower(trim($arr[0])) == 'requirements') {
+
+        $mailBODY .= ' = '.str_replace(
+            ["\r\n", "\r", "\n"],
+            '[[BR]]',
+            trim($v1)
+        );
+
+    } else {
+
+        $mailBODY .= ' = '.$v1;
+    }
+}
                             }
                             $mailBODY .= '<br/>';
                               // ADD THIS ONLY
@@ -1141,7 +1167,7 @@ foreach ($matches as $match) {
     $key = trim($match[1]);
     $value = trim($match[2]);
 
-
+$value = str_replace('[[BR]]', '<br/>', $value);
         // prevent empty Country from overwriting actual value
     if (
         $key == 'Country'
@@ -1248,7 +1274,7 @@ $mailBODY = $formattedContent;
                 //  $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","multotecwebenquiry@cubicice.com");
               
               if(!empty($request->selected_email)){
-                $mailArr = array($request->selected_email);  //working
+                //   $mailArr = array($request->selected_email);  //working
                   $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
 
                   //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
@@ -1298,35 +1324,10 @@ $mailBODY = $formattedContent;
                     $emailData['to_email'] = trim($vem);
                     $emailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                     $emailData['from_name'] = "Multotec";
-                    // // try {
-                    //     Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-
-                    //          $message->from($emailData['from_email'], $emailData['from_name']);
-
-                    //         $message->to($emailData['to_email'])->subject($emailData['subject']);
-                    //     });
-                    // // } catch(\Exception $e) {
-                        
-                    // //     // Do nothing 
-                    // // }
-    // echo html_entity_decode($mailBODY); die();
+        
 
                     try {
-    //   Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-    //                        //  $message->from($emailData['from_email'], $emailData['from_name']);
-    //                         $message->to($emailData['to_email'])->subject($emailData['subject']);
-    //                     });
-                      // $tempmailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com");
-                     //  $tempmailArr = array("tarryn@cubicice.com");
-                  //     $tempmailArr = array("syedalireza@karmicksolutions.com");
-                    
-
-                     //    foreach($tempmailArr as $temp){
-                        //  Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData,$temp) {
-                        //    //  $message->from($emailData['from_email'], $emailData['from_name']);
-                        //     $message->to($temp)->subject($emailData['subject']);
-                        // });
-
+   
                         Config::set('mail', [
     'default' => 'smtp',
 
@@ -1364,15 +1365,7 @@ Mail::mailer('smtp')->send(
     }
 );
 
-                 //        }
-
-                        // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-                        //    //  $message->from($emailData['from_email'], $emailData['from_name']);
-                        //     $message->to($emailData['to_email'])->subject($emailData['subject']);
-                        // });
-               
-                        // If it reaches here, email was sent successfully.
-                        // echo "Mail sent successfully.";
+            
                     } catch (\Exception $e) { 
                         // Handle the failure here
                         Log::error('Mail sending failed: ' . $e->getMessage());
@@ -1418,6 +1411,7 @@ foreach ($matches as $match) {
 
     $key = trim($match[1]);
     $value = trim($match[2]);
+    $value = str_replace('[[BR]]', '<br/>', $value);
  if (
         $key == 'Country'
         && isset($tempData['Country'])
@@ -1555,30 +1549,9 @@ A Multotec representative will contact you shortly.
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                 $senderEmailData['from_name'] = "Multotec";
 
-        //   echo html_entity_decode($senderMailBODY);die();
+       //    echo html_entity_decode($senderMailBODY);die();
               
-                        //enable this on live data
-    // Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
-    //                          $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
-    //                         $message->to($senderEmailData['to_email'])->subject($senderEmailData['subject']);
-    //                     });
-
-                     //    $tempmailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com");
-                        //  $tempmailArr = array("tarryn@cubicice.com");
-                    
-
-                        //  foreach($tempmailArr as $temp){
-                        // //    Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData,$temp) {
-                        // //      $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
-                        // //     $message->to($temp)->subject($senderEmailData['subject']);
-                        // // });
-                        //  }
-
-//                         $tempmailArr = array(
-//     "tarryn@cubicice.com"
-// );
-
-// foreach ($tempmailArr as $temp) {
+  
 
     Mail::mailer('smtp')->send(
         'emails.accountemail',
@@ -1594,21 +1567,12 @@ A Multotec representative will contact you shortly.
                     ->subject($senderEmailData['subject']);
         }
     );
-// }
+
                     
                       
             }
                 
 
-                // $emailData['to_email'] = trim('multotecmailingserve@gmail.com'); 
-                // $emailDataSender['to_email'] = $sender_mail??''; 
-
-                // Mail::send('emails.accountemail', ['emailData' => $emailData], function ($message) use ($emailData,$emailDataSender) {
-
-                //     $message->from($emailData['from_email'], $emailData['from_name']);
-
-                //     $message->to($emailDataSender['to_email'])->subject($emailData['subject']);
-                // });
             }
 
             
