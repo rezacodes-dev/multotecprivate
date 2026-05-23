@@ -1110,7 +1110,15 @@ class FormBuilder extends Controller
 
                     }
                 }
+                           if(isset($request->selected_email) && !empty($request->selected_email)){
+        $isPopup=true;
+            $mailBODY .= 'Type = '.'Popup'.'<br/>';
+      }
+      else{
+         $isPopup=true;
+      }
              //   dd($mailBODY);
+            
    $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
         $mailBODY .= 'IP = '.$ipAddress.'<br/>';
         $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
@@ -1125,6 +1133,7 @@ class FormBuilder extends Controller
 
                  // display order
 $fieldOrder = [
+    'Type',
     'Enquiry Option',
     'Name',
     'Email',
@@ -1136,9 +1145,24 @@ $fieldOrder = [
     'Upload'
 ];
 
-
-
-// custom labels
+if($isPopup){
+$customLabels = [
+    'Type' => 'Type',
+    'Enquiry Option' => 'Enquiry Option',
+    'Country' => 'Country',
+    'Name' => 'Full Name',
+    'Email' => 'Email Address',
+    'Contact No' => 'Contact Number',
+    'Company' => 'Company Name',
+    'Requirements' => 'Requirements',
+    'Terms' => 'Terms & Conditions',
+    'Upload' => 'Uploaded File',
+    'Enquiry ID' => 'Enquiry ID',
+    'IP' => 'IP Address',
+    'Referral Url' => 'Referral URL',
+    'Traffic Source' => 'Traffic Source'
+];
+}else{
 $customLabels = [
     'Enquiry Option' => 'Enquiry Option',
     'Country' => 'Country',
@@ -1154,6 +1178,10 @@ $customLabels = [
     'Referral Url' => 'Referral URL',
     'Traffic Source' => 'Traffic Source'
 ];
+}
+
+// custom labels
+
 // dd($enquiryContent);
 // preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
 preg_match_all('/(.+?)\s=\s(.*?)<br\/>/i', $enquiryContent, $matches, PREG_SET_ORDER);
@@ -1244,7 +1272,7 @@ $formattedContent .= '
 
 
 $mailBODY = $formattedContent;
-//    echo html_entity_decode($mailBODY); die();
+//   echo html_entity_decode($mailBODY); die();
                // $mailBODY .= 'IP Address = '.$request->ip().'<br/>';
                 $mail_sub = "New Multotec Enquiry - " . $enq_id;
                 $empTemp = \App\Models\EmailTemplate::find(3);
@@ -1381,6 +1409,7 @@ $formattedContent = '';
 
 // top ordered fields
 $fieldOrder = [
+    'Type',
     'Enquiry Option',
     'Name',
     'Email',
