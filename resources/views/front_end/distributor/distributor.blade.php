@@ -30,7 +30,7 @@
 <input type="hidden" id="mLng" name="mLng" value="{{ $allData->longitude??'' }}">
     @if(isset($allData) && !empty($allData))
 
-
+      
         @php $distCat = getDistCategory($allData->id); @endphp
 
         <section class="container">
@@ -545,7 +545,7 @@ $('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').on('click', function(even
  
 
 <script>
-$(document).on('click', '#firstBlock a[href], .open-email-modal', function (e) {
+$(document).on('click', '#firstBlock a[href]:not(#landing), .open-email-modal', function (e) {
 
     e.preventDefault();
 

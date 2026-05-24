@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Log;
 use DB;
 use App\Models\Languages;
 use Illuminate\Support\Facades\Config;
-use App\Services\MicrosoftGraphMailService;
 
 class FormBuilder extends Controller
 {
@@ -1304,7 +1303,6 @@ $mailBODY = $formattedContent;
               
               if(!empty($request->selected_email)){
                 //   $mailArr = array($request->selected_email);  //working
-               //   $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                   $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
 
                   //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
@@ -1313,17 +1311,14 @@ $mailBODY = $formattedContent;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
               else{
-              //   $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                 //   $mailArr = array("mailtosyedreza@gmail.com");  //working
                 $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
               }
              
-              $graphMail = app(MicrosoftGraphMailService::class);
                 // $mailArr = array("syedalireza@karmicksolutions.com");
                 foreach($mailArr as $vem) {
                     $emailData = array();
-                    // $emailData['subject'] = $mail_sub . ' '. $rerf_url;
-                   $emailData['subject'] = $mail_sub . ' '. $rerf_url . (!empty($request->selected_email) ? ' (Popup)' : '');
+                    $emailData['subject'] = $mail_sub . ' '. $rerf_url;
                 //   $mailBODY .= '
 
                 //     <div style="margin-top:10px; line-height:1.5;">
@@ -1361,48 +1356,42 @@ $mailBODY = $formattedContent;
 
                     try {
    
-//                         Config::set('mail', [
-//     'default' => 'smtp',
+                        Config::set('mail', [
+    'default' => 'smtp',
 
-//     'mailers' => [
-//         'smtp' => [
-//             'transport' => 'smtp',
-//             'host' => 'smtp.office365.com',
-//             'port' => 587,
-//             'encryption' => 'tls',
-//             'username' => 'NoReplyLeads@multotec.com',
-//             'password' => '5h[7#q~IWj]9',
-//             'timeout' => null,
-//             'auth_mode' => null,
-//         ],
-//     ],
+    'mailers' => [
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.office365.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => 'NoReplyLeads@multotec.com',
+            'password' => '5h[7#q~IWj]9',
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
+    ],
 
-//     'from' => [
-//         'address' => 'NoReplyLeads@multotec.com',
-//         'name' => 'Multotec',
-//     ],
-// ]);
+    'from' => [
+        'address' => 'NoReplyLeads@multotec.com',
+        'name' => 'Multotec',
+    ],
+]);
 
-// Mail::mailer('smtp')->send(
-//     'emails.accountVerification',
-//     ['emailData' => $emailData],
-//     function ($message) use ($emailData) {
+Mail::mailer('smtp')->send(
+    'emails.accountVerification',
+    ['emailData' => $emailData],
+    function ($message) use ($emailData) {
 
-//         $message->from(
-//             'NoReplyLeads@multotec.com',
-//             'Multotec'
-//         );
+        $message->from(
+            'NoReplyLeads@multotec.com',
+            'Multotec'
+        );
 
-//         $message->to($emailData['to_email'])
-//                 ->subject($emailData['subject']);
-//     }
-// );
-
-// $graphMail->sendMail(
-//     $emailData['to_email'],
-//     $emailData['subject'],
-//     html_entity_decode($emailData['body'], ENT_QUOTES)
-// );
+        $message->to($emailData['to_email'])
+                ->subject($emailData['subject']);
+    }
+);
 
             
                     } catch (\Exception $e) { 
@@ -1593,27 +1582,20 @@ A Multotec representative will contact you shortly.
               
   
 
-    // Mail::mailer('smtp')->send(
-    //     'emails.accountemail',
-    //     ['emailData' => $senderEmailData],
-    //     function ($message) use ($senderEmailData) {
+    Mail::mailer('smtp')->send(
+        'emails.accountemail',
+        ['emailData' => $senderEmailData],
+        function ($message) use ($senderEmailData) {
 
-    //         $message->from(
-    //             $senderEmailData['from_email'],
-    //             $senderEmailData['from_name']
-    //         );
+            $message->from(
+                $senderEmailData['from_email'],
+                $senderEmailData['from_name']
+            );
 
-    //         $message->to($senderEmailData['to_email'])
-    //                 ->subject($senderEmailData['subject']);
-    //     }
-    // );
-
-
-//     $graphMail->sendMail(
-//     $senderEmailData['to_email'],
-//     $senderEmailData['subject'],
-//     html_entity_decode($senderEmailData['body'], ENT_QUOTES)
-// );
+            $message->to($senderEmailData['to_email'])
+                    ->subject($senderEmailData['subject']);
+        }
+    );
 
                     
                       
