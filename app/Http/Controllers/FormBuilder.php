@@ -1273,7 +1273,7 @@ $formattedContent .= '
 
 
 $mailBODY = $formattedContent;
-//   echo html_entity_decode($mailBODY); die();
+  // echo html_entity_decode($mailBODY); die();
                // $mailBODY .= 'IP Address = '.$request->ip().'<br/>';
                 $mail_sub = "New Multotec Enquiry - " . $enq_id;
                 $empTemp = \App\Models\EmailTemplate::find(3);
@@ -1304,7 +1304,7 @@ $mailBODY = $formattedContent;
               
               if(!empty($request->selected_email)){
                 //   $mailArr = array($request->selected_email);  //working
-               //   $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+             // $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                   $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
 
                   //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
@@ -1313,7 +1313,7 @@ $mailBODY = $formattedContent;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
               else{
-              //   $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+               // $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                 //   $mailArr = array("mailtosyedreza@gmail.com");  //working
                 $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
               }
@@ -1398,11 +1398,11 @@ $mailBODY = $formattedContent;
 //     }
 // );
 
-// $graphMail->sendMail(
-//     $emailData['to_email'],
-//     $emailData['subject'],
-//     html_entity_decode($emailData['body'], ENT_QUOTES)
-// );
+$graphMail->sendMail(
+    $emailData['to_email'],
+    $emailData['subject'],
+    html_entity_decode($emailData['body'], ENT_QUOTES)
+);
 
             
                     } catch (\Exception $e) { 
@@ -1583,7 +1583,8 @@ A Multotec representative will contact you shortly.
               if(!empty($sender_mail)){
 
                 $senderEmailData = [];
-                $senderEmailData['subject'] = "Your Multotec Enquiry";
+                // $senderEmailData['subject'] = "Your Multotec Enquiry";
+               $senderEmailData['subject'] = "Your Multotec Enquiry" . (!empty($request->selected_email) ? ' (Popup)' : '');
                 $senderEmailData['body'] = trim($senderMailBODY);
                 $senderEmailData['to_email'] = trim($sender_mail);
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
@@ -1609,11 +1610,11 @@ A Multotec representative will contact you shortly.
     // );
 
 
-//     $graphMail->sendMail(
-//     $senderEmailData['to_email'],
-//     $senderEmailData['subject'],
-//     html_entity_decode($senderEmailData['body'], ENT_QUOTES)
-// );
+    $graphMail->sendMail(
+    $senderEmailData['to_email'],
+    $senderEmailData['subject'],
+    html_entity_decode($senderEmailData['body'], ENT_QUOTES)
+);
 
                     
                       

@@ -25,6 +25,7 @@ use App\Models\BrochureDetails;
 use App\Models\BrochureMaster;
 use App\Models\BrochureProductDetails;
 use Illuminate\Support\Facades\Config;
+use App\Services\MicrosoftGraphMailService;
 
 class FrontEndController extends Controller
 {
@@ -3124,73 +3125,50 @@ $query = BrochureMaster::with([
 
  public function sendEmailBrochure(Request $request)
 {
-    // Insert enquiry into DB
-    DB::table('brochure_enquiry')->insert([
-        'recipient_email' => $request->recipient_email,
-        'recipient_phone' => $request->recipient_phone ?? null,
-        'country'         => $request->country ?? null,
-        'city'            => $request->city ?? null,
-        'created_at'      => now(),
-        'updated_at'      => now(),
-    ]);
+    try {
 
-    // Prepare email body
-    $brochure_link = $request->brochure_link;
+        // Insert enquiry into DB
+        DB::table('brochure_enquiry')->insert([
+            'recipient_email' => $request->recipient_email,
+            'recipient_phone' => $request->recipient_phone ?? null,
+            'country'         => $request->country ?? null,
+            'city'            => $request->city ?? null,
+            'created_at'      => now(),
+            'updated_at'      => now(),
+        ]);
 
-    $mailBODY  = 'Dear ' . e($request->recipient_name) . ',<br><br>';
-    $mailBODY .= 'Here is a link to the Multotec brochure, which I thought you might find interesting:<br>';
-    $mailBODY .= '<a href="' . e($brochure_link) . '" target="_blank">Click Here</a><br><br>';
-    $mailBODY .= 'Thank you,<br>Multotec';
+        // Prepare email body
+        $brochureLink = $request->brochure_link;
 
-    // Email data
-    $emailData = [
-        'body'       => $mailBODY,
-        'to_email'   => trim($request->recipient_email),
-        'subject'    => 'Your Requested Brochure',
-    ];
+        $mailBody  = 'Dear ' . e($request->recipient_name) . ',<br><br>';
+        $mailBody .= 'Here is a link to the Multotec brochure, which I thought you might find interesting:<br><br>';
+        $mailBody .= '<a href="' . $brochureLink . '" target="_blank">Click Here</a><br><br>';
+        $mailBody .= 'Thank you,<br>Multotec';
 
-      Config::set('mail', [
-    'default' => 'smtp',
+        // Send email using Microsoft Graph
+        $graphMail = app(MicrosoftGraphMailService::class);
 
-    'mailers' => [
-        'smtp' => [
-            'transport' => 'smtp',
-            'host' => 'smtp.office365.com',
-            'port' => 587,
-            'encryption' => 'tls',
-            'username' => 'NoReplyLeads@multotec.com',
-            'password' => '5h[7#q~IWj]9',
-            'timeout' => null,
-            'auth_mode' => null,
-        ],
-    ],
+        $graphMail->sendMail(
+            trim($request->recipient_email),
+            'Your Requested Brochure',
+            html_entity_decode($mailBody, ENT_QUOTES)
+        );
 
-    'from' => [
-        'address' => 'NoReplyLeads@multotec.com',
-        'name' => 'Multotec',
-    ],
-]);
+        return response()->json([
+            'status'  => true,
+            'message' => 'Email Sent Successfully!'
+        ]);
 
-    // // Send email using only Mail::mailer()
-    Mail::mailer('smtp')->send(
-        'emails.accountVerification',
-        ['emailData' => $emailData],
-        function ($message) use ($emailData) {
+    } catch (\Exception $e) {
 
-            $message->from(
-                'NoReplyLeads@multotec.com',
-                'Multotec'
-            );
+        \Log::error('Brochure Email Error: ' . $e->getMessage());
 
-            $message->to($emailData['to_email'])
-                    ->subject($emailData['subject']);
-        }
-    );
-
-    // JSON response
-    return response()->json([
-        'message' => 'Email Sent Successfully!'
-    ]);
+        return response()->json([
+            'status'  => false,
+            'message' => 'Failed to send email.',
+            'error'   => $e->getMessage()
+        ], 500);
+    }
 }
     
     
