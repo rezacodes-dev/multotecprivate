@@ -1538,7 +1538,7 @@ A Multotec representative will contact you shortly.
 
                 $senderEmailData = [];
                 // $senderEmailData['subject'] = "Your Multotec Enquiry";
-               $senderEmailData['subject'] = "Your Multotec Enquiry" . (!empty($request->selected_email) ? ' (Popup)' : '');
+               $senderEmailData['subject'] = "Your Multotec Enquiry";
                 $senderEmailData['body'] = trim($senderMailBODY);
                 $senderEmailData['to_email'] = trim($sender_mail);
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
