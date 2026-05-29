@@ -1155,22 +1155,32 @@ $fieldOrder = [
     'Enquiry ID',
     'Requirements',
     'Upload',
-    'Terms',
+    // 'Terms',
+    // 'IP',
+    // 'Referral Url',
+    // 'Traffic Source',
+    // 'Type',
+];
+
+
+$lastFieldsmain = [
+    'Terms',  
     'IP',
     'Referral Url',
     'Traffic Source',
     'Type',
 ];
 
+
 if($isPopup){
 $customLabels = [
   
     'Enquiry Option' => 'Enquiry Option',
     'Country' => 'Country',
-    'Name' => 'Full Name',
-    'Email' => 'Email Address',
-    'Contact No' => 'Contact Number',
-    'Company' => 'Company Name',
+    'Name' => 'Name',
+    'Email' => 'Email',
+    'Contact No' => 'Contact No',
+    'Company' => 'Company',
     'Requirements' => 'Requirements',
     'Terms' => 'Terms & Conditions',
     'Upload' => 'Uploaded File',
@@ -1184,10 +1194,10 @@ $customLabels = [
 $customLabels = [
     'Enquiry Option' => 'Enquiry Option',
     'Country' => 'Country',
-    'Name' => 'Full Name',
-    'Email' => 'Email Address',
-    'Contact No' => 'Contact Number',
-    'Company' => 'Company Name',
+    'Name' => 'Name',
+    'Email' => 'Email',
+    'Contact No' => 'Contact No',
+    'Company' => 'Company',
     'Requirements' => 'Requirements',
     'Terms' => 'Terms & Conditions',
     'Upload' => 'Uploaded File',
@@ -1265,7 +1275,9 @@ foreach ($fieldOrder as $field) {
 // remaining fields except bottom fields
 foreach ($tempData as $key => $value) {
 
-   
+   if (in_array($key, $lastFieldsmain)) {
+        continue;
+    }
 
         $formattedContent .= '•&emsp;&emsp;<strong>'.($customLabels[$key] ?? $key).'</strong>: '.$value.'<br/>';
 
@@ -1289,9 +1301,20 @@ $formattedContent .= '
 </div><br/>';
 
 
+foreach ($lastFieldsmain as $field) {
+
+    if (isset($tempData[$field])) {
+
+        $formattedContent .= '•&emsp;&emsp;<strong>'
+            .($customLabels[$field] ?? $field)
+            .'</strong>: '.$tempData[$field].'<br/>';
+    }
+}
+
+
 
 $mailBODY = $formattedContent;
-  // echo html_entity_decode($mailBODY); die();
+//    echo html_entity_decode($mailBODY); die();
                // $mailBODY .= 'IP Address = '.$request->ip().'<br/>';
                 $mail_sub = "New Multotec Enquiry - " . $enq_id;
                 $empTemp = \App\Models\EmailTemplate::find(3);
@@ -1317,7 +1340,7 @@ $mailBODY = $formattedContent;
               
               if(!empty($request->selected_email)){
                 //   $mailArr = array($request->selected_email);  //working
-           //   $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+            //  $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                   $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
 
                   //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
@@ -1326,7 +1349,7 @@ $mailBODY = $formattedContent;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
               else{
-             //   $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+              //  $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                 //   $mailArr = array("mailtosyedreza@gmail.com");  //working
                 $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
               }
