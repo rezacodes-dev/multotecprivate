@@ -324,7 +324,7 @@ Route::group(['prefix' => '{lng?}'], function () {
 	// Route::get('/brochures', function () {
 	// 	abort(404);
 	// })->name('brochure');
-   	 Route::get('/brochures', 'FrontEndController@brochures')->name('brochure');
+   	 Route::get('/brochures-library', 'FrontEndController@brochures')->name('brochure');
 
      Route::get('/brochure/{id}', 'FrontEndController@brochureContent')->name('front.brochureCont');
  
