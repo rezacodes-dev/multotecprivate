@@ -2,30 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Pagination\LengthAwarePaginator as Paginator;
-use Illuminate\Http\Request;
+use App\Models\BrochureDetails;
+use App\Models\BrochureLanguage;
+use App\Models\BrochureMaster;
+use App\Models\BrochureProduct;
+use App\Models\BrochureProductDetails;
+use App\Models\CmsLinks;
+use App\Models\Distributor\DistributorContents;
 use App\Models\Menu\MenuMaster;
 use App\Models\Menu\NaviMaster;
 use App\Models\Referral;
-use App\Models\CmsLinks;
-use App\Models\WebinarUser;
 use App\Models\Webinar;
-use Jenssegers\Agent\Agent;
+use App\Models\WebinarUser;
+use App\Services\MicrosoftGraphMailService;
 use Carbon\Carbon;
+use DB;
+use File;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator as Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
+use Jenssegers\Agent\Agent;
+use Mail;
 use Redirect;
 use Session;
 use View;
-use DB;
-use File;
-use Mail;
-use Illuminate\Support\Facades\Cache;
-use App\Models\BrochureLanguage;
-use App\Models\BrochureProduct;
-use App\Models\BrochureDetails;
-use App\Models\BrochureMaster;
-use App\Models\BrochureProductDetails;
-use Illuminate\Support\Facades\Config;
-use App\Services\MicrosoftGraphMailService;
 
 class FrontEndController extends Controller
 {
@@ -2169,6 +2170,11 @@ $DataBag['map'] = \App\Models\HomeMap::first();
             ->where('status', '=', '1')->first();
      
         $DataBag['allData'] = $data;
+        $distributor_id =$data->id??'';
+
+        $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('distributor_contents.distributor_id',$data->id)->where('parent_language_id', '=', '0')->get();
+        
+     
 
         $DataBag['page_metadata'] = $DataBag['allData'];
         $DataBag['country'] = $distbr_slug??'';
