@@ -63,7 +63,7 @@
                 <div class="outeraccor">
                     <div class="accor_heading closed_arrow" headerindex="0h"><span class="accordprefix"><img
                                 src="https://www.multotec.com/public/front_end/images/arrow_down_accor.png"
-                                style="width:24px; height:24px"> </span>{{$dc->name??''}}<span
+                                style="width:24px; height:24px"> </span>{{ ucwords(trim(str_ireplace('multotec', '', $dc->name ?? ''))) }}<span
                             class="accordsuffix"></span></div>
                     <div class="accor_body" contentindex="0c" style="display: none;">
                         <div class="row">
