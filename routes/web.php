@@ -270,6 +270,7 @@ if en then redirect to FrontEndController2 (where no lng slug)
 
 
 
+Route::get('/extractBranchContacts', 'FrontEndController@extractBranchContacts')->name('extractBranchContacts');
 Route::get('/brazil', 'FrontEndController@landingPagesBrazil')->name('landingPagesBrazil');
 
 Route::get('/updateapp', function()

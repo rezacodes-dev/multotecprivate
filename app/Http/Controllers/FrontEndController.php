@@ -75,6 +75,42 @@ class FrontEndController extends Controller
     }
 
 
+public function extractBranchContacts()
+{
+    DB::table('branch_temp_contact')->truncate();
+
+    $contents = DB::table('distributor_contents')
+        ->select('id', 'page_content')
+        ->get();
+
+    foreach ($contents as $dc) {
+
+        $html = html_entity_decode(html_entity_decode($dc->page_content ?? ''));
+
+        $addressContent = '';
+
+        if (preg_match('/<strong>\s*Address:\s*<\/strong>(.*?)<\/p>/is', $html, $addressMatch)) {
+            $addressContent .= '<p><strong>Address:</strong>' . trim($addressMatch[1]) . '</p>';
+        }
+
+        if (preg_match('/<strong>\s*Tel:?\s*<\/strong>(.*?)<\/p>/is', $html, $telMatch)) {
+            $addressContent .= '<p><strong>Tel:</strong>' . trim($telMatch[1]) . '</p>';
+        }
+
+        if (preg_match('/<strong>\s*Email:?\s*<\/strong>(.*?)<\/p>/is', $html, $emailMatch)) {
+            $addressContent .= '<p><strong>Email:</strong>' . trim($emailMatch[1]) . '</p>';
+        }
+
+        DB::table('branch_temp_contact')->insert([
+            'branch_id'       => $dc->id,
+            'address_content' => $addressContent,
+        ]);
+    }
+
+    return 'Done';
+}
+
+
     public function saveWbUser(Request $request)
     {
 

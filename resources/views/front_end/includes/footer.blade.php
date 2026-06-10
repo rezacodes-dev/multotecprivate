@@ -260,6 +260,46 @@ $(document).on('change', 'input[type="file"][name="upload_fba14c8b01e43a8e2c2574
 
 });
 </script>
+<script>
+$(document).ready(function () {
+
+    $('strong').filter(function () {
+        return $.trim($(this).text()).toLowerCase().replace(':', '') === 'tel';
+    }).each(function () {
+
+        var nextNode = this.nextSibling;
+
+        if (!nextNode || nextNode.nodeType !== 3) {
+            return;
+        }
+
+        var phone = $.trim(nextNode.nodeValue);
+
+        if (!phone) {
+            return;
+        }
+
+        // Ignore if already linked
+        if ($(this).next('a').length) {
+            return;
+        }
+
+        var cleanPhone = phone.replace(/[^\d+]/g, '');
+
+        var $link = $('<a>', {
+            href: 'tel:' + cleanPhone,
+            text: phone
+        });
+
+        $link.on('click', function (e) {
+            e.stopImmediatePropagation(); // prevent modal JS and other handlers
+        });
+
+        $(nextNode).replaceWith($link);
+    });
+
+});
+</script>
 @stack('page_js')
 
 </body>

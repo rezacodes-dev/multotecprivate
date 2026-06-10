@@ -1058,6 +1058,12 @@ $('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').on('click', function(even
 
 $(document).on('click', '#firstBlock a[href], .open-email-modal', function (e) {
 
+     let href = $(this).attr('href');
+
+    if (href && (href.includes('google.com/maps') || href.includes('maps.google'))) {
+        return true;
+    }
+
     e.preventDefault();
 
     // fetch ONLY visible anchor text

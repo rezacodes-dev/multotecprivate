@@ -195,7 +195,7 @@
         @endif
         </div>
         <div class="sidebar_block block3">
-            @include('front_end.structure.event_atricle_sidebar')
+           @include('front_end.structure.event_atricle_sidebar')
         </div>
       </div>
     </div>
