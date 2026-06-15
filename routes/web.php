@@ -270,7 +270,6 @@ if en then redirect to FrontEndController2 (where no lng slug)
 
 
 
-Route::get('/extractBranchContacts', 'FrontEndController@extractBranchContacts')->name('extractBranchContacts');
 Route::get('/brazil', 'FrontEndController@landingPagesBrazil')->name('landingPagesBrazil');
 
 Route::get('/updateapp', function()
@@ -325,7 +324,7 @@ Route::group(['prefix' => '{lng?}'], function () {
 	// Route::get('/brochures', function () {
 	// 	abort(404);
 	// })->name('brochure');
-   	 Route::get('/brochures-library', 'FrontEndController@brochures')->name('brochure');
+   	 Route::get('/brochure-library', 'FrontEndController@brochures')->name('brochure');
 
      Route::get('/brochure/{id}', 'FrontEndController@brochureContent')->name('front.brochureCont');
  

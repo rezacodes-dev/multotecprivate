@@ -1057,8 +1057,8 @@ $(document).on('click', 'a[href^="mailto:"], .open-email-modal', function (e) {
 });
 </script> --}}
 <script>
-//  $(document).on('click', 'a[href^="mailto:"], .open-email-modal', function (e) {
-$(document).on('click', 'a[href^="mailto:"], .open-email-modal:not([href^="tel:"])', function (e) {
+ $(document).on('click', 'a[href^="mailto:"], .open-email-modal', function (e) {
+// $(document).on('click', 'a[href^="mailto:"], .open-email-modal:not([href^="tel:"])', function (e) {
 
     e.preventDefault();
 

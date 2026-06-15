@@ -123,12 +123,12 @@
                                   @php $i = 0; @endphp
 
                                   @foreach($yearList as $yl)
-                                    <a href="javascript:void(0);"
-                                    class="list-group-item {{ request('year', $yearList[array_key_first($yearList)]) == $yl ? 'active' : '' }}"
-                                    data-url="{{ url('en/news-articles') }}?year={{ $yl }}">
-                                        {{ $yl }}
-                                    </a>
-                                @endforeach
+    <a href="javascript:void(0);"
+       class="list-group-item {{ request('year', $yearList[array_key_first($yearList)]) == $yl ? 'active' : '' }}"
+       data-url="{{ url('en/news-articles') }}?year={{ $yl }}">
+        {{ $yl }}
+    </a>
+@endforeach
 
 
 

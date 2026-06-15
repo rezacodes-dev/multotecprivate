@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\MicrosoftGraphMailService;
 //use Illuminate\Support\Facades\Auth;
 use App\Models\Users;
 use Session;
@@ -132,13 +133,30 @@ class DashboardController extends Controller
                 $emailData['to_email'] = $email_id;
                 $emailData['from_email'] = "karmicksol54@gmail.com";
                 $emailData['from_name'] = "Multotec";
-                
-                Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
-                    
-                    $message->from($emailData['from_email'], $emailData['from_name']);
 
-                    $message->to($emailData['to_email'])->subject($emailData['subject']);
-                });
+                  // Send email using Microsoft Graph
+        $graphMail = app(MicrosoftGraphMailService::class);
+$htmlContent = view('emails.accountVerification', [
+    'emailData' => $emailData
+])->render();
+
+$graphMail->sendMail(
+    $emailData['to_email'],
+    $emailData['subject'],
+    $htmlContent
+);
+        // $graphMail->sendMail(
+        //     trim($request->recipient_email),
+        //     'Your Requested Brochure',
+        //     html_entity_decode($mailBody, ENT_QUOTES)
+        // );
+                
+                // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+                    
+                //     $message->from($emailData['from_email'], $emailData['from_name']);
+
+                //     $message->to($emailData['to_email'])->subject($emailData['subject']);
+                // });
 
                 $res = Users::where('email_id', '=', $email_id)->update(['remember_token' => $token]);
 
