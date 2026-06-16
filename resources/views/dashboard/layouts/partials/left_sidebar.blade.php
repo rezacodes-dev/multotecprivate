@@ -351,6 +351,22 @@
           </li>
 
 
+            <li class="treeview @if(isset($parentMenu) && $parentMenu == '') active @endif">
+            <a href="#">
+              <i class="fa fa-university" aria-hidden="true"></i> <span>Knowledge Hub Page</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li class="@if(isset($childMenu) && $childMenu == '') active @endif">
+                <a href="{{ route('allKnowledgeContent') }}"><i class="fa fa-circle-o"></i>Knowledge Hub List Page</a>
+              </li>
+              
+            </ul>
+          </li>
+
+
           {{--<li class="treeview @if(isset($parentMenu) && $parentMenu == 'eventManagement') active @endif">
             <a href="#">
               <i class="fa fa-calendar" aria-hidden="true"></i> <span>Event Management</span>
@@ -715,6 +731,38 @@
 
               <li class="@if(isset($childMenu) && $childMenu == 'brochurebrand') active @endif">
                 <a href="{{ route('allBrbrandId') }}"><i class="fa fa-circle-o"></i>Brochure Brand</a>
+              </li>
+              
+              
+            </ul>
+          </li>
+
+
+                <li class="treeview @if(isset($parentMenu) && $parentMenu == 'Knowledge') active @endif">
+            <a href="#">
+              <i class="fa fa-file-pdf-o" aria-hidden="true"></i> <span>Knowledge Hub</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+         
+              <li class="@if(isset($childMenu) && $childMenu == 'kn_product') active @endif">
+                <a href="{{ route('allKhprlgId') }}"><i class="fa fa-circle-o"></i> Product</a>
+              </li>
+              <li class="@if(isset($childMenu) && $childMenu == 'kn_commodities') active @endif">
+                <a href="{{ route('allKhcolgId') }}"><i class="fa fa-circle-o"></i>Commodities</a>
+              </li>
+              <li class="@if(isset($childMenu) && $childMenu == 'kn_language') active @endif">
+                <a href="{{ route('allKhlgId') }}"><i class="fa fa-circle-o"></i>Language</a>
+              </li>
+
+              <li class="@if(isset($childMenu) && $childMenu == 'kn_location') active @endif">
+                <a href="{{ route('allKhlolgId') }}"><i class="fa fa-circle-o"></i>Location</a>
+              </li>
+
+              <li class="@if(isset($childMenu) && $childMenu == 'kn_list') active @endif">
+                <a href="{{ route('allKhallId') }}"><i class="fa fa-circle-o"></i>List</a>
               </li>
               
               

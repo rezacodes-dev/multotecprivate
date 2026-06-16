@@ -187,15 +187,19 @@ $graphMail->sendMail(
         }
     }
 
-    public function resetPasswordAction(Request $request, $token) {
+   public function resetPasswordAction(Request $request, $token)
+{
+    $res = Users::where('remember_token', $token)->update([
+        'password' => md5(trim($request->input('password')))
+    ]);
 
-        $res = Users::where('remember_token', '=', $token)->update( ['password' => trim($request->input('password')) ] );
-        if($res) {
-            return redirect()->route('dashboard_login')->with('msg', 'Password reset Successfully, Please Login.');
-        } else {
-            return back()->with('msg', 'Sorry! Server Error.');
-        }
+    if ($res) {
+        return redirect()->route('dashboard_login')
+            ->with('msg', 'Password reset Successfully, Please Login.');
+    } else {
+        return back()->with('msg', 'Sorry! Server Error.');
     }
+}
 
     public function globalImageDelete() {
 

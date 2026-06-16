@@ -291,6 +291,8 @@ Route::get('/whatsapp/{id?}', 'FrontEndController@openBrochure')->name('openBroc
 
 Route::post('/ajax-brochure-list', 'FrontEndController@brochureAjax')->name('brochureAjax');
 
+Route::post('/ajax-knowledge-hub-list', 'FrontEndController@knowledgeAjax')->name('knowledgeAjax');
+
 Route::post('/send-brochure-email', 'FrontEndController@sendEmailBrochure')->name('send.brochure.email');
 Route::get('/test-email', 'TestEmail@test');
 /* By Force admin login redirect */
@@ -327,6 +329,13 @@ Route::group(['prefix' => '{lng?}'], function () {
    	 Route::get('/brochure-library', 'FrontEndController@brochures')->name('brochure');
 
      Route::get('/brochure/{id}', 'FrontEndController@brochureContent')->name('front.brochureCont');
+
+
+	 		 Route::get('/knowledgehub', 'FrontEndController@knowledgehub')->name('knowledgehub');
+	//Route::get('/brochures', function () {
+//		abort(404);
+//	})->name('brochure');
+    Route::get('/knowledgehub-content/{id}', 'FrontEndController@knowledgehubContent')->name('front.knowledgehubCont');
  
 	Route::get('/login', 'FrontEndController@login')->name('user_login');
 	Route::post('/login', 'FrontEndController@loginAction')->name('user_login_action');
@@ -1517,6 +1526,137 @@ Route::group(['prefix' => '/en/admin'], function () {
 					Route::post('/updateBrochureContent/{id}', 'AllBrochureController@updateBrochureContent')->name('updateBrochureContent');
 		
 				});
+
+
+
+
+				/*************** Podcast TOPIC MANAGEMENT ******************/
+		Route::group(['prefix' => 'podcast-topic'], function() {
+			Route::get('/', 'PodcastTopicController@allWebinarTopics')->name('allPdTp');
+			Route::get('/add', 'PodcastTopicController@addWebinarTopic')->name('addPdTp');
+			Route::post('/save', 'PodcastTopicController@saveWebinarTopic')->name('savePdTp');
+			Route::get('/delete/{id}', 'PodcastTopicController@deleteWebinarTopic')->name('delPdTp');
+			Route::get('/edit/{id}', 'PodcastTopicController@editWebinarTopic')->name('editPdTp');
+			Route::post('/edit/{id}', 'PodcastTopicController@editWebinarTopic')->name('editPdTp');
+			Route::post('/update/{id}', 'PodcastTopicController@updateWebinarTopic')->name('updatePdTp');
+
+		});
+
+		/*************** Podcast INDUSTRY MANAGEMENT ******************/
+		Route::group(['prefix' => 'podcast-industry'], function() {
+			Route::get('/', 'PodcastIndustryController@allWebinarIndustry')->name('allPdId');
+			Route::get('/add', 'PodcastIndustryController@addWebinarIndustry')->name('addPdId');
+			Route::post('/save', 'PodcastIndustryController@saveWebinarIndustry')->name('savePdId');
+			Route::get('/delete/{id}', 'PodcastIndustryController@deleteWebinarIndustry')->name('delPdId');
+			Route::get('/edit/{id}', 'PodcastIndustryController@editWebinarIndustry')->name('editPdId');
+			Route::post('/edit/{id}', 'PodcastIndustryController@editWebinarIndustry')->name('editPdId');
+			Route::post('/update/{id}', 'PodcastIndustryController@updateWebinarIndustry')->name('updatePdId');
+
+		});
+
+		/*************** podcast CATEGORY MANAGEMENT ******************/
+		Route::group(['prefix' => 'podcast-category'], function() {
+			Route::get('/', 'PodcastCategoryController@allWebinarCategorys')->name('allPdCt');
+			Route::get('/add', 'PodcastCategoryController@addWebinarCategory')->name('addPdCt');
+			Route::post('/save', 'PodcastCategoryController@saveWebinarCategory')->name('savePdCt');
+			Route::get('/delete/{id}', 'PodcastCategoryController@deleteWebinarCategory')->name('delPdCt');
+			Route::get('/edit/{id}', 'PodcastCategoryController@editWebinarCategory')->name('editPdCt');
+			Route::post('/edit/{id}', 'PodcastCategoryController@editWebinarCategory')->name('editPdCt');
+			Route::post('/update/{id}', 'PodcastCategoryController@updateWebinarCategory')->name('updatePdCt');
+
+		});
+
+
+		/*************** Podcast MANAGEMENT ******************/
+		Route::group(['prefix' => 'podcast-management'], function() {
+			Route::get('/', 'PodcastController@allWebinars')->name('allPd');
+			Route::get('/ajax-webinar-list', 'PodcastController@ajaxWebinars')->name('ajaxPdocast');
+			Route::get('/ajax-webinar-list-refresh', 'PodcastController@ajaxRefreshWebinars')->name('ajaxRefreshPodcast');
+			Route::get('/add', 'PodcastController@addWebinar')->name('addPd');
+			Route::post('/save', 'PodcastController@saveWebinar')->name('savePd');
+			Route::get('/delete/{id}', 'PodcastController@deleteWebinar')->name('delPd');
+			Route::get('/delWbUser/{id}', 'PodcastController@delWbUser')->name('delPdUser');
+			Route::get('/edit/{id}', 'PodcastController@editWebinar')->name('editPd');
+			Route::post('/edit/{id}', 'PodcastController@editWebinar')->name('editPd');
+			Route::post('/update/{id}', 'PodcastController@updateWebinar')->name('updatePd');
+			Route::post('/updateWbContent/{id}', 'PodcastController@updateWbContent')->name('updatePdContent');
+			 
+			Route::get('/viewWbUser/{id}', 'PodcastController@viewWbUser')->name('viewPdUser');
+			Route::post('/WbWebinarblkAction', 'PodcastController@WbWebinarblkAction')->name('PdWebinarblkAction');
+			Route::get('/ajax-viewWbUser-list/{id}', 'PodcastController@ajaxViewWbUser')->name('ajaxViewPdUser');
+			Route::get('/ajax-viewWbUser-list-refresh/{id}', 'PodcastController@ajaxRefreshViewWbUser')->name('ajaxRefreshViewpdUser');
+
+					Route::get('/allPodcastContent', 'PodcastController@allPodcastContent')->name('allPodcastContent');
+					Route::post('/updatePodcastContent/{id}', 'PodcastController@updatePodcastContent')->name('updatePodcastContent');
+			Route::post('/download-webinar-user', 'PodcastController@downloadWebinarUsers')->name('webiDWN');
+			  
+		});
+
+
+
+
+				Route::group(['prefix' => 'kh-language-management'], function() {
+					Route::get('/', 'KhProductLanguageController@allBrochureIndustry')->name('allKhlgId');
+					Route::get('/add', 'KhProductLanguageController@addBrochureIndustry')->name('addKhlgId');
+					Route::post('/save', 'KhProductLanguageController@saveBrochureIndustry')->name('saveKhlgId');
+					Route::get('/delete/{id}', 'KhProductLanguageController@deleteBrochureIndustry')->name('delKhlgId');
+					Route::get('/edit/{id}', 'KhProductLanguageController@editBrochureIndustry')->name('editKhlgId');
+					Route::post('/edit/{id}', 'KhProductLanguageController@editBrochureIndustry')->name('editKhlgId');
+					Route::post('/update/{id}', 'KhProductLanguageController@updateBrochureIndustry')->name('updateKhlgId');
+		
+				});
+
+
+
+					Route::group(['prefix' => 'kh-product-management'], function() {
+					Route::get('/', 'KhProductController@allBrochureIndustry')->name('allKhprlgId');
+					Route::get('/add', 'KhProductController@addBrochureIndustry')->name('addKhprlgId');
+					Route::post('/save', 'KhProductController@saveBrochureIndustry')->name('saveKhprlgId');
+					Route::get('/delete/{id}', 'KhProductController@deleteBrochureIndustry')->name('delKhprlgId');
+					Route::get('/edit/{id}', 'KhProductController@editBrochureIndustry')->name('editKhprlgId');
+					Route::post('/edit/{id}', 'KhProductController@editBrochureIndustry')->name('editKhprlgId');
+					Route::post('/update/{id}', 'KhProductController@updateBrochureIndustry')->name('updateKhprlgId');
+		
+				});
+
+
+				Route::group(['prefix' => 'kh-commodities-management'], function() {
+					Route::get('/', 'KhProductCommoditiesController@allBrochureIndustry')->name('allKhcolgId');
+					Route::get('/add', 'KhProductCommoditiesController@addBrochureIndustry')->name('addKhcolgId');
+					Route::post('/save', 'KhProductCommoditiesController@saveBrochureIndustry')->name('saveKhcolgId');
+					Route::get('/delete/{id}', 'KhProductCommoditiesController@deleteBrochureIndustry')->name('delKhcolgId');
+					Route::get('/edit/{id}', 'KhProductCommoditiesController@editBrochureIndustry')->name('editKhcolgId');
+					Route::post('/edit/{id}', 'KhProductCommoditiesController@editBrochureIndustry')->name('editKhcolgId');
+					Route::post('/update/{id}', 'KhProductCommoditiesController@updateBrochureIndustry')->name('updateKhcolgId');
+		
+				});
+
+
+						Route::group(['prefix' => 'kh-location-management'], function() {
+					Route::get('/', 'KhProductLocationController@allBrochureIndustry')->name('allKhlolgId');
+					Route::get('/add', 'KhProductLocationController@addBrochureIndustry')->name('addKhlolgId');
+					Route::post('/save', 'KhProductLocationController@saveBrochureIndustry')->name('saveKhlolgId');
+					Route::get('/delete/{id}', 'KhProductLocationController@deleteBrochureIndustry')->name('delKhlolgId');
+					Route::get('/edit/{id}', 'KhProductLocationController@editBrochureIndustry')->name('editKhlolgId');
+					Route::post('/edit/{id}', 'KhProductLocationController@editBrochureIndustry')->name('editKhlolgId');
+					Route::post('/update/{id}', 'KhProductLocationController@updateBrochureIndustry')->name('updateKhlolgId');
+		
+				});
+
+					Route::group(['prefix' => 'all-knowledge-hub'], function() {
+					Route::get('/', 'BackendKnowledgeHubController@allBrochureIndustry')->name('allKhallId');
+					Route::get('/add', 'BackendKnowledgeHubController@addBrochureIndustry')->name('addKhallId');
+					Route::post('/save', 'BackendKnowledgeHubController@saveBrochureIndustry')->name('saveKhallId');
+					Route::get('/delete/{id}', 'BackendKnowledgeHubController@deleteBrochureIndustry')->name('delKhallId');
+					Route::get('/edit/{id}', 'BackendKnowledgeHubController@editBrochureIndustry')->name('editKhallId');
+					Route::post('/edit/{id}', 'BackendKnowledgeHubController@editBrochureIndustry')->name('editKhallId');
+					Route::post('/update/{id}', 'BackendKnowledgeHubController@updateBrochureIndustry')->name('updateKhallId');
+					Route::get('/allKnowledgeContent', 'BackendKnowledgeHubController@allKnowledgeContent')->name('allKnowledgeContent');
+					Route::post('/updateKnowledgeContent/{id}', 'BackendKnowledgeHubController@updateKnowledgeContent')->name('updateKnowledgeContent');
+		
+				});
+
+
 
 }); //end admin prefix
 
