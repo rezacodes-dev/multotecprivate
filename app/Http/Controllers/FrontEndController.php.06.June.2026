@@ -8,20 +8,18 @@ use App\Models\BrochureMaster;
 use App\Models\BrochureProduct;
 use App\Models\BrochureProductDetails;
 use App\Models\CmsLinks;
-use App\Models\Distributor\DistributorContents;
+use App\Models\KnowledgeHubMaster;
 use App\Models\Menu\MenuMaster;
 use App\Models\Menu\NaviMaster;
 use App\Models\Referral;
 use App\Models\Webinar;
 use App\Models\WebinarUser;
-use App\Services\MicrosoftGraphMailService;
 use Carbon\Carbon;
 use DB;
 use File;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Jenssegers\Agent\Agent;
 use Mail;
 use Redirect;
@@ -73,42 +71,6 @@ class FrontEndController extends Controller
 
         View::share($shareData);
     }
-
-
-public function extractBranchContacts()
-{
-    DB::table('branch_temp_contact')->truncate();
-
-    $contents = DB::table('distributor_contents')
-        ->select('id', 'page_content')
-        ->get();
-
-    foreach ($contents as $dc) {
-
-        $html = html_entity_decode(html_entity_decode($dc->page_content ?? ''));
-
-        $addressContent = '';
-
-        if (preg_match('/<strong>\s*Address:\s*<\/strong>(.*?)<\/p>/is', $html, $addressMatch)) {
-            $addressContent .= '<p><strong>Address:</strong>' . trim($addressMatch[1]) . '</p>';
-        }
-
-        if (preg_match('/<strong>\s*Tel:?\s*<\/strong>(.*?)<\/p>/is', $html, $telMatch)) {
-            $addressContent .= '<p><strong>Tel:</strong>' . trim($telMatch[1]) . '</p>';
-        }
-
-        if (preg_match('/<strong>\s*Email:?\s*<\/strong>(.*?)<\/p>/is', $html, $emailMatch)) {
-            $addressContent .= '<p><strong>Email:</strong>' . trim($emailMatch[1]) . '</p>';
-        }
-
-        DB::table('branch_temp_contact')->insert([
-            'branch_id'       => $dc->id,
-            'address_content' => $addressContent,
-        ]);
-    }
-
-    return 'Done';
-}
 
 
     public function saveWbUser(Request $request)
@@ -496,7 +458,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
     public function cmsPage($lng, $slug)
     {
             
-       
+      
 
         if (isset($_SERVER['HTTP_REFERER'])) {
 
@@ -571,10 +533,10 @@ $DataBag['map'] = \App\Models\HomeMap::first();
         $cms = CmsLinks::where('slug_url', '=', trim($slug))->first();
        
         if (!empty($cms)) {
-          //    dd($cms);
+           
             $table_id = $cms->table_id;
             $table_type = $cms->table_type;
-        
+   
             /** PRODUCT **/
             if ($table_type == 'PRODUCT') {
 
@@ -637,14 +599,14 @@ $DataBag['map'] = \App\Models\HomeMap::first();
                     
                 $data = \App\Models\Content\Contents::with(['pageBuilderContent'])
                     ->where('id', '=', $table_id)->where('status', 1)->first();
-
+          
                 if (empty($data)) {
                     abort(404);
                 }
 
 
                 $DataBag['allData'] = $data;
-
+              //  dd($DataBag['allData']);
                 $DataBag['page_metadata'] = $DataBag['allData'];
 
                 $DataBag['breadcrumbs'] = $breadcrumbs;
@@ -2027,7 +1989,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
     /************************************************Distributor Section****************************************/
     public function distributorMap($lng)
     {
-
+            
         $DataBag = array();
 
         $device = 1;
@@ -2179,7 +2141,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
     }
 
     public function distributor($lng, $cat_slug, $distbr_slug)
-    { 
+    {
         // dd($distbr_slug);
         // if ($distbr_slug === 'multotec-chile') {
         //     return redirect()->route('distributorChile', [
@@ -2187,7 +2149,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
         //         'slug' => $distbr_slug
         //     ]);
         // }
-        
+  
         $DataBag = array();
 
         $device = 1;
@@ -2206,15 +2168,8 @@ $DataBag['map'] = \App\Models\HomeMap::first();
             ->where('status', '=', '1')->first();
      
         $DataBag['allData'] = $data;
-        $distributor_id =$data->id??'';
-
-        $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('distributor_contents.distributor_id',$data->id)->where('parent_language_id', '=', '0')->get();
-        
-     
 
         $DataBag['page_metadata'] = $DataBag['allData'];
-        $DataBag['country'] = $distbr_slug??'';
-        $DataBag['country_alt'] = $cont_slug??'';
 
         return view('front_end.distributor.distributor', $DataBag);
     }
@@ -2883,7 +2838,7 @@ $results_page = DB::select($query_page);
     }
 
 
-   public function brochures($lng)
+    public function brochures($lng)
     {
 
         $DataBag = array();
@@ -3165,52 +3120,75 @@ $query = BrochureMaster::with([
         return redirect()->away($pdfUrl);
     }
 
- public function sendEmailBrochure(Request $request)
+public function sendEmailBrochure(Request $request)
 {
-    try {
+    // Insert enquiry into DB
+    DB::table('brochure_enquiry')->insert([
+        'recipient_email' => $request->recipient_email,
+        'recipient_phone' => $request->recipient_phone ?? null,
+        'country'         => $request->country ?? null,
+        'city'            => $request->city ?? null,
+        'created_at'      => now(),
+        'updated_at'      => now(),
+    ]);
 
-        // Insert enquiry into DB
-        DB::table('brochure_enquiry')->insert([
-            'recipient_email' => $request->recipient_email,
-            'recipient_phone' => $request->recipient_phone ?? null,
-            'country'         => $request->country ?? null,
-            'city'            => $request->city ?? null,
-            'created_at'      => now(),
-            'updated_at'      => now(),
-        ]);
+    // Prepare email body
+    $brochure_link = $request->brochure_link;
 
-        // Prepare email body
-        $brochureLink = $request->brochure_link;
+    $mailBODY  = 'Dear ' . e($request->recipient_name) . ',<br><br>';
+    $mailBODY .= 'Here is a link to the Multotec brochure, which I thought you might find interesting:<br>';
+    $mailBODY .= '<a href="' . e($brochure_link) . '" target="_blank">Click Here</a><br><br>';
+    $mailBODY .= 'Thank you,<br>Multotec';
 
-        $mailBody  = 'Dear ' . e($request->recipient_name) . ',<br><br>';
-        $mailBody .= 'Here is a link to the Multotec brochure, which I thought you might find interesting:<br><br>';
-        $mailBody .= '<a href="' . $brochureLink . '" target="_blank">Click Here</a><br><br>';
-        $mailBody .= 'Thank you,<br>Multotec';
+    // Email data
+    $emailData = [
+        'body'       => $mailBODY,
+        'to_email'   => trim($request->recipient_email),
+        'subject'    => 'Your Requested Brochure',
+    ];
 
-        // Send email using Microsoft Graph
-        $graphMail = app(MicrosoftGraphMailService::class);
+//       Config::set('mail', [
+//     'default' => 'smtp',
 
-        $graphMail->sendMail(
-            trim($request->recipient_email),
-            'Your Requested Brochure',
-            html_entity_decode($mailBody, ENT_QUOTES)
-        );
+//     'mailers' => [
+//         'smtp' => [
+//             'transport' => 'smtp',
+//             'host' => 'smtp.office365.com',
+//             'port' => 587,
+//             'encryption' => 'tls',
+//             'username' => 'NoReplyLeads@multotec.com',
+//             'password' => '5h[7#q~IWj]9',
+//             'timeout' => null,
+//             'auth_mode' => null,
+//         ],
+//     ],
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Email Sent Successfully!'
-        ]);
+//     'from' => [
+//         'address' => 'NoReplyLeads@multotec.com',
+//         'name' => 'Multotec',
+//     ],
+// ]);
 
-    } catch (\Exception $e) {
+//     // // Send email using only Mail::mailer()
+//     Mail::mailer('smtp')->send(
+//         'emails.accountVerification',
+//         ['emailData' => $emailData],
+//         function ($message) use ($emailData) {
 
-        \Log::error('Brochure Email Error: ' . $e->getMessage());
+//             $message->from(
+//                 'NoReplyLeads@multotec.com',
+//                 'Multotec'
+//             );
 
-        return response()->json([
-            'status'  => false,
-            'message' => 'Failed to send email.',
-            'error'   => $e->getMessage()
-        ], 500);
-    }
+//             $message->to($emailData['to_email'])
+//                     ->subject($emailData['subject']);
+//         }
+//     );
+
+    // JSON response
+    return response()->json([
+        'message' => 'Email Sent Successfully!'
+    ]);
 }
     
     
@@ -3334,7 +3312,216 @@ $html .= '</div>';
     ]);
 }
 
-  public function knowledgehub($lng,Request $request)
+
+
+
+
+  public function podcast($lng)
+    {
+
+        $DataBag = array();
+
+        $device = 1;
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            $device = 2;
+        }
+        $DataBag['device'] = $device;
+
+        $DataBag['lng'] = $lng;
+        $getlngid = getLngIDbyCode($lng);
+        $DataBag['lng_id'] = $getlngid;
+
+        $query = \App\Models\Podcast::where('status', '=', '1')->with('WebinarCategory')->orderBy('webinar_start_date', 'desc');
+
+        //dd($query);
+
+        // $query = Webinar::where('status', '=', '1')->with('WebinarCategory');
+        // $viewWebinars = $query->orderBy('webinar_start_date', 'desc')->paginate(9);
+
+        // $DataBag['viewWebinars'] = $viewWebinars;
+
+        // if( isset($_GET['catid']) && $_GET['catid'] != '' ) {
+        //     $query = $query->where( function($query) {
+        //         $query = $query->whereHas('categoryIds', function ($query) {
+        //             $query->where( 'article_category_id', '=', trim($_GET['catid']) );
+        //         });
+        //     } );
+        // }
+
+        // if( isset($_GET['year']) && isset($_GET['month']) ) {
+        //     $query = $query->where( function($query) {
+        //         $query = $query->whereMonth( 'publish_date', '=', trim($_GET['month']) );
+        //         $query = $query->whereYear( 'publish_date', '=', trim($_GET['year']) );
+        //     } );
+        // }
+
+
+
+        if (isset($_GET['start_date']) && $_GET['start_date'] != '' && isset($_GET['end_date']) && $_GET['end_date'] != '') {
+
+            $query = $query->where(function ($query) {
+
+                $start_date = $_GET['start_date'];
+                $end_date = $_GET['end_date'];
+
+                $query =  $query->whereBetween('created_at', [$start_date, $end_date]);
+            });
+        }
+
+        if (isset($_GET['webinar_category']) && $_GET['webinar_category'] != '') {
+            $query = $query->where(function ($query) {
+                $query = $query->where('webinar_category', 'like', '%' . $_GET['webinar_category'] . ',%');
+            });
+        }
+
+
+        if (isset($_GET['webinar_topic']) && $_GET['webinar_topic'] != '') {
+            $query = $query->where(function ($query) {
+                $query = $query->where('webinar_topic', 'like', '%' . $_GET['webinar_topic'] . ',%');
+            });
+        }
+
+        if (isset($_GET['webinar_industry']) && $_GET['webinar_industry'] != '') {
+            $query = $query->where(function ($query) {
+                $query = $query->where('webinar_industry', 'like', '%' . $_GET['webinar_industry'] . ',%');
+            });
+        }
+
+
+        if (isset($_GET['search']) && $_GET['search'] != '') {
+            $query = $query->where(function ($query) {
+                $query = $query->where('name', 'LIKE', '%' . trim($_GET['search']) . '%');
+            });
+        }
+
+        $articlesData = $query->orderBy('id', 'desc')->paginate(12);
+        $DataBag['listData'] = $articlesData;
+
+
+        foreach ($DataBag['listData'] as $key => $val) {
+
+            $cat = explode(',', $val['webinar_category']);
+
+            $allcat = '';
+
+            foreach ($cat as $row) {
+                if ($row != '') {
+                    $wbcat = \App\Models\PodcastCategory::where('id', '=', $row)->first();
+                    $allcat .= $wbcat->name . ',';
+                }
+            }
+
+
+
+
+            $DataBag['listData'][$key]['webinarcat'] = $allcat;
+            //  $DataBag['listData'][$key]['webinarcat']= $allcat;
+
+
+        }
+
+        $DataBag['page_tag'] = 'Podcast';
+
+        $articlesCats = \App\Models\PodcastCategory::where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+        $DataBag['listCats'] = $articlesCats;
+
+        $DataBag['listTopic'] = \App\Models\PodcastTopic::where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+        $DataBag['listIndustry'] = \App\Models\PodcastIndustry::where('status', '=', '1')->orderBy('created_at', 'desc')->get();
+
+
+        $DataBag['webinarContent'] = \App\Models\PodcastContent::where('id', '=', '1')->first();
+
+
+        // $yearArr = array();
+        // $createdAt = \App\Models\Article\Articles::where('status', '=', '1')
+        // ->where('parent_language_id', '=', '0')->where('publish_date', '!=', '')
+        // ->orderBy('publish_date', 'desc')->pluck('publish_date')->toArray();
+
+        // if( !empty($createdAt) ) {
+        //     foreach( $createdAt as $v ) {
+        //         $onlyYear = Carbon::createFromFormat('Y-m-d H:i:s', $v)->year;
+        //         array_push( $yearArr , $onlyYear );
+        //     }
+        // }
+
+        // $uniqueYear = array_unique( $yearArr );
+        // $DataBag['yearList'] = $uniqueYear;
+
+        $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'PODCAST')->first();
+
+        $DataBag['page_metadata'] = $DataBag['extraContent'];
+
+        return view('front_end.podcast.webinar_list', $DataBag);
+    }
+
+
+
+
+ public function podcastContent($lng, $id)
+    {
+        //echo "id" .$id;
+        $DataBag = array();
+
+        $device = 1;
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            $device = 2;
+        }
+        $DataBag['device'] = $device;
+
+        $DataBag['lng'] = $lng;
+        $getlngid = getLngIDbyCode($lng);
+        $DataBag['lng_id'] = $getlngid;
+
+
+        $data = \App\Models\Podcast::where('slug', '=', $id)->where('status', '=', '1')->first();
+
+
+
+
+
+        $webinar_has = Session::get('webinar_has_' . $data->id);
+        //   dd($webinar_has,$data->id);
+        if (isset($webinar_has) && $webinar_has == $data->id) {
+        } else {
+
+            $WB = \App\Models\Podcast::find($data->id);
+
+            $hit = $WB->hit;
+            $hit = $hit + 1;
+            $WB->hit = $hit;
+
+            $WB->save();
+
+            session(['webinar_has_' . $data->id => $data->id]);
+        }
+
+        $DataBag['allData'] = $data;
+        // Adding 'meta_title' array to $DataBag['allData']
+        $DataBag['allData']['meta_title'] = $data->name ?? '';
+        $DataBag['page_metadata'] = $DataBag['allData'];
+        //  meta_title
+        //   dd($DataBag['page_metadata']);
+
+        //$WB->hit++; 
+
+        //$WB->update(); 
+        $contactdata = \App\Models\Content\Contents::with(['pageBuilderContent'])
+        ->where('id', '=', 77)->where('status', 1)->first();
+
+ 
+        // dd($DataBag['allData']);
+
+         $DataBag['contactdata'] = $contactdata;
+        return view('front_end.podcast.webinar_content', $DataBag);
+    }
+
+
+
+
+     public function knowledgehub($lng,Request $request)
     {
 
         $DataBag = array();

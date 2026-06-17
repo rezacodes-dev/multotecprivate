@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Log;
 use DB;
 use App\Models\Languages;
 use Illuminate\Support\Facades\Config;
-use App\Services\MicrosoftGraphMailService;
 
 class FormBuilder extends Controller
 {
@@ -809,7 +808,7 @@ class FormBuilder extends Controller
         return view('dashboard.FormBuilder.captcha_settings', $DataBag);
     }
 
-   public function formSubmitData(Request $request) {
+    public function formSubmitData(Request $request) {
         $postData = $request->all();
 
         // dd($postData);
@@ -848,15 +847,15 @@ class FormBuilder extends Controller
         }
 
          
-        if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
+        // if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
             
-            $captcha = $postData['g-recaptcha-response'];
-            $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
-            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
-            $responseData = json_decode($verifyResponse);
-            if(!$responseData->success) {
-                return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
-            } 
+            // $captcha = $postData['g-recaptcha-response'];
+            // $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
+            // $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
+            // $responseData = json_decode($verifyResponse);
+            // if(!$responseData->success) {
+            //     return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
+            // } 
 
             $frmID = $postData['ar_frm_id'];
             $thankyou = $postData['thankyou_url'];
@@ -894,11 +893,12 @@ class FormBuilder extends Controller
 
             $saveArray = array();
             $mailArr = array();
-            
+       
             foreach( $postData as $key => $val ) {
                 $arr = array();
-                if( $key != 'receive_email' && $key != 'ar_frm_id' && $key != $subButt && $key != 'g-recaptcha-response' && $key != 'thankyou_url' ) {
 
+                if( $key != 'receive_email' && $key != 'ar_frm_id' && $key != $subButt && $key != 'g-recaptcha-response' && $key != 'thankyou_url' ) {
+                      
                     if( $request->hasFile($key) ) {
                         $file = $request->file($key);
                         $file_orgname = $file->getClientOriginalName();
@@ -921,7 +921,7 @@ class FormBuilder extends Controller
             }
         //echo "<pre>";
         //print_r($saveArray); die;
-    //    dd($saveArray);
+      //  dd($saveArray);
         $post_data = serialize( $saveArray );
         $FrmData = new FrmData;
         $FrmData->frm_id = $frmID;
@@ -932,12 +932,12 @@ class FormBuilder extends Controller
         $FrmData->ip_address = $request->ip();
         $res = $FrmData->save();
         $ipAddress=$request->ip();
-        }
+      //  }
 
 
         $source_typename='';
         $hits=array();
-
+       
         if( isset($res) && $res == 1 ) {
  
            $r= explode('/',$rerf_fullurl);
@@ -1019,7 +1019,7 @@ class FormBuilder extends Controller
            
 
         if(!empty($saveArray) && !empty($mailArr)) {
-            //    dd($saveArray);
+             //   dd($saveArray);
             foreach($saveArray as $k=>$v) {
                 if(is_array($v) && !empty($v)) {
                     if (isset($v['iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'])) {
@@ -1061,53 +1061,31 @@ class FormBuilder extends Controller
                                 if($ext == 'jpg' || $ext == 'jpeg' || $ext == 'png' || $ext == 'gif' || $ext == 'doc' || $ext == 'docx' || $ext == 'pdf' || $ext == 'csv' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'zip' || $ext == 'rar') {
 
                                         $mailBODY .= ' = '.url('/').'/'.$v1;    
-                                  } else {
-
-    // FIX MULTILINE REQUIREMENTS FIELD
-    if(strtolower(trim($arr[0])) == 'requirements') {
-
-        $mailBODY .= ' = '.str_replace(
-            ["\r\n", "\r", "\n"],
-            '[[BR]]',
-            trim($v1)
-        );
-
-    } else {
-
-        $mailBODY .= ' = '.$v1;
-    }
-}
-                               } else {
-
-    // FIX MULTILINE REQUIREMENTS FIELD
-    if(strtolower(trim($arr[0])) == 'requirements') {
-
-        $mailBODY .= ' = '.str_replace(
-            ["\r\n", "\r", "\n"],
-            '[[BR]]',
-            trim($v1)
-        );
-
-    } else {
-
-        $mailBODY .= ' = '.$v1;
-    }
-}
+                                    } else {
+                                        $mailBODY .= ' = '.$v1;
+                                    }
+                                } else {
+                                    $mailBODY .= ' = '.$v1;
+                                }
                             }
                             $mailBODY .= '<br/>';
                               // ADD THIS ONLY
            
 
                   if($k1 == 'country_9c62720c1b8b66770b57067db53705ce'){
-                   
+                        //   $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
+                        //     $mailBODY .= 'IP = '.$ipAddress.'<br/>';
+                        //     $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
+
+                        //     if($source_typename!=''){
+                        //         $mailBODY .= 'Traffic Source = '.$source_typename.'<br/>';
+                        //     }
                         }
                         }
 
                     }
                 }
-    
              //   dd($mailBODY);
-            
    $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
         $mailBODY .= 'IP = '.$ipAddress.'<br/>';
         $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
@@ -1116,35 +1094,11 @@ class FormBuilder extends Controller
             $mailBODY .= 'Traffic Source = '.$source_typename.'<br/>';
         }
 
-
-
-                               if(isset($request->selected_email) && !empty($request->selected_email)){
-              $isPopup=true;
-             $mailBODY .= 'Type = '.'Form A'.'<br/>';
-      }
-      else{
-             $isPopup=false;
-              $mailBODY .= 'Type = '.'Form B'.'<br/>';
-      }
-
                  $enquiryContent = $mailBODY;
         
             //  dd($enquiryContent);
 
                  // display order
-// $fieldOrder = [
-//     'Enquiry Option',
-//     'Name',
-//     'Email',
-//     'Country',
-//     'Contact No',
-//     'Company',
-//     'Enquiry ID',
-//     'Requirements',
-//     'Upload',
-//     'Traffic Source',
-//     'Type',
-// ];
 $fieldOrder = [
     'Enquiry Option',
     'Name',
@@ -1154,63 +1108,27 @@ $fieldOrder = [
     'Company',
     'Enquiry ID',
     'Requirements',
-    'Upload',
-    // 'Terms',
-    // 'IP',
-    // 'Referral Url',
-    // 'Traffic Source',
-    // 'Type',
+    'Upload'
 ];
 
 
-$lastFieldsmain = [
-    'Terms',  
-    'IP',
-    'Referral Url',
-    'Traffic Source',
-    'Type',
-];
-
-
-if($isPopup){
-$customLabels = [
-  
-    'Enquiry Option' => 'Enquiry Option',
-    'Country' => 'Country',
-    'Name' => 'Name',
-    'Email' => 'Email',
-    'Contact No' => 'Contact No',
-    'Company' => 'Company',
-    'Requirements' => 'Requirements',
-    'Terms' => 'Terms & Conditions',
-    'Upload' => 'Uploaded File',
-    'Enquiry ID' => 'Enquiry ID',
-    'IP' => 'IP Address',
-    'Referral Url' => 'Referral URL',
-    'Traffic Source' => 'Traffic Source',
-    'Type' => 'Type',
-];
-}else{
-$customLabels = [
-    'Enquiry Option' => 'Enquiry Option',
-    'Country' => 'Country',
-    'Name' => 'Name',
-    'Email' => 'Email',
-    'Contact No' => 'Contact No',
-    'Company' => 'Company',
-    'Requirements' => 'Requirements',
-    'Terms' => 'Terms & Conditions',
-    'Upload' => 'Uploaded File',
-    'Enquiry ID' => 'Enquiry ID',
-    'IP' => 'IP Address',
-    'Referral Url' => 'Referral URL',
-    'Traffic Source' => 'Traffic Source',
-    'Type' => 'Type'
-];
-}
 
 // custom labels
-
+$customLabels = [
+    'Enquiry Option' => 'Enquiry Option',
+    'Country' => 'Country',
+    'Name' => 'Full Name',
+    'Email' => 'Email Address',
+    'Contact No' => 'Contact Number',
+    'Company' => 'Company Name',
+    'Requirements' => 'Requirements',
+    'Terms' => 'Terms & Conditions',
+    'Upload' => 'Uploaded File',
+    'Enquiry ID' => 'Enquiry ID',
+    'IP' => 'IP Address',
+    'Referral Url' => 'Referral URL',
+    'Traffic Source' => 'Traffic Source'
+];
 // dd($enquiryContent);
 // preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
 preg_match_all('/(.+?)\s=\s(.*?)<br\/>/i', $enquiryContent, $matches, PREG_SET_ORDER);
@@ -1224,7 +1142,7 @@ foreach ($matches as $match) {
     $key = trim($match[1]);
     $value = trim($match[2]);
 
-$value = str_replace('[[BR]]', '<br/>', $value);
+
         // prevent empty Country from overwriting actual value
     if (
         $key == 'Country'
@@ -1275,9 +1193,7 @@ foreach ($fieldOrder as $field) {
 // remaining fields except bottom fields
 foreach ($tempData as $key => $value) {
 
-   if (in_array($key, $lastFieldsmain)) {
-        continue;
-    }
+   
 
         $formattedContent .= '•&emsp;&emsp;<strong>'.($customLabels[$key] ?? $key).'</strong>: '.$value.'<br/>';
 
@@ -1299,17 +1215,6 @@ $formattedContent .= '
         Multotec
     </p>
 </div><br/>';
-
-
-foreach ($lastFieldsmain as $field) {
-
-    if (isset($tempData[$field])) {
-
-        $formattedContent .= '•&emsp;&emsp;<strong>'
-            .($customLabels[$field] ?? $field)
-            .'</strong>: '.$tempData[$field].'<br/>';
-    }
-}
 
 
 
@@ -1336,47 +1241,135 @@ $mailBODY = $formattedContent;
                     //   $mailBODY = str_replace('support@multotec.com', 'marketing@multotec.com', $mailBODY);
                 }       
                 
-       
+            //  $mailBODY .= 'Enquiry ID = '.$enq_id.'<br/>';
+            //  $mailBODY .= 'IP = '.$ipAddress.'<br/>';
+            //  $mailBODY .= 'Referral Url = '.$rerf_fullurl.'<br/>';
+                // dd($mailBODY);
+           
+                //  $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","multotecwebenquiry@cubicice.com");
               
               if(!empty($request->selected_email)){
-                //   $mailArr = array($request->selected_email);  //working
-            //  $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
-                  $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
-
-                  //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
+                $mailArr = array($request->selected_email);  //working
               //  $sender_mail=$request->selected_email;
                 $updateid=$enq_id;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
               else{
-              //  $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
-                //   $mailArr = array("mailtosyedreza@gmail.com");  //working
-                $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
+          $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com");  //working
               }
              
-              $graphMail = app(MicrosoftGraphMailService::class);
                 // $mailArr = array("syedalireza@karmicksolutions.com");
                 foreach($mailArr as $vem) {
                     $emailData = array();
-                    // $emailData['subject'] = $mail_sub . ' '. $rerf_url;
-                   $emailData['subject'] = $mail_sub . ' '. $rerf_url;
-               
+                    $emailData['subject'] = $mail_sub . ' '. $rerf_url;
+                //   $mailBODY .= '
+
+                //     <div style="margin-top:10px; line-height:1.5;">
+                //         <p style="margin:0 0 6px 0;">
+                //             If you have any questions, contact us at 
+                //             <a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.
+                //         </p>
+
+                //         <p style="margin:0;">
+                //             Thanks & Regards<br/>
+                //             Multotec
+                //         </p>
+                //     </div>
+                //     ';
+                //     $emailData['body'] = trim($mailBODY);
+                //    $finalMailBody = $mailBODY . '
+
+                //     <div style="margin-top:10px; line-height:1.5;">
+                //         <p style="margin:0 0 6px 0;">
+                //             If you have any questions, contact us at 
+                //             <a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.
+                //         </p>
+
+                //         <p style="margin:0;">
+                //             Thanks & Regards<br/>
+                //             Multotec
+                //         </p>
+                //     </div>';
      
                     $emailData['body'] = trim($mailBODY);
                     $emailData['to_email'] = trim($vem);
                     $emailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                     $emailData['from_name'] = "Multotec";
-        
+                    // // try {
+                    //     Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+
+                    //          $message->from($emailData['from_email'], $emailData['from_name']);
+
+                    //         $message->to($emailData['to_email'])->subject($emailData['subject']);
+                    //     });
+                    // // } catch(\Exception $e) {
+                        
+                    // //     // Do nothing 
+                    // // }
+    // echo html_entity_decode($mailBODY); die();
 
                     try {
-   
-            $graphMail->sendMail(
-                $emailData['to_email'],
-                $emailData['subject'],
-                html_entity_decode($emailData['body'], ENT_QUOTES)
-            );
+    //   Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+    //                        //  $message->from($emailData['from_email'], $emailData['from_name']);
+    //                         $message->to($emailData['to_email'])->subject($emailData['subject']);
+    //                     });
+                      // $tempmailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com");
+                     //  $tempmailArr = array("tarryn@cubicice.com");
+                  //     $tempmailArr = array("syedalireza@karmicksolutions.com");
+                    
 
-            
+                     //    foreach($tempmailArr as $temp){
+                        //  Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData,$temp) {
+                        //    //  $message->from($emailData['from_email'], $emailData['from_name']);
+                        //     $message->to($temp)->subject($emailData['subject']);
+                        // });
+
+                        Config::set('mail', [
+    'default' => 'smtp',
+
+    'mailers' => [
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.office365.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => 'NoReplyLeads@multotec.com',
+            'password' => '5h[7#q~IWj]9',
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
+    ],
+
+    'from' => [
+        'address' => 'NoReplyLeads@multotec.com',
+        'name' => 'Multotec',
+    ],
+]);
+
+// Mail::mailer('smtp')->send(
+//     'emails.accountVerification',
+//     ['emailData' => $emailData],
+//     function ($message) use ($emailData) {
+
+//         $message->from(
+//             'NoReplyLeads@multotec.com',
+//             'Multotec'
+//         );
+
+//         $message->to($emailData['to_email'])
+//                 ->subject($emailData['subject']);
+//     }
+// );
+
+                 //        }
+
+                        // Mail::send('emails.accountVerification', ['emailData' => $emailData], function ($message) use ($emailData) {
+                        //    //  $message->from($emailData['from_email'], $emailData['from_name']);
+                        //     $message->to($emailData['to_email'])->subject($emailData['subject']);
+                        // });
+               
+                        // If it reaches here, email was sent successfully.
+                        // echo "Mail sent successfully.";
                     } catch (\Exception $e) { 
                         // Handle the failure here
                         Log::error('Mail sending failed: ' . $e->getMessage());
@@ -1392,7 +1385,6 @@ $formattedContent = '';
 
 // top ordered fields
 $fieldOrder = [
-    // 'Type',
     'Enquiry Option',
     'Name',
     'Email',
@@ -1418,17 +1410,11 @@ $lastFields = [
 preg_match_all('/(.*?) = (.*?)<br\/>/', $enquiryContent, $matches, PREG_SET_ORDER);
 
 $tempData = [];
- 
+
 foreach ($matches as $match) {
 
     $key = trim($match[1]);
     $value = trim($match[2]);
-    $value = str_replace('[[BR]]', '<br/>', $value);
-
-      // skip Type field
-    if ($key == 'Type') {
-        continue;
-    }
  if (
         $key == 'Country'
         && isset($tempData['Country'])
@@ -1560,37 +1546,72 @@ A Multotec representative will contact you shortly.
               if(!empty($sender_mail)){
 
                 $senderEmailData = [];
-                // $senderEmailData['subject'] = "Your Multotec Enquiry";
-               $senderEmailData['subject'] = "Your Multotec Enquiry";
+                $senderEmailData['subject'] = "Your Multotec Enquiry";
                 $senderEmailData['body'] = trim($senderMailBODY);
                 $senderEmailData['to_email'] = trim($sender_mail);
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                 $senderEmailData['from_name'] = "Multotec";
 
-       //    echo html_entity_decode($senderMailBODY);die();
+        //   echo html_entity_decode($senderMailBODY);die();
               
-  
+                        //enable this on live data
+    // Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData) {
+    //                          $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
+    //                         $message->to($senderEmailData['to_email'])->subject($senderEmailData['subject']);
+    //                     });
 
-  
+                     //    $tempmailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com");
+                        //  $tempmailArr = array("tarryn@cubicice.com");
+                    
 
+                        //  foreach($tempmailArr as $temp){
+                        // //    Mail::send('emails.accountemail', ['emailData' => $senderEmailData], function ($message) use ($senderEmailData,$temp) {
+                        // //      $message->from($senderEmailData['from_email'], $senderEmailData['from_name']);
+                        // //     $message->to($temp)->subject($senderEmailData['subject']);
+                        // // });
+                        //  }
 
-    $graphMail->sendMail(
-    $senderEmailData['to_email'],
-    $senderEmailData['subject'],
-    html_entity_decode($senderEmailData['body'], ENT_QUOTES)
-);
+//                         $tempmailArr = array(
+//     "tarryn@cubicice.com"
+// );
 
+// foreach ($tempmailArr as $temp) {
+
+    // Mail::mailer('smtp')->send(
+    //     'emails.accountemail',
+    //     ['emailData' => $senderEmailData],
+    //     function ($message) use ($senderEmailData) {
+
+    //         $message->from(
+    //             $senderEmailData['from_email'],
+    //             $senderEmailData['from_name']
+    //         );
+
+    //         $message->to($senderEmailData['to_email'])
+    //                 ->subject($senderEmailData['subject']);
+    //     }
+    // );
+// }
                     
                       
             }
-                
+               // dd($thankyou);
 
+                // $emailData['to_email'] = trim('multotecmailingserve@gmail.com'); 
+                // $emailDataSender['to_email'] = $sender_mail??''; 
+
+                // Mail::send('emails.accountemail', ['emailData' => $emailData], function ($message) use ($emailData,$emailDataSender) {
+
+                //     $message->from($emailData['from_email'], $emailData['from_name']);
+
+                //     $message->to($emailDataSender['to_email'])->subject($emailData['subject']);
+                // });
             }
 
             
-
+            // dd($thankyou);
             if( $thankyou != '' && $thankyou != NULL) {
-
+                   
                 return redirect()->to($thankyou);
                 
             } else {
@@ -1601,6 +1622,10 @@ A Multotec representative will contact you shortly.
         return back()->with('msg', 'Something went wrong!')->with('msg_class', 'alert alert-danger');
 
     }
+
+
+
+
 
 
     public function formSaveSettings(Request $request) {

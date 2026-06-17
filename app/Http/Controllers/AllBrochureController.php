@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Image;
 
+
 class AllBrochureController extends Controller
 {
     public function allBrochureIndustry() {
@@ -228,6 +229,9 @@ public function saveBrochureIndustry(Request $request)
     $originalSlug = $slug;
     $count = 1;
 
+  
+ 
+
     while (BrochureMaster::where('slug', $slug)->exists()) {
         $slug = $originalSlug . '-' . $count++;
     }
@@ -258,8 +262,16 @@ public function saveBrochureIndustry(Request $request)
     $brochureDetailsInsert = [];
 
     // ✅ Prepare Brochure Details for Bulk Insert
-    foreach ($sl_no as $key => $value) {
+     
+        foreach ($sl_no as $key => $value) {
+     
         $brochure_main_pdf = null;
+        
+         $name = $download_name[$key] ?? 'brochure';
+
+         $cleanName = preg_replace('/\s+/', '', $name);
+
+        $short_url = 'whatsapp/' . round(microtime(true) * 1000) . '_' . $key . '_' . $cleanName;
 
         if ($request->hasFile('brochure') && isset($brochure_pdf[$key])) {
             $file = $brochure_pdf[$key];
@@ -280,6 +292,7 @@ public function saveBrochureIndustry(Request $request)
             'type_id' => $type[$key] ?? '',
             'size_id' => $size[$key] ?? '',
             'download_name' => $download_name[$key] ?? '',
+            'short_url' => $short_url ?? '',
             'brochure_pdf' => $brochure_main_pdf ?? '',
             'brand_id' => $brand[$key] ?? '',
             'created_at' => now(),
@@ -388,6 +401,8 @@ public function updateBrochureIndustry(Request $request, $topic_id)
 
     $mainbrochure->slug = $slug;
 
+
+
     // ✅ Handle brochure image upload (replace if new image uploaded)
     if ($request->hasFile('brochure_image')) {
         $file = $request->file('brochure_image');
@@ -430,6 +445,12 @@ public function updateBrochureIndustry(Request $request, $topic_id)
     foreach ($sl_no as $key => $value) {
         $brochure_main_pdf = null;
 
+           $name = $download_name[$key] ?? 'brochure';
+
+           $cleanName = preg_replace('/\s+/', '', $name);
+
+           $short_url = 'whatsapp/' . round(microtime(true) * 1000) . '_' . $key . '_' . $cleanName;
+
         // Use new file if uploaded
         if ($request->hasFile('brochure') && isset($brochure_pdf[$key])) {
             $file = $brochure_pdf[$key];
@@ -451,12 +472,17 @@ public function updateBrochureIndustry(Request $request, $topic_id)
             }
         }
 
+
+       
+
+
         $brochureDetailsInsert[] = [
             'brochure_id' => $brochure_id,
             'language_id' => $language[$key] ?? '',
             'type_id' => $type[$key] ?? '',
             'size_id' => $size[$key] ?? '',
             'download_name' => $download_name[$key] ?? '',
+            'short_url' => $short_url ?? '',
             'brochure_pdf' => $brochure_main_pdf ?? '',
             'brand_id' => $brand[$key] ?? '',
             'created_at' => now(),

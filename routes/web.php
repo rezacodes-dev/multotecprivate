@@ -134,7 +134,7 @@ Route::get('commodities-api','CommoditiesApiController@fetchApi');
 /********************** FRONT END START ***************************/
 Route::group(['prefix' => '{lng?}'], function () {
 
-	 Route::get('/brochures', 'FrontEndController@brochures')->name('brochure');
+	 Route::get('/brochure-library', 'FrontEndController@brochures')->name('brochure');
 	//Route::get('/brochures', function () {
 //		abort(404);
 //	})->name('brochure');
