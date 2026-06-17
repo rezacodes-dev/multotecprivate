@@ -809,7 +809,7 @@ class FormBuilder extends Controller
         return view('dashboard.FormBuilder.captcha_settings', $DataBag);
     }
 
-   public function formSubmitData(Request $request) {
+  public function formSubmitData(Request $request) {
         $postData = $request->all();
 
         // dd($postData);
@@ -975,10 +975,10 @@ class FormBuilder extends Controller
             
             }
    
-            //  $hits=DB::table('campaign') 
-            //  ->selectRaw('name,url,source_type')  
-            //  ->where('url','like', '%'.$r[2].'%')
-            //  ->first();
+             $hits=DB::table('campaign') 
+             ->selectRaw('name,url,source_type')  
+             ->where('url','like', '%'.$r[2].'%')
+             ->first();
 
  
             if (
@@ -1340,7 +1340,7 @@ $mailBODY = $formattedContent;
               
               if(!empty($request->selected_email)){
                 //   $mailArr = array($request->selected_email);  //working
-            //  $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+        //      $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                   $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
 
                   //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
@@ -1349,7 +1349,7 @@ $mailBODY = $formattedContent;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
               else{
-              //  $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+          //      $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                 //   $mailArr = array("mailtosyedreza@gmail.com");  //working
                 $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
               }
