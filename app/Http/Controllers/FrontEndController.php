@@ -2274,6 +2274,10 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
         $DataBag['page_metadata'] = $DataBag['allData'];
 
+        //  $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('distributor_contents.distributor_id',$data->id)->where('parent_language_id', '=', '0')->get();
+
+        //  dd($DataBag['allDisConts'],$data->id);
+
          return view('front_end.distributor.distributor_content', $DataBag);
     }
     /************************************************END Distributor Section**********************************/
