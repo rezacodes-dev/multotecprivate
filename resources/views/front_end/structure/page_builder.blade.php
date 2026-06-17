@@ -73,8 +73,21 @@
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <strong>Tel:</strong><a href=""></a><br>
-                                                    <strong>Email:</strong><a href=""></a><br>
+                                                @if(!empty($dc->phone))
+                                                    <strong>Tel:</strong>
+                                                    <a href="tel:{{ $dc->phone }}">{{ $dc->phone }}</a><br>
+                                                @else
+                                                     <strong>Tel:</strong>
+                                                    <a href=""></a><br>
+                                                @endif
+
+                                                @if(!empty($dc->email))
+                                                    <strong>Email:</strong>
+                                                    <a href="mailto:{{ $dc->email }}">{{ $dc->email }}</a><br>
+                                                @else
+                                                    <strong>Email:</strong>
+                                                    <a href=""></a><br>
+                                                @endif
                                                     <strong>Address:</strong>&nbsp;{{$dc->address??''}}
                                                 </td>
                                             </tr>

@@ -563,6 +563,8 @@ class DistributorController extends Controller
         $DistributorContents->map_heading = trim($request->input('map_heading'));
         $DistributorContents->latitude = trim($request->input('latitude'));
         $DistributorContents->longitude = trim($request->input('longitude'));
+        $DistributorContents->phone = trim($request->input('phone'));
+        $DistributorContents->email = trim($request->input('email'));
         $DistributorContents->address = trim($request->input('address'));
         
         if( $request->has('distributor_id') && $request->input('distributor_id') != '' ) {
@@ -621,6 +623,8 @@ class DistributorController extends Controller
         $DistributorContents->map_heading = trim($request->input('map_heading'));
         $DistributorContents->latitude = trim($request->input('latitude'));
         $DistributorContents->longitude = trim($request->input('longitude'));
+        $DistributorContents->phone = trim($request->input('phone'));
+        $DistributorContents->email = trim($request->input('email'));
         $DistributorContents->address = trim($request->input('address'));
        
         if( $request->has('distributor_id') && $request->input('distributor_id') != '' ) {

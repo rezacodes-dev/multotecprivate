@@ -164,6 +164,19 @@
                     <input type="text" name="longitude" class="form-control" placeholder="Map Longitude" value="@if( isset($content)){{ $content->longitude }}@endif">
                   </div>
                 </div>
+                   <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Telephone : </label>
+                    <input type="text" name="phone" class="form-control" placeholder="" value="@if( isset($content)){{ $content->phone??'' }}@endif">
+                  </div>
+                </div>
+
+                   <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Email : </label>
+                    <input type="text" name="email" class="form-control" placeholder="" value="@if( isset($content)){{ $content->email??'' }}@endif">
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label>Address : <em>*</em></label>
