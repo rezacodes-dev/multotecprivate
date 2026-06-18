@@ -11,7 +11,8 @@
     color: #fff !important;
 }
 </style>
-
+<input type="hidden" id="mLat" name="mLat" value="{{ $allData->latitude??'' }}">
+<input type="hidden" id="mLng" name="mLng" value="{{ $allData->longitude??'' }}">
 @if( isset($allData) && !empty($allData) )
 
 
@@ -84,7 +85,7 @@
                 @endforeach
             @endif
             
-            @if( isset($allData) && $allData->latitude != '' && $allData->longitude != '' )
+            {{-- @if( isset($allData) && $allData->latitude != '' && $allData->longitude != '' )
             <div class="gmap-block">
               @if( $allData->map_heading != '' )<h3>{{ $allData->map_heading }}</h3>@endif
               <div id="map" style="height: 460px; width: 100%;"></div>
@@ -94,8 +95,90 @@
               <input type="hidden" id="mType" value="@if(isset($allData)){{ $allData->branch_type }}@endif">
               <input type="hidden" id="mBname" value="@if(isset($allData)){{ $allData->name }}@endif">
             </div>
-            @endif
+            @endif --}}
         </div>
+           @if( isset($allDisConts) && !empty($allDisConts))
+            @foreach ($allDisConts as $dc)
+                 <div class="midblock_subblock countries pgb-accr">
+                <div class="outeraccor">
+                    <div class="accor_heading closed_arrow" headerindex="0h"><span class="accordprefix"><img
+                                src="https://www.multotec.com/public/front_end/images/arrow_down_accor.png"
+                                style="width:24px; height:24px"> </span>{{ ucwords(trim(str_ireplace('multotec', '', $dc->name ?? ''))) }}<span
+                            class="accordsuffix"></span></div>
+                    <div class="accor_body" contentindex="0c" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="info">
+                                    <table border="0" cellpadding="5" cellspacing="5">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                @if(!empty($dc->phone))
+                                                    <strong>Tel:</strong>
+                                                    <a href="tel:{{ $dc->phone }}">{{ $dc->phone }}</a><br>
+                                                @else
+                                                     <strong>Tel:</strong>
+                                                    <a href=""></a><br>
+                                                @endif
+
+                                                @if(!empty($dc->email))
+                                                    <strong>Email:</strong>
+                                                    <a href="mailto:{{ $dc->email }}">{{ $dc->email }}</a><br>
+                                                @else
+                                                    <strong>Email:</strong>
+                                                    <a href=""></a><br>
+                                                @endif
+                                                    <strong>Address:</strong>&nbsp;{{$dc->address??''}}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Contact 
+                                                      <a href="@if( $dc->slug != '' && isset($dc->distributorInfo) && isset($dc->distributorInfo->distrOneCategorytIds) && isset($dc->distributorInfo->distrOneCategorytIds->catInfo) ){{ route('front.distrbCont', array('lng' => 'en', 'catslug' => $dc->distributorInfo->distrOneCategorytIds->catInfo->slug, 'distrbslug' => $dc->distributorInfo->slug, 'contslug' => $dc->slug)) }}@endif">
+                                                            {{ $dc->name??'' }}
+                                                        </a>
+                                                        
+                                                        </strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            @endforeach
+           
+            @else
+            @endif
+   @if( isset($allDisConts) && !empty($allDisConts))
+            @php
+                $branches = $allDisConts
+                    ->map(function ($branch) {
+                        return [
+                            'name' => $branch->name,
+                            'branch_slug' => $branch->slug,
+                            'latitude' => $branch->latitude,
+                            'longitude' => $branch->longitude,
+                            'address' => $branch->address,
+                            'branch_type' => $branch->branch_type ?? '',
+                            'continent_slug' => $branch->continent_slug ?? '',
+                            'country_slug' => $branch->country_slug ?? '',
+                        ];
+                    })
+                    ->values();
+            @endphp
+
+            @if ($allDisConts->count())
+                <input type="hidden" id="branchURL" value="{{ url('') }}">
+
+                <div id="mapbranch" style="height:400px;width:100%;"></div>
+
+              
+            @endif
+@else
+@endif
     </div>
     <div class="col-sm-4">
         <div class="rightpanel">
@@ -562,7 +645,7 @@ ddaccordion.init({
 });
 </script>
 
-@if( isset($allData) && $allData->latitude != '' && $allData->longitude != '')
+{{-- @if( isset($allData) && $allData->latitude != '' && $allData->longitude != '')
 <script type="text/javascript">
 function initMap() {
 
@@ -617,7 +700,7 @@ function initMap() {
 }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1ctyLhYi1UVzqbsc1fLA6evrrdGWeoWs&callback=initMap&sensor=false"></script>
-@endif
+@endif --}}
 <script>
   $(document).ready(function () {
     // Fetch the country data via AJAX
@@ -656,90 +739,6 @@ function initMap() {
 
 
 
-// $(document).ready(function () {
-//     // Automatically select the first option in the dropdown and toggle fields
-//     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']").each(function () {
-//         // $(this).attr('size', '4'); 
-//         $(this).val(''); // Set the default option
-//     });
-
-//     // Trigger the visibility logic based on the default selection
-//     toggleFieldsBasedOnSelection();
-
-//     // Handle change event for the dropdown
-//     $(document).on('change', "select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']", function () {
-//         toggleFieldsBasedOnSelection();
-//     });
-
-//     // Function to toggle the visibility of fields based on the selected option
-//     function toggleFieldsBasedOnSelection() {
-//         $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185']").each(function () {
-//             var selectedOption = $(this).val();
-//             var container = $(this).closest('.form, .modal'); // Adjust for context (main div or modal)
-
-//             // Hide all fields initially within the specific container
-//             container.find('#field_16').hide();
-//             container.find('#field_23').hide();
-//             container.find('#field_3').hide();
-//             container.find('#field_4').hide();
-//             container.find('#field_17').hide();
-//             container.find('#field_5').hide();
-//             container.find('#field_19').hide();
-//             container.find('#field_24').hide();
-//             container.find('#terms_f1b78704ea2449a379eaaf6c129751cb').hide();
-//             container.find('#box2').next('div').hide();
-//             container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'none');
-//             container.find('.custom-file-upload').css('display', 'none');
-
-//             // Logic for specific selections
-//             if (selectedOption === '1.-Mineral-processing-products-and-services') {
-//                 container.find('#field_16').show();
-//                 container.find('#field_23').show();
-//                 container.find('#field_3').show();
-//                 container.find('#field_4').show();
-//                 container.find('#field_17').show();
-//                 container.find('#field_5').show();
-//                 container.find('#field_24').show();
-//                 container.find('.custom-file-upload').css('display', 'block');
-//                 container.find('#field_19').show();
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').val('Request a quote');
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'block');
-//                 container.find('#box1').hide();
-//                 container.find('#box2').hide();
-//                 container.find('#box2').next('div').show();
-//             } else if (selectedOption === '4.-Other') {
-//                 container.find('#field_16').show();
-//                 container.find('#field_23').show();
-//                 container.find('#field_3').show();
-//                 container.find('#field_4').show();
-//                 container.find('#field_17').show();
-//                 container.find('#field_5').show();
-//                 container.find('#field_24').show();
-//                 container.find('.custom-file-upload').css('display', 'block');
-//                 container.find('#field_19').show();
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').val('Submit Enquiry');
-//                 container.find('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').css('display', 'block');
-//                 container.find('#box1').hide();
-//                 container.find('#box2').hide();
-//                 container.find('#box2').next('div').show();
-//             } else if (selectedOption === '2.-Job-applications') {
-//                 container.find('#field_19').show();
-//                 container.find('#box1').show();
-//                 container.find('#box2').hide();
-//                 container.find('#box2').next('div').hide();
-//             } else if (selectedOption === '3.-Training-Opportunities') {
-//                 container.find('#field_19').show();
-//                 container.find('#box1').hide();
-//                 container.find('#box2').show();
-//                 container.find('#box2').next('div').hide();
-//                 window.open("https://www.multotec.com/en/training", "_blank");
-//             } else {
-//                 container.find('#field_19').hide();
-//                 container.find('#box2').next('div').hide();
-//             }
-//         });
-//     }
-// });
 
 $(document).ready(function () {
     $("select[name='iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185'] option[value='']").attr("disabled", "disabled");
@@ -872,189 +871,10 @@ $(document).ready(function () {
 
 
 </script>
-<!-- <script>
-$('input[name="ok_d5d8517aae26dc072e04284ffdd0d267"]').on('click', function(event) {
-    const selectElement = $('select[name="iwanttoenquireabout_6ff314aae2564ef958f6739b4b07e185"]');
-    const selectedOption = selectElement.find('option:selected');
-    console.log(selectElement.val());
-    // Validation
-    if (!selectElement.val() || selectElement.val() === "") {
-        event.preventDefault(); // Prevent the form from submitting
-        alert('Please select a Service Option.');
-    } else {
-        // The form is valid
-        console.log('Form is valid. Submitting...');
-        // Allow form submission
-    }
-});
 
-
-
-
-</script> -->
 
 <script>
-// $(document).on('click', '#firstBlock a[href], .open-email-modal', function (e) {
 
-//     e.preventDefault();
-
-//     // fetch ONLY visible anchor text
-//     let email = $.trim($(this).text());
-
-//     // fallback if text empty
-//     if (email === '') {
-
-//         email = $(this).data('email') || '';
-//     }
-
-//     // fetch country
-//     let countryName = `{{ trim($country ?? '') }}`;
-//     let countryAlt = `{{ trim($country_alt ?? '') }}`;
-
-//     // modal
-//     let modal = $('#desktop_eform_modal_email');
-
-//     // form
-//     let form = modal.children().find('form').first();
-
-//     // hidden email field
-//     let hiddenInput = form.find('input[name="selected_email"]');
-
-//     if (hiddenInput.length === 0) {
-
-//         $('<input>', {
-//             type: 'hidden',
-//             name: 'selected_email',
-//             value: email
-//         }).appendTo(form);
-
-//     } else {
-
-//         hiddenInput.val(email);
-//     }
-
-//     // country select
-//     let countrySelect = form.find(
-//         'select[name="country_bdf6b0663c3d12b26de9d64a0331d39f"]'
-//     ).first();
-
-//     // clear previous selection
-//     countrySelect.val('');
-
-//     let matchedOption = null;
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | Try matching using existing blade variables
-//     |--------------------------------------------------------------------------
-//     */
-
-//     // first try main country
-//     if (countryName !== '') {
-
-//         matchedOption = countrySelect.find('option').filter(function () {
-
-//             return $.trim($(this).text()).toLowerCase() === countryName.toLowerCase();
-
-//         });
-
-//     }
-
-//     // if no match then try alt country
-//     if ((!matchedOption || matchedOption.length === 0) && countryAlt !== '') {
-
-//         matchedOption = countrySelect.find('option').filter(function () {
-
-//             return $.trim($(this).text()).toLowerCase() === countryAlt.toLowerCase();
-
-//         });
-
-//     }
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | If still not matched -> fetch from map lat/lng
-//     |--------------------------------------------------------------------------
-//     */
-
-//     if ((!matchedOption || matchedOption.length === 0)
-//         && $('#mLat').length
-//         && $('#mLng').length
-//     ) {
-
-//         let getMLat = $('#mLat').val();
-//         let getMLng = $('#mLng').val();
-
-//         if (getMLat !== '' && getMLng !== '') {
-
-//             let geocoder = new google.maps.Geocoder();
-
-//             let latlng = {
-//                 lat: parseFloat(getMLat),
-//                 lng: parseFloat(getMLng)
-//             };
-
-//             geocoder.geocode({ location: latlng }, function(results, status) {
-
-//                 if (status === "OK" && results[0]) {
-
-//                     let detectedCountry = '';
-
-//                     results[0].address_components.forEach(function(component) {
-
-//                         if (component.types.includes('country')) {
-
-//                             detectedCountry = component.long_name;
-//                         }
-
-//                     });
-
-//                     if (detectedCountry !== '') {
-
-//                         let geoMatchedOption = countrySelect.find('option').filter(function () {
-
-//                             return $.trim($(this).text()).toLowerCase() === detectedCountry.toLowerCase();
-
-//                         });
-
-//                         if (geoMatchedOption.length) {
-
-//                             countrySelect.val(geoMatchedOption.val());
-//                             countrySelect.trigger('change');
-//                         }
-//                     }
-
-//                     modal.modal('show');
-
-//                 } else {
-
-//                     modal.modal('show');
-//                 }
-
-//             });
-
-//             return;
-//         }
-//     }
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | Existing match found
-//     |--------------------------------------------------------------------------
-//     */
-
-//     if (matchedOption && matchedOption.length) {
-
-//         countrySelect.val(matchedOption.val());
-//     }
-
-//     // trigger select change
-//     countrySelect.trigger('change');
-
-//     // show modal
-//     modal.modal('show');
-
-// });
 
 $(document).on('click', '#firstBlock a[href], .open-email-modal', function (e) {
 
@@ -1183,6 +1003,111 @@ $(document).ready(function () {
     });
 
 });
+</script>
+
+  @if( isset($allDisConts) && !empty($allDisConts))
+<script>
+let branches = [
+@foreach($allDisConts as $key => $dc)
+{
+    id: "{{ $dc->id }}",
+    name: "{{ addslashes($dc->name) }}",
+    latitude: "{{ $dc->latitude }}",
+    longitude: "{{ $dc->longitude }}",
+    address: "{{ addslashes($dc->address) }}",
+    url: "@if($dc->slug != '' && isset($dc->distributorInfo) && isset($dc->distributorInfo->distrOneCategorytIds) && isset($dc->distributorInfo->distrOneCategorytIds->catInfo)){{ route('front.distrbCont', ['lng' => 'en', 'catslug' => $dc->distributorInfo->distrOneCategorytIds->catInfo->slug, 'distrbslug' => $dc->distributorInfo->slug, 'contslug' => $dc->slug]) }}@endif"
+},
+@endforeach
+];
+</script>
+
+<script>
+    console.log(branches);
+    function initMap() {
+
+        let validBranches = branches.filter(branch =>
+            branch.latitude &&
+            branch.longitude &&
+            !isNaN(branch.latitude) &&
+            !isNaN(branch.longitude)
+        );
+
+        if (!validBranches.length) {
+            return;
+        }
+
+        let map = new google.maps.Map(document.getElementById('mapbranch'), {
+            zoom: 3,
+            center: {
+                lat: parseFloat(validBranches[0].latitude),
+                lng: parseFloat(validBranches[0].longitude)
+            },
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            
+        });
+
+        let bounds = new google.maps.LatLngBounds();
+        let infoWindow = new google.maps.InfoWindow();
+
+        validBranches.forEach(function(branch) {
+
+            let marker = new google.maps.Marker({
+                position: {
+                    lat: parseFloat(branch.latitude),
+                    lng: parseFloat(branch.longitude)
+                },
+                map: map
+            });
+
+            bounds.extend(marker.getPosition());
+
+         let googleView =
+    '<a href="https://maps.google.com/?q=' +
+    branch.latitude + ',' + branch.longitude +
+    '" target="_blank">Google View</a>';
+
+let branchView =
+    '<a href="' +
+    branch.url +
+    '">View Branch</a>';
+
+let content =
+    '<div style="min-width:220px;">' +
+    '<strong>' + branch.name + '</strong><br>' +
+    (branch.address || '') +
+    '<br><br>' +
+    googleView +
+    '&nbsp;&nbsp;&nbsp;' +
+    branchView +
+    '</div>';
+
+            marker.addListener('click', function() {
+                infoWindow.setContent(content);
+                infoWindow.open(map, marker);
+            });
+        });
+
+      //  map.fitBounds(bounds);
+      if (validBranches.length === 1) {
+            map.setCenter({
+                lat: parseFloat(validBranches[0].latitude),
+                lng: parseFloat(validBranches[0].longitude)
+            });
+
+            map.setZoom(10);
+        } else {
+            map.fitBounds(bounds);
+        }
+    }
+
+    google.maps.event.addDomListener(window, 'load', initMap);
+</script>
+
+@else
+@endif
+
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1ctyLhYi1UVzqbsc1fLA6evrrdGWeoWs&callback=initMap&sensor=false">
 </script>
 @endpush
 

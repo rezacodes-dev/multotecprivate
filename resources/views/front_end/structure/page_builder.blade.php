@@ -724,7 +724,17 @@ let content =
             });
         });
 
-        map.fitBounds(bounds);
+      //  map.fitBounds(bounds);
+      if (validBranches.length === 1) {
+            map.setCenter({
+                lat: parseFloat(validBranches[0].latitude),
+                lng: parseFloat(validBranches[0].longitude)
+            });
+
+            map.setZoom(10);
+        } else {
+            map.fitBounds(bounds);
+        }
     }
 
     google.maps.event.addDomListener(window, 'load', initMap);
