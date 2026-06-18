@@ -1013,9 +1013,9 @@ class FormBuilder extends Controller
             //     $mailBODY .= 'Traffic Source = '.$source_typename.'<br/>';
             // }
 
-            if(isset($hits->name)){
-                $mailBODY .= 'Campaign Name = '.$hits->name.'<br/>';
-            }
+            // if(isset($hits->name)){
+            //     $mailBODY .= 'Campaign Name = '.$hits->name.'<br/>';
+            // }
            
 
         if(!empty($saveArray) && !empty($mailArr)) {
