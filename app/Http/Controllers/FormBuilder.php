@@ -848,15 +848,16 @@ class FormBuilder extends Controller
         }
 
          
-        if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
+        // if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
+        if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1) {
             
-            $captcha = $postData['g-recaptcha-response'];
-            $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
-            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
-            $responseData = json_decode($verifyResponse);
-            if(!$responseData->success) {
-                return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
-            } 
+            // $captcha = $postData['g-recaptcha-response'];
+            // $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
+            // $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
+            // $responseData = json_decode($verifyResponse);
+            // if(!$responseData->success) {
+            //     return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
+            // } 
 
             $frmID = $postData['ar_frm_id'];
             $thankyou = $postData['thankyou_url'];
@@ -974,7 +975,7 @@ class FormBuilder extends Controller
                 }
             
             }
-   
+            
              $hits=DB::table('campaign') 
              ->selectRaw('name,url,source_type')  
              ->where('url','like', '%'.$r[2].'%')
@@ -1013,9 +1014,9 @@ class FormBuilder extends Controller
             //     $mailBODY .= 'Traffic Source = '.$source_typename.'<br/>';
             // }
 
-            if(isset($hits->name)){
-                $mailBODY .= 'Campaign Name = '.$hits->name.'<br/>';
-            }
+            // if(isset($hits->name)){
+            //     $mailBODY .= 'Campaign Name = '.$hits->name.'<br/>';
+            // }
            
 
         if(!empty($saveArray) && !empty($mailArr)) {

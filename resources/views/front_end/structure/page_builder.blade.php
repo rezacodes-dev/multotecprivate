@@ -16,20 +16,30 @@
 
             <!-- Loop -->
             @if( isset($allData->pageBuilderContent) && !empty($allData->pageBuilderContent) && isset($device) )
-            
+             
+
+             @if(isset($allData->product_link) && !empty($allData->product_link))
+                         <div class="buttom-row dwn-btn">
+                             
+                                <a class="squre-btn" href="{{ $allData->product_link }}" target="_blank"> <i class="fa fa-angle-down" aria-hidden="true"></i> <span>Download Brochure</span></a>
+                            </div>
+                            @else
+                            @endif
                 @foreach( $allData->pageBuilderContent as $pgd )
                     @if( $pgd->device == $device || $pgd->device == '3' ) <!-- Device Checking -->
 
                         <!-- Buttons-->
                         @if( $pgd->builder_type == 'BROCHURE_BUTT' && $pgd->position == 'BODY' )
-                            <div class="buttom-row dwn-btn">
+                            <div class="buttom-row dwn-btn" style="display:none">
                                 {{-- <a class="squre-btn" href="{{ route('front_fileSubCat', array('lng' => $lng,'category' => $pgd->main_content, 'subcategory' => $pgd->sub_content)) }}"> <i class="fa fa-angle-down" aria-hidden="true"></i> <span>Download Brochure</span></a> --}}
                                 <a class="squre-btn" href="{{url('/').'/'.$lng.'/gallery/files/'.$pgd->main_content.'/'.$pgd->sub_content}}"> <i class="fa fa-angle-down" aria-hidden="true"></i> <span>Download Brochure</span></a>
                             </div>
-                            <div class="buttom-row dwn-btn">
+                            <div class="buttom-row dwn-btn" style="display:none">
                                 <a class="squre-btn" href="{{ route('viewTechResLst', array('lng' => $lng)) }}"> <i class="fa fa-angle-down" aria-hidden="true"></i> <span>Technical Resources</span></a>
                             </div>
                         @endif
+
+                        
 
                         @if( $pgd->builder_type == 'IMAGEGAL_BUTT' && $pgd->position == 'BODY' )
                             <div class="buttom-row dwn-btn">
