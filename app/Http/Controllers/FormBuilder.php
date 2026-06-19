@@ -809,7 +809,7 @@ class FormBuilder extends Controller
         return view('dashboard.FormBuilder.captcha_settings', $DataBag);
     }
 
-  public function formSubmitData(Request $request) {
+    public function formSubmitData(Request $request) {
         $postData = $request->all();
 
         // dd($postData);
@@ -848,15 +848,16 @@ class FormBuilder extends Controller
         }
 
          
-        if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
+        // if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
+        if( !empty($postData)) {
             
-            $captcha = $postData['g-recaptcha-response'];
-            $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
-            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
-            $responseData = json_decode($verifyResponse);
-            if(!$responseData->success) {
-                return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
-            } 
+            // $captcha = $postData['g-recaptcha-response'];
+            // $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
+            // $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
+            // $responseData = json_decode($verifyResponse);
+            // if(!$responseData->success) {
+            //     return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
+            // } 
 
             $frmID = $postData['ar_frm_id'];
             $thankyou = $postData['thankyou_url'];
@@ -953,51 +954,72 @@ class FormBuilder extends Controller
             $pattern = '/www./i';
             $r[2]= preg_replace($pattern, '', $r[2]);
 
-            $allcampaign=DB::table('campaign') 
-            ->selectRaw('name,url,source_type')   
+            // $allcampaign=DB::table('campaign') 
+            // ->selectRaw('name,url,source_type')   
+            // ->get();
+
+            $allcampaign = DB::table('campaign')
+            ->selectRaw('name,url,source_type')
             ->get();
 
+            $hitsurl = DB::table('campaign')
+            ->select('name','url','source_type')
+            ->whereRaw('? LIKE CONCAT("%", url, "%")', [$rerf_fullurl])
+            ->first();
+              dd($rerf_fullurl);
             
-            foreach($allcampaign as $onerow){
+            // foreach($allcampaign as $onerow){
             
-                $str = $rerf_fullurl;
+            //     $str = $rerf_fullurl;
 
 
-                $onerow->url=str_replace("/","#",$onerow->url); 
-                $pattern = "/{$onerow->url}/i";
+            //     $onerow->url=str_replace("/","#",$onerow->url); 
+            //     $pattern = "/{$onerow->url}/i";
 
-                // $pattern = "/".$onerow->url."/i";
-                $flag= preg_match($pattern, $str);
-                if($flag)
-                {
-                    $hits=$onerow;
-                }
+            //     // $pattern = "/".$onerow->url."/i";
+            //     $flag= preg_match($pattern, $str);
+            //     if($flag)
+            //     {
+            //         $hits=$onerow;
+            //     }
             
-            }
-   
-             $hits=DB::table('campaign') 
-             ->selectRaw('name,url,source_type')  
-             ->where('url','like', '%'.$r[2].'%')
-             ->first();
+            // }
+           //   dd($str,$onerow,$allcampaign);
+            //  $hits=DB::table('campaign') 
+            //  ->selectRaw('name,url,source_type')  
+            //  ->where('url','like', '%'.$r[2].'%')
+            //  ->first();
 
  
+            // if (
+            //     ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
+            //     && !isset($hits->name)
+            // ) {
+            //     $source_typename = 'Direct';
+            // }
+
+            
             if (
-                ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
-                && !isset($hits->name)
-            ) {
-                $source_typename = 'Direct';
-            }
+    ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
+    && !isset($hitsurl->name)
+) {
+    $source_typename = 'Direct';
+}
+
+if (isset($hitsurl->name)) {
+    $source_typename = $hitsurl->name;
+}
  
            }
  
            if(isset($hits->name)){
  
-            $source_type=DB::table('source_type') 
-            ->selectRaw('name')  
-            ->where('id','=', $hits->source_type)
-            ->first();
+            // $source_type=DB::table('source_type') 
+            // ->selectRaw('name')  
+            // ->where('id','=', $hits->source_type)
+            // ->first();
 
-            $source_typename=$source_type->name;
+            $source_typename=$hits->name;
 
            }
 
@@ -1340,7 +1362,7 @@ $mailBODY = $formattedContent;
               
               if(!empty($request->selected_email)){
                 //   $mailArr = array($request->selected_email);  //working
-        //      $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+           //   $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                   $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
 
                   //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
@@ -1349,7 +1371,7 @@ $mailBODY = $formattedContent;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
               else{
-          //      $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+              //  $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                 //   $mailArr = array("mailtosyedreza@gmail.com");  //working
                 $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
               }
@@ -1370,11 +1392,11 @@ $mailBODY = $formattedContent;
 
                     try {
    
-            $graphMail->sendMail(
-                $emailData['to_email'],
-                $emailData['subject'],
-                html_entity_decode($emailData['body'], ENT_QUOTES)
-            );
+            // $graphMail->sendMail(
+            //     $emailData['to_email'],
+            //     $emailData['subject'],
+            //     html_entity_decode($emailData['body'], ENT_QUOTES)
+            // );
 
             
                     } catch (\Exception $e) { 
@@ -1567,18 +1589,18 @@ A Multotec representative will contact you shortly.
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                 $senderEmailData['from_name'] = "Multotec";
 
-       //    echo html_entity_decode($senderMailBODY);die();
+           echo html_entity_decode($senderMailBODY);die();
               
   
 
   
 
 
-    $graphMail->sendMail(
-    $senderEmailData['to_email'],
-    $senderEmailData['subject'],
-    html_entity_decode($senderEmailData['body'], ENT_QUOTES)
-);
+//     $graphMail->sendMail(
+//     $senderEmailData['to_email'],
+//     $senderEmailData['subject'],
+//     html_entity_decode($senderEmailData['body'], ENT_QUOTES)
+// );
 
                     
                       
@@ -1601,6 +1623,10 @@ A Multotec representative will contact you shortly.
         return back()->with('msg', 'Something went wrong!')->with('msg_class', 'alert alert-danger');
 
     }
+
+
+
+
 
 
     public function formSaveSettings(Request $request) {

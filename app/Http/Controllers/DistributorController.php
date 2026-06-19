@@ -292,6 +292,10 @@ class DistributorController extends Controller
 
     	$Distributor = new Distributor;
     	$Distributor->name = trim( ucfirst($request->input('name')) );
+          	$Distributor->youtube = trim($request->input('youtube'));
+    	$Distributor->facebook = trim($request->input('facebook'));
+    	$Distributor->twitter = trim($request->input('twitter'));
+    	$Distributor->linkedin = trim($request->input('linkedin'));
     	$Distributor->slug = trim($request->input('slug'));
     	$Distributor->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
     	$Distributor->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
@@ -418,6 +422,10 @@ class DistributorController extends Controller
 
     	$Distributor = Distributor::find($distributor_id);
     	$Distributor->name = trim( ucfirst($request->input('name')) );
+                	$Distributor->youtube = trim($request->input('youtube'));
+    	$Distributor->facebook = trim($request->input('facebook'));
+    	$Distributor->twitter = trim($request->input('twitter'));
+    	$Distributor->linkedin = trim($request->input('linkedin'));
     	$Distributor->slug = trim($request->input('slug'));
     	$Distributor->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
     	$Distributor->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );

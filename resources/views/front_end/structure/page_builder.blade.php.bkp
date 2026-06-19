@@ -155,43 +155,15 @@
                                     <h2 class="sph2">{!! trim(html_entity_decode($pgd->main_title, ENT_QUOTES)) !!}<span>{{ $pgd->sub_title }}</span></h2>
                                     {!! getHtmlFormBySCODE($pgd->main_content) !!}
                                 </div>
-                            {{-- @if (url()->current() == 'https://www.multotec.icedev.co.za/en/location/north-america/multotec-canada') --}}
- @if(
-    !empty($allData->youtube) ||
-    !empty($allData->linkedin) ||
-    !empty($allData->facebook) ||
-    !empty($allData->twitter)
-)
-<p style="text-align:center;">
-    <strong style="font-size:24px;vertical-align:middle;">Follow us:</strong>
-
-    @if(!empty($allData->youtube))
-        <a href="{{ $allData->youtube }}" target="_blank">
-            <img src="{{ asset('public/uploads/files/youtube.jpg') }}" width="50" height="50">
-        </a>
-    @endif
-
-    @if(!empty($allData->linkedin))
-        <a href="{{ $allData->linkedin }}" target="_blank">
-            <img src="{{ asset('public/uploads/files/linkedin.jpg') }}" width="50" height="50">
-        </a>
-    @endif
-
-    @if(!empty($allData->facebook))
-        <a href="{{ $allData->facebook }}" target="_blank">
-            <img src="{{ asset('public/uploads/files/facebook.jpg') }}" width="50" height="50">
-        </a>
-    @endif
-
-    @if(!empty($allData->twitter))
-        <a href="{{ $allData->twitter }}" target="_blank">
-            <img src="{{ asset('public/uploads/files/twitter.png') }}" width="50" height="50">
-        </a>
-    @endif
-</p>
+                            @if (url()->current() == 'https://www.multotec.com/en/location/north-america/multotec-canada')
+    <p style="text-align:center;">
+        <strong style="font-size:24px;vertical-align:middle;">Follow us:</strong>
+        <a href="#"><img src="/public/uploads/files/youtube.jpg" width="50" height="50" style="vertical-align:middle;"></a>
+        <a href="#"><img src="/public/uploads/files/linkedin.jpg" width="50" height="50" style="vertical-align:middle;"></a>
+        <a href="#"><img src="/public/uploads/files/facebook.jpg" width="50" height="50" style="vertical-align:middle;"></a>
+        <a href="#"><img src="/public/uploads/files/twitter.png" width="50" height="50" style="vertical-align:middle;"></a>
+    </p>
 @endif
-
-{{-- @endif --}}
                                 <!-- For Desktop Popup -->
                                 <div class="modal fade" id="desktop_eform_modal" tabindex="-1" role="dialog"
                                     aria-labelledby="myModalLabel2">
@@ -752,17 +724,7 @@ let content =
             });
         });
 
-      //  map.fitBounds(bounds);
-      if (validBranches.length === 1) {
-            map.setCenter({
-                lat: parseFloat(validBranches[0].latitude),
-                lng: parseFloat(validBranches[0].longitude)
-            });
-
-            map.setZoom(10);
-        } else {
-            map.fitBounds(bounds);
-        }
+        map.fitBounds(bounds);
     }
 
     google.maps.event.addDomListener(window, 'load', initMap);
@@ -772,6 +734,6 @@ let content =
 @endif
 
 
-<script
+<script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1ctyLhYi1UVzqbsc1fLA6evrrdGWeoWs&callback=initMap&sensor=false">
 </script>

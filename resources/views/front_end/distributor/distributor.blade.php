@@ -100,7 +100,7 @@
                                 <div class="dsk-modal-frmright">
                                     <h2 class="sph2">Need more info?<span>Contact Multotec</span></h2>
                                     <div class='ar_frm_container' style='background-color:#eaeaea; color:#000000;'>
-                                        <form name='general' action='https://www.multotec.com/arindam-form-submit' method='post'
+                                        <form name='general' action='https://www.multotec.icedev.co.za/arindam-form-submit' method='post'
                                             class='ar_vali_class ' enctype='multipart/form-data'><input type='hidden'
                                                 name='receive_email[]' value='heathl@cubicice.com' /><input type='hidden'
                                                 name='receive_email[]' value='KoenaL@multotec.com' /><input type='hidden'

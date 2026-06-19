@@ -140,6 +140,54 @@
           </div>
 
 
+            <div class="row">
+         
+            <div class="col-md-4">
+            
+              <div class="form-group">
+                <label>Youtube</label>
+                <input type="text" name="youtube" id="youtube" class="form-control" placeholder="" value="@if( isset($distributor) ){{ $distributor->youtube }}@endif" @if( isset($distributor) )  @endif>
+              </div>
+        
+            
+            </div>
+
+             <div class="col-md-4">
+            
+              <div class="form-group">
+                <label>LinkedIn</label>
+                <input type="text" name="linkedin" id="linkedin" class="form-control" placeholder="" value="@if( isset($distributor) ){{ $distributor->linkedin }}@endif" @if( isset($distributor) )  @endif>
+              </div>
+        
+            
+            </div>
+          </div>
+
+
+            <div class="row">
+         
+            <div class="col-md-4">
+            
+              <div class="form-group">
+                <label>Facebook</label>
+                <input type="text" name="facebook" id="facebook" class="form-control" placeholder="" value="@if( isset($distributor) ){{ $distributor->facebook }}@endif" @if( isset($distributor) )  @endif>
+              </div>
+        
+            
+            </div>
+
+             <div class="col-md-4">
+            
+              <div class="form-group">
+                <label>Twitter</label>
+                <input type="text" name="twitter" id="twitter" class="form-control" placeholder="" value="@if( isset($distributor) ){{ $distributor->twitter }}@endif" @if( isset($distributor) )  @endif>
+              </div>
+        
+            
+            </div>
+          </div>
+
+
           <!------------------------------------------------------------------------------------------------------->
           <!-- META INFO -->
           <div class="row">
