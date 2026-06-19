@@ -848,16 +848,15 @@ class FormBuilder extends Controller
         }
 
          
-        // if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
-        if( !empty($postData)) {
+        if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
             
-            // $captcha = $postData['g-recaptcha-response'];
-            // $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
-            // $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
-            // $responseData = json_decode($verifyResponse);
-            // if(!$responseData->success) {
-            //     return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
-            // } 
+            $captcha = $postData['g-recaptcha-response'];
+            $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
+            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
+            $responseData = json_decode($verifyResponse);
+            if(!$responseData->success) {
+                return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
+            } 
 
             $frmID = $postData['ar_frm_id'];
             $thankyou = $postData['thankyou_url'];
@@ -966,8 +965,8 @@ class FormBuilder extends Controller
             ->select('name','url','source_type')
             ->whereRaw('? LIKE CONCAT("%", url, "%")', [$rerf_fullurl])
             ->first();
-              dd($rerf_fullurl);
-            
+
+   
             // foreach($allcampaign as $onerow){
             
             //     $str = $rerf_fullurl;
@@ -982,7 +981,7 @@ class FormBuilder extends Controller
             //     {
             //         $hits=$onerow;
             //     }
-            
+             
             // }
            //   dd($str,$onerow,$allcampaign);
             //  $hits=DB::table('campaign') 
@@ -999,30 +998,55 @@ class FormBuilder extends Controller
             // }
 
             
-            if (
-    ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
-    && !isset($hitsurl->name)
-) {
-    $source_typename = 'Direct';
-}
+//             if (
+//     ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
+//     && !isset($hitsurl->name)
+// ) {
+//     $source_typename = 'Direct';
+// }
 
-if (isset($hitsurl->name)) {
-    $source_typename = $hitsurl->name;
-}
+// if (isset($hitsurl->name)) {
+//     $source_typename = $hitsurl->name;
+// }
  
            }
  
-           if(isset($hits->name)){
+        //    if(isset($hits->name)){
  
-            // $source_type=DB::table('source_type') 
-            // ->selectRaw('name')  
-            // ->where('id','=', $hits->source_type)
-            // ->first();
+        //     // $source_type=DB::table('source_type') 
+        //     // ->selectRaw('name')  
+        //     // ->where('id','=', $hits->source_type)
+        //     // ->first();
 
-            $source_typename=$hits->name;
+        //     $source_typename=$hits->name;
 
-           }
+        //    }
+$source_typename = 'Direct';
 
+if (!empty($rerf_fullurl)) {
+
+    $host = parse_url($rerf_fullurl, PHP_URL_HOST);
+    $host = preg_replace('/^www\./i', '', $host);
+
+    $query = parse_url($rerf_fullurl, PHP_URL_QUERY);
+    parse_str($query ?? '', $params);
+
+    if (!empty($params['utm_campaign'])) {
+
+        $source_typename = ucwords(
+            str_replace('-', ' ', $params['utm_campaign'])
+        );
+
+    } elseif (
+        !empty($host) &&
+        $host != 'multotec.com' &&
+        $host != 'multotec.icedev.co.za'
+    ) {
+
+        // bing.com => Bing, youtube.com => Youtube
+        $source_typename = ucfirst(explode('.', $host)[0]);
+    }
+}
 
             
              $mailBODY = '';
@@ -1336,7 +1360,7 @@ foreach ($lastFieldsmain as $field) {
 
 
 $mailBODY = $formattedContent;
-//    echo html_entity_decode($mailBODY); die();
+    // echo html_entity_decode($mailBODY); die();
                // $mailBODY .= 'IP Address = '.$request->ip().'<br/>';
                 $mail_sub = "New Multotec Enquiry - " . $enq_id;
                 $empTemp = \App\Models\EmailTemplate::find(3);
@@ -1392,11 +1416,11 @@ $mailBODY = $formattedContent;
 
                     try {
    
-            // $graphMail->sendMail(
-            //     $emailData['to_email'],
-            //     $emailData['subject'],
-            //     html_entity_decode($emailData['body'], ENT_QUOTES)
-            // );
+            $graphMail->sendMail(
+                $emailData['to_email'],
+                $emailData['subject'],
+                html_entity_decode($emailData['body'], ENT_QUOTES)
+            );
 
             
                     } catch (\Exception $e) { 
@@ -1589,18 +1613,18 @@ A Multotec representative will contact you shortly.
                 $senderEmailData['from_email'] = env('MAIL_FROM_ADDRESS',"marketing@multotec.com");
                 $senderEmailData['from_name'] = "Multotec";
 
-           echo html_entity_decode($senderMailBODY);die();
+       //    echo html_entity_decode($senderMailBODY);die();
               
   
 
   
 
 
-//     $graphMail->sendMail(
-//     $senderEmailData['to_email'],
-//     $senderEmailData['subject'],
-//     html_entity_decode($senderEmailData['body'], ENT_QUOTES)
-// );
+    $graphMail->sendMail(
+    $senderEmailData['to_email'],
+    $senderEmailData['subject'],
+    html_entity_decode($senderEmailData['body'], ENT_QUOTES)
+);
 
                     
                       
@@ -1623,10 +1647,6 @@ A Multotec representative will contact you shortly.
         return back()->with('msg', 'Something went wrong!')->with('msg_class', 'alert alert-danger');
 
     }
-
-
-
-
 
 
     public function formSaveSettings(Request $request) {
