@@ -848,16 +848,15 @@ class FormBuilder extends Controller
         }
 
          
-        // if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
-        if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1) {
+        if( !empty($postData) && $flag1!=1 && $flag2!=1  && $flag3!=1 && $postData['company_8d9f1569b3d5a8fba1a5463bc280b601']!='google' && isset($postData['g-recaptcha-response'])) {
             
-            // $captcha = $postData['g-recaptcha-response'];
-            // $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
-            // $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
-            // $responseData = json_decode($verifyResponse);
-            // if(!$responseData->success) {
-            //     return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
-            // } 
+            $captcha = $postData['g-recaptcha-response'];
+            $secret = '6LfRP74UAAAAAI-e0TPiFl9pnWOpakV7xv3E2J9f';
+            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$captcha);
+            $responseData = json_decode($verifyResponse);
+            if(!$responseData->success) {
+                return back()->with('captcha_error', 'Form not submitted due to validation. Please try again.');
+            } 
 
             $frmID = $postData['ar_frm_id'];
             $thankyou = $postData['thankyou_url'];
@@ -954,54 +953,100 @@ class FormBuilder extends Controller
             $pattern = '/www./i';
             $r[2]= preg_replace($pattern, '', $r[2]);
 
-            $allcampaign=DB::table('campaign') 
-            ->selectRaw('name,url,source_type')   
+            // $allcampaign=DB::table('campaign') 
+            // ->selectRaw('name,url,source_type')   
+            // ->get();
+
+            $allcampaign = DB::table('campaign')
+            ->selectRaw('name,url,source_type')
             ->get();
 
-            
-            foreach($allcampaign as $onerow){
-            
-                $str = $rerf_fullurl;
-
-
-                $onerow->url=str_replace("/","#",$onerow->url); 
-                $pattern = "/{$onerow->url}/i";
-
-                // $pattern = "/".$onerow->url."/i";
-                $flag= preg_match($pattern, $str);
-                if($flag)
-                {
-                    $hits=$onerow;
-                }
-            
-            }
-            
-             $hits=DB::table('campaign') 
-             ->selectRaw('name,url,source_type')  
-             ->where('url','like', '%'.$r[2].'%')
-             ->first();
-
- 
-            if (
-                ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
-                && !isset($hits->name)
-            ) {
-                $source_typename = 'Direct';
-            }
- 
-           }
- 
-           if(isset($hits->name)){
- 
-            $source_type=DB::table('source_type') 
-            ->selectRaw('name')  
-            ->where('id','=', $hits->source_type)
+            $hitsurl = DB::table('campaign')
+            ->select('name','url','source_type')
+            ->whereRaw('? LIKE CONCAT("%", url, "%")', [$rerf_fullurl])
             ->first();
 
-            $source_typename=$source_type->name;
+   
+            // foreach($allcampaign as $onerow){
+            
+            //     $str = $rerf_fullurl;
 
+
+            //     $onerow->url=str_replace("/","#",$onerow->url); 
+            //     $pattern = "/{$onerow->url}/i";
+
+            //     // $pattern = "/".$onerow->url."/i";
+            //     $flag= preg_match($pattern, $str);
+            //     if($flag)
+            //     {
+            //         $hits=$onerow;
+            //     }
+             
+            // }
+           //   dd($str,$onerow,$allcampaign);
+            //  $hits=DB::table('campaign') 
+            //  ->selectRaw('name,url,source_type')  
+            //  ->where('url','like', '%'.$r[2].'%')
+            //  ->first();
+
+ 
+            // if (
+            //     ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
+            //     && !isset($hits->name)
+            // ) {
+            //     $source_typename = 'Direct';
+            // }
+
+            
+//             if (
+//     ($r[2] == 'multotec.com' || $r[2] == 'multotec.icedev.co.za')
+//     && !isset($hitsurl->name)
+// ) {
+//     $source_typename = 'Direct';
+// }
+
+// if (isset($hitsurl->name)) {
+//     $source_typename = $hitsurl->name;
+// }
+ 
            }
+ 
+        //    if(isset($hits->name)){
+ 
+        //     // $source_type=DB::table('source_type') 
+        //     // ->selectRaw('name')  
+        //     // ->where('id','=', $hits->source_type)
+        //     // ->first();
 
+        //     $source_typename=$hits->name;
+
+        //    }
+$source_typename = 'Direct';
+
+if (!empty($rerf_fullurl)) {
+
+    $host = parse_url($rerf_fullurl, PHP_URL_HOST);
+    $host = preg_replace('/^www\./i', '', $host);
+
+    $query = parse_url($rerf_fullurl, PHP_URL_QUERY);
+    parse_str($query ?? '', $params);
+
+    if (!empty($params['utm_campaign'])) {
+
+        $source_typename = ucwords(
+            str_replace('-', ' ', $params['utm_campaign'])
+        );
+
+    } elseif (
+        !empty($host) &&
+        $host != 'multotec.com' &&
+        $host != 'multotec.icedev.co.za'
+    ) {
+
+        // bing.com => Bing, youtube.com => Youtube
+        $source_typename = ucfirst(explode('.', $host)[0]);
+    }
+}
 
             
              $mailBODY = '';
@@ -1315,7 +1360,7 @@ foreach ($lastFieldsmain as $field) {
 
 
 $mailBODY = $formattedContent;
-//    echo html_entity_decode($mailBODY); die();
+    // echo html_entity_decode($mailBODY); die();
                // $mailBODY .= 'IP Address = '.$request->ip().'<br/>';
                 $mail_sub = "New Multotec Enquiry - " . $enq_id;
                 $empTemp = \App\Models\EmailTemplate::find(3);
@@ -1341,7 +1386,7 @@ $mailBODY = $formattedContent;
               
               if(!empty($request->selected_email)){
                 //   $mailArr = array($request->selected_email);  //working
-        //      $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+           //   $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                   $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
 
                   //  $mailArr = array("syedalireza@karmicksolutions.com");  //working
@@ -1350,7 +1395,7 @@ $mailBODY = $formattedContent;
                 DB::table('frm_data')->where('enq_id',$updateid)->update(['regional'=>1]);
               }
               else{
-          //      $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
+              //  $mailArr = array("mailtosyedreza@gmail.com",'zeeshan.mymail@gmail.com');  //working
                 //   $mailArr = array("mailtosyedreza@gmail.com");  //working
                 $mailArr = array("heathl@cubicice.com","tarryn@cubicice.com","marketing@multotec.com","melissa@cubicice.com","duma@cubicice.com");  //working
               }
