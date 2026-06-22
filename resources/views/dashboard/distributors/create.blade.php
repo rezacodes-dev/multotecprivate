@@ -140,6 +140,27 @@
           </div>
 
 
+              <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Upload Country Logo</label>
+                        <input type="file"
+                              name="country_logo"
+                              id="country_logo"
+                              class="form-control"
+                              accept="image/*">
+
+                        <div class="mt-2">
+                            <img id="country_logo_preview"
+                                src="{{ !empty($distributor->country_logo) ? asset('public/uploads/files/continent_images/'.$distributor->country_logo) : '' }}"
+                                alt="Logo Preview"
+                                style="width:100px;height:70px;object-fit:contain;{{ empty($distributor->country_logo) ? 'display:none;' : '' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="row">
          
             <div class="col-md-4">
@@ -550,6 +571,28 @@ function string_to_slug(str) {
     .replace(/-+$/, ""); // trim - from end of text
   return str;
 }
+</script>
+
+<script>
+document.getElementById('country_logo').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('country_logo_preview');
+
+    if (!file) {
+        preview.style.display = 'none';
+        preview.src = '';
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+        preview.src = event.target.result;
+        preview.style.display = 'block';
+    };
+
+    reader.readAsDataURL(file);
+});
 </script>
 
 @include('dashboard.page_builder.seo.script')

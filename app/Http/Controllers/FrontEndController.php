@@ -60,7 +60,7 @@ class FrontEndController extends Controller
         $mainMenu = NaviMaster::where('menu_id', '=', '2')->where('parent_page_id', '=', '0')
             ->where('lng_id', '=', $currlngid)->orderBy('oid', 'asc')->get();
         $shareData['mainMenu'] = $mainMenu;
-
+     
         $stickyFooter = NaviMaster::where('menu_id', '=', '4')->where('parent_page_id', '=', '0')
             ->where('lng_id', '=', $currlngid)->orderBy('oid', 'asc')->get();
         $shareData['stickyFooter'] = $stickyFooter;
@@ -2175,7 +2175,8 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
         $DataBag['map_data'] = json_encode($mapData);
 
-        return view('front_end.distributor.distributor_category', $DataBag);
+    //    return view('front_end.distributor.distributor_category', $DataBag);
+        return view('front_end.distributor.distributor_continents', $DataBag);
     }
 
     public function distributor($lng, $cat_slug, $distbr_slug)

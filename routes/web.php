@@ -20,39 +20,39 @@ now create new controller FrontEndController2
 logic is -> check lng tag is 'en' or not into your current FrontEndController. 
 if en then redirect to FrontEndController2 (where no lng slug)
 **/
-Route::get('/drop-distributor-tables', function () {
+// Route::get('/drop-distributor-tables', function () {
 
-    DB::statement('SET FOREIGN_KEY_CHECKS=0');
+//     DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
-    $tables = [
-        'distributor',
-        'distributor_categories_map',
-        'distributor_category',
-        'distributor_contents',
-        'distributor_content_files_map',
-        'distributor_content_images_map',
-        'distributor_files_map',
-        'distributor_images_map',
-        'distributor_industries_map',
-        'distributor_product_categories_map',
-    ];
+//     $tables = [
+//         'distributor',
+//         'distributor_categories_map',
+//         'distributor_category',
+//         'distributor_contents',
+//         'distributor_content_files_map',
+//         'distributor_content_images_map',
+//         'distributor_files_map',
+//         'distributor_images_map',
+//         'distributor_industries_map',
+//         'distributor_product_categories_map',
+//     ];
 
-    foreach ($tables as $table) {
-        DB::statement("DROP TABLE IF EXISTS `$table`");
-    }
+//     foreach ($tables as $table) {
+//         DB::statement("DROP TABLE IF EXISTS `$table`");
+//     }
 
-    DB::statement('SET FOREIGN_KEY_CHECKS=1');
+//     DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-    return 'Tables dropped successfully';
-});
-Route::get('/run-sql', function () {
+//     return 'Tables dropped successfully';
+// });
+// Route::get('/run-sql', function () {
 
-    $sql = file_get_contents(public_path('distributor.sql'));
+//     $sql = file_get_contents(public_path('distributor.sql'));
 
-    DB::unprepared($sql);
+//     DB::unprepared($sql);
 
-    return 'SQL imported successfully';
-});
+//     return 'SQL imported successfully';
+// });
 Route::get('/brazil', 'FrontEndController@landingPagesBrazil')->name('landingPagesBrazil');
 
 // Route::get('/bstable', function () {

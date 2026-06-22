@@ -313,6 +313,17 @@ class DistributorController extends Controller
         $Distributor->index_tag = trim($request->input('index_tag'));
         $Distributor->json_markup = trim( htmlentities($request->input('json_markup'), ENT_QUOTES) );
 
+        if ($request->hasFile('country_logo')) {
+
+    $file = $request->file('country_logo');
+
+    $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+
+    $file->move(public_path('uploads/files/continent_images'), $filename);
+
+    $Distributor->country_logo = $filename;
+}
+
     	if( $Distributor->save() ) {
 
     		$distributor_id = $Distributor->id;
@@ -439,6 +450,23 @@ class DistributorController extends Controller
         $Distributor->follow = trim($request->input('follow'));
         $Distributor->index_tag = trim($request->input('index_tag'));
         $Distributor->json_markup = trim( htmlentities($request->input('json_markup'), ENT_QUOTES) );
+
+            if ($request->hasFile('country_logo')) {
+
+                $file = $request->file('country_logo');
+
+                $filename = time().'_'.$file->getClientOriginalName();
+
+                $file->move(public_path('uploads/files/continent_images'), $filename);
+
+                // Delete old file
+                if (!empty($Distributor->country_logo) &&
+                    file_exists(public_path('uploads/files/continent_images/'.$Distributor->country_logo))) {
+                    unlink(public_path('uploads/files/continent_images/'.$Distributor->country_logo));
+                }
+
+                $Distributor->country_logo = $filename;
+            }
 
     	
     	if( $Distributor->save() ) {

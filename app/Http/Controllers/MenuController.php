@@ -448,6 +448,7 @@ class MenuController extends Controller
         $is_link = trim( $request->input('is_link') );
 
         $NaviMaster = NaviMaster::find( $navid );
+   
         if( isset($NaviMaster) && !empty($NaviMaster) ) {
             $NaviMaster->label_txt = $label_txt;
             $NaviMaster->label_attr = $label_attr;
@@ -467,6 +468,7 @@ class MenuController extends Controller
 
         $lngnav_info = json_decode($request->input('lngnav_info'));
         if( !empty( $lngnav_info ) ) {
+       
             foreach( $lngnav_info as $k => $v ) {
                 $pocketArr = explode('_', $k);
                 if(!empty($pocketArr)) {
@@ -474,6 +476,7 @@ class MenuController extends Controller
                 } else {
                     $navID = 0;
                 }
+                dd($navID);
                 $NaviMaster2 = NaviMaster::find( $navID );
                 if( isset($NaviMaster2) && !empty($NaviMaster2) ) {
                     $NaviMaster2->label_txt = $v->label_txt;
