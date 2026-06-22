@@ -14,6 +14,15 @@
             {!! trim( html_entity_decode( $allData->page_content, ENT_QUOTES ) ) !!}
             @endif
 
+                @if (isset($allData->product_link) && !empty($allData->product_link))
+                    <div class="buttom-row dwn-btn">
+
+                        <a class="squre-btn" href="{{ $allData->product_link }}" target="_blank"> <i
+                                class="fa fa-angle-down" aria-hidden="true"></i> <span>Download Brochure</span></a>
+                    </div>
+                @else
+                @endif
+
             <!-- Loop -->
             @if( isset($allData->pageBuilderContent) && !empty($allData->pageBuilderContent) && isset($device) )
             
