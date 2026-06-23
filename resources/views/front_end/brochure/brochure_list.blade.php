@@ -389,22 +389,30 @@ a.filterbut {
 
         @if(isset($listData))
             @forelse($listData as $v)
-                <div class="col-sm-6 col-md-4 mb-4">
-                    <div class="product-card h-100">
-                        <a href="{{ route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) }}">
-                            @php
-                                $imageURL = !empty($v->thumbnail_image) 
-                                    ? asset('public/' . $v->thumbnail_image) 
-                                    : asset('public/images/default_multotec.jpg');
-                            @endphp
-                            <img src="{{ $imageURL }}" alt="{{ $v->name }}" class="card-img-top img-fluid">
-                        </a>
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{ $v->name }}</h5>
-                            <a href="{{ route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) }}" class="btn-view">View Content</a>
-                        </div>
-                    </div>
-                </div>
+          <div class="col-sm-6 col-md-4 mb-4">
+    <div class="product-card h-100">
+
+        <a href="{{ route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) }}{{ !empty($query_string) ? '?' . $query_string : '' }}">
+            @php
+                $imageURL = !empty($v->thumbnail_image)
+                    ? asset('public/' . $v->thumbnail_image)
+                    : asset('public/images/default_multotec.jpg');
+            @endphp
+
+            <img src="{{ $imageURL }}" alt="{{ $v->name }}" class="card-img-top img-fluid">
+        </a>
+
+        <div class="card-body text-center">
+            <h5 class="card-title">{{ $v->name }}</h5>
+
+            <a href="{{ route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) }}{{ !empty($query_string) ? '?' . $query_string : '' }}"
+               class="btn-view">
+                View Content
+            </a>
+        </div>
+
+    </div>
+</div>
             @empty
                 <h3>No Record Found</h3>
             @endforelse
@@ -492,6 +500,7 @@ function getWebinars() {
             brochure_brand,
             brochure_language,
             brochure_product,
+             query_string: params.toString(),
             _token: "{{ csrf_token() }}"
         },
         success: function(data) {
