@@ -476,7 +476,6 @@ class MenuController extends Controller
                 } else {
                     $navID = 0;
                 }
-                dd($navID);
                 $NaviMaster2 = NaviMaster::find( $navID );
                 if( isset($NaviMaster2) && !empty($NaviMaster2) ) {
                     $NaviMaster2->label_txt = $v->label_txt;

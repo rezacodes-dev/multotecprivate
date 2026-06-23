@@ -60,7 +60,7 @@ class FrontEndController extends Controller
         $mainMenu = NaviMaster::where('menu_id', '=', '2')->where('parent_page_id', '=', '0')
             ->where('lng_id', '=', $currlngid)->orderBy('oid', 'asc')->get();
         $shareData['mainMenu'] = $mainMenu;
-     
+   
         $stickyFooter = NaviMaster::where('menu_id', '=', '4')->where('parent_page_id', '=', '0')
             ->where('lng_id', '=', $currlngid)->orderBy('oid', 'asc')->get();
         $shareData['stickyFooter'] = $stickyFooter;

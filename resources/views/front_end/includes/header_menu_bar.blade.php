@@ -36,16 +36,23 @@
                                                         @if( $chMnu->is_link == '1' && $chMnu->custom_link != '' && $chMnu->custom_link != null )
                                                             <a href="{{ $chMnu->custom_link }}">{{ ucfirst($chMnu->label_txt) }}</a>
                                                         @else
-                                                            <a href="#">{{ ucfirst($chMnu->label_txt) }}</a>
+                                                            <a href="{{ $chMnu->custom_link??'' }}">{{ ucfirst($chMnu->label_txt) }}</a>
                                                         @endif
                                                     @else
-                                                        <a href="#">{{ ucfirst($chMnu->label_txt) }}</a>
+                                                        <a href="{{ $chMnu->custom_link??'' }}">{{ ucfirst($chMnu->label_txt) }}</a>
                                                     @endif
                                                 @else
                                                     @php
                                                     $linkData = getMenuLink( $chMnu->cms_link_id, $chMnu->table_type, $chMnu->table_id );
+                                                    if($chMnu->cms_link_id == 948)
+                                                    {
+                                                        // $linkData='https://multotec.icedev.co.za/en/location/north-america';
+                                                        $linkData=$chMnu->custom_link??'';
+                                                    }
                                                     @endphp
-                                                    <a href="{{ $linkData }}">{{ ucfirst($chMnu->label_txt) }}</a>
+                                                 
+                                                  
+                                                    <a href="{{$linkData}}">{{ ucfirst($chMnu->label_txt) }}</a>
                                                 @endif
                                             </span>
                                             @if( isset($chMnu->childMenu) && count($chMnu->childMenu) > 0 )

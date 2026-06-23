@@ -11,7 +11,7 @@
   @endphp
 <div class="form-group">
   <label>Page Link or URL : (English)</label>
-  <input type="text" name="page_url" class="form-control" placeholder="Enter Page URL" value="{{ $url }}" readonly="readonly">
+  <input type="text" name="page_url" class="form-control" placeholder="Enter Page URL" value="{{ $url }}" >
 </div>
 @endif
 
@@ -90,17 +90,17 @@
     @else
     <div class="form-group">
       <label>Page Link or URL :({{$olng->name}})</label>
-      <input type="text" id="lngpgurl_{{ $language_id }}" class="form-control lng_page_url" placeholder="Enter Page URL" value="{{ $lngurl }}" readonly="readonly">
+      <input type="text" id="lngpgurl_{{ $language_id }}" class="form-control lng_page_url" placeholder="Enter Page URL" value="{{ $lngurl }}" >
     </div>
     @endif
     
     <div class="form-group" style="margin-top: 10px;">
       <label>Link Label Text : <em>*</em>({{$olng->name}})</label>
-      <input type="text" id="lnglabel_{{ $language_id }}" class="form-control lng_label_txt" placeholder="Enter Link Label Text" value="{{ $lbtext }}" @if(empty($lngPageInfo) && $NavDetail->table_type != 'MENU_CUSTOM_LINK') readonly="readonly" @endif>
+      <input type="text" id="lnglabel_{{ $language_id }}" class="form-control lng_label_txt" placeholder="Enter Link Label Text" value="{{ $lbtext }}" @if(empty($lngPageInfo) && $NavDetail->table_type != 'MENU_CUSTOM_LINK')  @endif>
     </div>
     <div class="form-group" style="margin-top: 10px;">
       <label>Link Label Attribute : <em>*</em>({{$olng->name}})</label>
-      <input type="text" id="lngattr_{{ $language_id }}" class="form-control lng_label_attr" placeholder="Enter Link Label Attribute" value="{{ $lbattr }}" @if(empty($lngPageInfo) && $NavDetail->table_type != 'MENU_CUSTOM_LINK') readonly="readonly" @endif>
+      <input type="text" id="lngattr_{{ $language_id }}" class="form-control lng_label_attr" placeholder="Enter Link Label Attribute" value="{{ $lbattr }}" @if(empty($lngPageInfo) && $NavDetail->table_type != 'MENU_CUSTOM_LINK') @endif>
     </div>
     
     @if(empty($lngPageInfo) && $NavDetail->table_type != 'MENU_CUSTOM_LINK')
