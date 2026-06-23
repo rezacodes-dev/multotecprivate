@@ -115,6 +115,7 @@
 -->
 <section class="container">
 <div class="row">
+  
     <div class="col-sm-12">
         <div class="midblock" id="firstBlock">
 
@@ -167,10 +168,56 @@
 
 
 <div class="container">
-
+  <h4 class="mb-2 pl-2">
+    <strong>Multotec Across {{$currContinent->name??''}} </strong>
+    
+</h4>
 
     <div class="continents">
         <div class="row">
+        <input type="hidden" id="branchURL" value="{{ url('/en/location') }}">
+
+            @foreach($countriesFlag as $val)
+            <div class="col-md-6 col-lg-4">
+                <div class="continentcard">
+                    <div class="continentlogo">
+                        <img src="{{ asset('public/uploads/files/continent_images/' . $val->logo) }}"
+                            alt="{{ $val->country_name }}">
+                    </div>
+
+                    <h4 class="countryname"> {{ preg_replace('/[^A-Za-z0-9\s]/', '', trim(str_ireplace('Multotec', '', $val->country_name))) }}</h4>
+
+                    <a href="{{ url('en/location/' . $val->continent_name . '/' . $val->country_slug) }}"
+                    class="bottomcont">
+                        <span>View Country</span>
+                        <div class="arrowicon">
+                            <img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}"
+                                alt="">
+                        </div>
+                    </a>
+                </div>
+            </div>
+            @endforeach
+            {{-- <div class="col-md-6 col-lg-4">
+                <div class="continentcard">
+                    <div class="continentlogo"><img src="{{ asset('public/uploads/files/continent_images/chile-logo.jpg') }}" alt="logo"></div>
+                    <h4 class="countryname">Chile</h4>
+                    <a href="#" class="bottomcont">
+                        <span>View Country</span>
+                        <div class="arrowicon"><img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}" alt=""></div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="continentcard">
+                    <div class="continentlogo"><img src="{{ asset('public/uploads/files/continent_images/peru-logo.jpg') }}" alt="logo"></div>
+                    <h4 class="countryname">Peru</h4>
+                    <a href="#" class="bottomcont">
+                        <span>View Country</span>
+                        <div class="arrowicon"><img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}" alt=""></div>
+                    </a>
+                </div>
+            </div>
             <div class="col-md-6 col-lg-4">
                 <div class="continentcard">
                     <div class="continentlogo"><img src="{{ asset('public/uploads/files/continent_images/brazil-logo.jpg') }}" alt="logo"></div>
@@ -200,42 +247,15 @@
                         <div class="arrowicon"><img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}" alt=""></div>
                     </a>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="continentcard">
-                    <div class="continentlogo"><img src="{{ asset('public/uploads/files/continent_images/brazil-logo.jpg') }}" alt="logo"></div>
-                    <h4 class="countryname">Brazil</h4>
-                    <a href="#" class="bottomcont">
-                        <span>View Country</span>
-                        <div class="arrowicon"><img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}" alt=""></div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="continentcard">
-                    <div class="continentlogo"><img src="{{ asset('public/uploads/files/continent_images/chile-logo.jpg') }}" alt="logo"></div>
-                    <h4 class="countryname">Chile</h4>
-                    <a href="#" class="bottomcont">
-                        <span>View Country</span>
-                        <div class="arrowicon"><img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}" alt=""></div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="continentcard">
-                    <div class="continentlogo"><img src="{{ asset('public/uploads/files/continent_images/peru-logo.jpg') }}" alt="logo"></div>
-                    <h4 class="countryname">Peru</h4>
-                    <a href="#" class="bottomcont">
-                        <span>View Country</span>
-                        <div class="arrowicon"><img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}" alt=""></div>
-                    </a>
-                </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 
 
 </div>
+<div class="padtop">
+                    <div class="container">Multotec products are engineered to optimise costs, lifespan and efficiency of mineral beneficiation plants.</div>
+                </div>
 <!--- END FIRST BLOCK --->
 @endsection
 

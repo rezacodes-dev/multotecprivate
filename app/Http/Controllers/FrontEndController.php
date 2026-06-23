@@ -2149,7 +2149,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
         $DataBag['currContinent'] = \App\Models\Distributor\DistributorCategories::where('slug', '=', $cat_slug)
             ->where('language_id', '=', $getlngid)->where('status', '=', '1')->first();
-
+        
         $DataBag['page_metadata'] = $DataBag['currContinent'];
 
         if (!empty($DataBag['currContinent'])) {
@@ -2163,18 +2163,33 @@ $DataBag['map'] = \App\Models\HomeMap::first();
             $countries = $query->orderBy('name', 'asc')->get();
             $DataBag['seleCountries'] = $countries;
         }
-
+       
         $map = DB::table('distributor_categories_map as dcm')
             ->join('distributor_category as dcat', 'dcat.id', '=', 'dcm.distributor_category_id')
             ->join('distributor', 'distributor.id', '=', 'dcm.distributor_id')
             ->join('distributor_contents as dc', 'dc.distributor_id', '=', 'distributor.id')
-            ->where('dc.status', '=', '1')->where('dc.latitude', '!=', '')->where('dc.longitude', '!=', '')
+            ->where('dc.status', '=', '1')
+            ->where('dc.latitude', '!=', '')->where('dc.longitude', '!=', '')
             ->where('dcat.slug', '=', $cat_slug);
 
         $mapData = $map->select('dc.name as name', 'dc.latitude as lat', 'dc.longitude as lng', 'dc.address as address', 'dc.slug as branch_slug', 'dc.branch_type', 'distributor.slug as country_slug', 'dcat.slug as continent_slug')->get();
-
+      
         $DataBag['map_data'] = json_encode($mapData);
 
+            $continent_id = $DataBag['currContinent']->id??'';
+        $countriesFlag =  DB::table('distributor_categories_map')
+            ->join('distributor', 'distributor.id', '=', 'distributor_categories_map.distributor_id')
+            ->join('distributor_category', 'distributor_category.id', '=', 'distributor_categories_map.distributor_category_id')
+            ->where('distributor_category.status', 1)   
+            ->where('distributor.status', 1)
+            ->where('distributor_categories_map.distributor_category_id', $continent_id)
+            ->select('distributor.*', 'distributor_categories_map.*')
+            ->select('distributor.name as country_name', 'distributor.slug as country_slug' ,'distributor_category.slug as continent_name','distributor.country_logo as logo')
+            ->get();
+            
+
+          $DataBag['countriesFlag'] = $countriesFlag;
+          
     //    return view('front_end.distributor.distributor_category', $DataBag);
         return view('front_end.distributor.distributor_continents', $DataBag);
     }
