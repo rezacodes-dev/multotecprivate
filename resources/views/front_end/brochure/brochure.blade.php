@@ -332,6 +332,19 @@ a.filterbut {
     <div class="breadcrumb mb-4">
         <ul>
             <li><a href="{{ url('/') }}">Home</a></li>
+            @if(!empty($query_string))
+         <li>
+            <a href="{{ url('/en/brochure-library') }}?{{ $query_string }}">
+                Brochures
+            </a>
+        </li>
+            @else
+              <li>
+            <a href="{{ url('/en/brochure-library') }}">
+                Brochures
+            </a>
+        </li>
+            @endif
             <li>Product Brochure & Files</li>
         </ul>
     </div>
@@ -380,24 +393,30 @@ a.filterbut {
         @foreach($brochureGrouped as $langId => $brochures) 
             <a href="javascript:void(0)" 
                class="language-link {{ strtolower($brochures->first()->brochure_lang) == 'english' ? 'active' : '' }}" 
-               data-lang="{{ $langId }}">
+               data-lang="{{ $langId }}"
+               onclick="showLanguage('{{ $langId }}', this)"
+               >
                {{ $brochures->first()->brochure_lang ?? '' }}
             </a>
         @endforeach
     </div>
 
-    <div class="outerinner">
-                <a style="text-decoration:none;" href="{{ asset('public/' . $brochures->first()->brochure_pdf) }}" target="_blank">
-                    <img src="{{ asset('public/icons/view-icon.svg') }}">
-                    <strong>View<br>brochure</strong>
-                </a>
-            </div>
+    @foreach($brochureGrouped as $langId => $brochures)
+    <div class="outerinner view-brochure-link" data-language="{{ $langId }}" style="{{ $loop->first ? '' : 'display:none !important;' }}">
+        <a style="text-decoration:none;" href="{{ asset('public/' . $brochures->first()->brochure_pdf) }}" target="_blank">
+            <img src="{{ asset('public/icons/view-icon.svg') }}">
+            <strong>View<br>brochure</strong>
+        </a>
+    </div>
+    @endforeach
 </div>
 
 <div class="action-links topbardiv" style="display: flex; flex-direction: column; gap: 30px;">
     @foreach($brochureGrouped as $langId => $brochures)
-        <div class="outerdiv" data-language="{{ $langId }}" style="display: none; flex-wrap: wrap; gap: 6px;">
-
+        {{-- <div class="outerdiv" data-language="{{ $langId }}" style="display: none; flex-wrap: wrap; gap: 6px;"> --}}
+<div class="outerdiv"
+     data-language="{{ $langId }}"
+     style="{{ $loop->first ? 'display:flex !important;' : 'display:none !important;' }} flex-wrap:wrap; gap:6px;">
             {{-- Download Section --}}
             <div class="outerinner">
                 <img src="{{ asset('public/icons/pdf-icon.svg') }}">
@@ -628,35 +647,31 @@ $('#emailForm').on('submit', function (e) {
 
 
 </script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    // Get all language links and action rows
-    const languageLinks = document.querySelectorAll('.language-link');
-    const actionRows = document.querySelectorAll('.outerdiv');
+function showLanguage(langId, element)
+{
+    $('.language-link').removeClass('active');
+    $(element).addClass('active');
 
-    function showLanguage(languageId) {
-        actionRows.forEach(row => {
-            row.style.display = row.getAttribute('data-language') === languageId ? 'flex' : 'none';
-        });
-    }
-
-    // Set default language (English)
-    const defaultLangLink = document.querySelector('.language-link.active');
-    if (defaultLangLink) {
-        showLanguage(defaultLangLink.getAttribute('data-lang'));
-    }
-
-    // Handle click on language links
-    languageLinks.forEach(link => {
-        link.addEventListener('click', function () {
-            languageLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            showLanguage(this.getAttribute('data-lang'));
-        });
+    document.querySelectorAll('.outerdiv').forEach(function(el) {
+        el.style.setProperty('display', 'none', 'important');
     });
-});
+    document.querySelectorAll('.view-brochure-link').forEach(function(el) {
+        el.style.setProperty('display', 'none', 'important');
+    });
 
+    var activeOuter = document.querySelector('.outerdiv[data-language="' + langId + '"]');
+    if (activeOuter) {
+        activeOuter.style.removeProperty('display');
+    }
+    var activeView = document.querySelector('.view-brochure-link[data-language="' + langId + '"]');
+    if (activeView) {
+        activeView.style.removeProperty('display');
+    }
+}
 </script>
+
 
 @endpush
 

@@ -3089,6 +3089,7 @@ $query = BrochureMaster::with([
         $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'Brochures')->first();
 
         $DataBag['page_metadata'] = $DataBag['extraContent'];
+        $DataBag['query_string'] = request()->getQueryString() ?? '';
         // dd($DataBag['listData'] );
         return view('front_end.brochure.brochure_list', $DataBag);
     }
@@ -3174,7 +3175,8 @@ $query = BrochureMaster::with([
         $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'ARTICLE')->first();
 
         $DataBag['page_metadata'] = $DataBag['extraContent'];
-        // dd($DataBag['listData'] );
+      $DataBag['query_string'] = request()->getQueryString() ?? '';
+       
         return view('front_end.brochure.brochure', $DataBag);
     
     }
@@ -3282,6 +3284,7 @@ $query = BrochureMaster::with([
     $listData = $query->paginate(12)->appends($request->except('page'));
 
     $lng = app()->getLocale();
+    $query_string = $request->query_string??'';
     // $html = '<div class="row" id="listWebinars">';
 
     // if ($listData->count() > 0) {
@@ -3327,19 +3330,21 @@ if ($listData->count() > 0) {
             ? asset('public/' . $v->thumbnail_image)
             : asset('public/images/default_multotec.jpg');
 
-        $html .= '
-            <div class="col-sm-6 col-md-4 mb-4">
-                <div class="product-card h-100">
-                    <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . '">
-                        <img src="' . $imageURL . '" alt="' . e($v->name) . '" class="img-fluid">
-                    </a>
-                    <div class="product-info text-center">
-                        <h5>' . e($v->name) . '</h5>
-                        <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . '" class="btn-view">View Content</a>
-                    </div>
-                </div>
+     $html .= '
+    <div class="col-sm-6 col-md-4 mb-4">
+        <div class="product-card h-100">
+            <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . (!empty($query_string) ? '?' . $query_string : '') . '">
+                <img src="' . $imageURL . '" alt="' . e($v->name) . '" class="img-fluid">
+            </a>
+            <div class="product-info text-center">
+                <h5>' . e($v->name) . '</h5>
+                <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . (!empty($query_string) ? '?' . $query_string : '') . '" class="btn-view">
+                    View Content
+                </a>
             </div>
-        ';
+        </div>
+    </div>
+';
     }
 } else {
     $html .= '<h3>No Record Found</h3>';
