@@ -413,7 +413,8 @@ public function updateBrochureIndustry(Request $request, $topic_id)
     if (!empty($oldDetailsIds)) {
         BrochureProductDetails::whereIn('brochure_details_id', $oldDetailsIds)->delete();
     }
-    BrochureDetails::where('brochure_id', $brochure_id)->delete();
+   // BrochureDetails::where('brochure_id', $brochure_id)->delete();
+    BrochureDetails::whereIn('id', $oldDetailsIds)->delete();
 
     // ✅ Prepare data for new insert
     $sl_no = $request->input('sl_no') ?? [];
