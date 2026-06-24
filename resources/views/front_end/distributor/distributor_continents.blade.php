@@ -79,10 +79,10 @@
 @section('page_content')
 
 
-<section class="innerpage-banner">
+{{-- <section class="innerpage-banner">
     <img src="https://www.multotec.icedev.co.za/public/uploads/files/media_images/media_8a6748eef4ed9f8bf9ce3b62e5dbb666.jpg" title="Continent" alt="Continent" caption="Continent">
-</section>
-{{-- @if( isset($extraContent) && $extraContent->image_id != '' && isset($extraContent->imageInfo) )
+</section> --}}
+@if( isset($extraContent) && $extraContent->image_id != '' && isset($extraContent->imageInfo) )
 <section class="innerpage-banner">
     <img src="{{ asset('public/uploads/files/media_images/'.$extraContent->imageInfo->image) }}" title="{{ $extraContent->image_title }}" alt="{{ $extraContent->image_alt }}" caption="{{ $extraContent->image_caption }}">
 </section>
@@ -92,7 +92,7 @@
 <section class="innerpage-banner">
     <img src="{{ asset('public/uploads/files/media_images/'.$currContinent->imageInfo->image) }}" title="{{ $currContinent->image_title }}" alt="{{ $currContinent->image_alt }}" caption="{{ $currContinent->image_caption }}">
 </section>
-@endif --}}
+@endif
 
 
 

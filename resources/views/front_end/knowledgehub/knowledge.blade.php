@@ -402,10 +402,15 @@ p {
                    @else
                    @endif
                   @if(!empty($listData->podcast_link))
-                  <a href="{{ $listData->podcast_link }}" class="open-audio knowledgeicon"  target="_blank"
-                   style="" title="Listen"><img src="{{ asset('public/icons/headphones.png') }}">
-                      <span>Listen</span>
-                   </a>
+                 <a href="javascript:void(0)"
+ <a href="javascript:void(0)"
+   class="open-audio knowledgeicon"
+   data-podcast="{{ $listData->podcast_link }}"
+   title="Listen">
+
+    <img src="{{ asset('public/icons/headphones.png') }}">
+    <span>Listen</span>
+</a>
                    @else
                    @endif
 
@@ -461,6 +466,61 @@ p {
 
     </div>
   </div>
+</div>
+<div class="modal fade" id="spotifyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fa fa-spotify text-success"></i>
+                    Spotify Player
+                </h4>
+
+                {{-- <button type="button"
+                        class="btn btn-sm btn-secondary mr-2"
+                        id="minimizeSpotify">
+                    Minimize
+                </button> --}}
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-center">
+
+                @if(!session()->has('spotify_access_token'))
+
+                    <p>Please login with Spotify to listen to this audio.</p>
+
+                    <a href="{{ route('spotify.login') }}"
+                       class="btn btn-success">
+                        <i class="fa fa-spotify"></i>
+                        Login with Spotify
+                    </a>
+
+                @else
+
+                    <iframe
+                        id="spotifyPlayer"
+                        style="border-radius:12px"
+                        src=""
+                        width="100%"
+                        height="352"
+                        frameborder="0"
+                        allowfullscreen
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+                    </iframe>
+
+                @endif
+
+            </div>
+
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -560,6 +620,32 @@ if (email === "") {
     });
 });
 
+</script>
+<script>
+    $(document).on('click', '.open-audio', function () {
+
+    let podcastUrl = $(this).data('podcast');
+
+    if (podcastUrl.includes('open.spotify.com')) {
+
+        let match = podcastUrl.match(/episode\/([A-Za-z0-9]+)/);
+
+        if (match) {
+            let episodeId = match[1];
+
+            $('#spotifyPlayer').attr(
+                'src',
+                'https://open.spotify.com/embed/episode/' + episodeId
+            );
+
+            $('#spotifyModal').modal('show');
+        }
+
+    } else {
+
+        window.open(podcastUrl, '_blank');
+    }
+});
 </script>
 
 

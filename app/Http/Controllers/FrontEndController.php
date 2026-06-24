@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 use Jenssegers\Agent\Agent;
 use Mail;
 use Redirect;
@@ -73,7 +74,69 @@ class FrontEndController extends Controller
 
         View::share($shareData);
     }
+    public function spotifyLogin()
+{
+    $query = http_build_query([
+        'client_id' => env('SPOTIFY_CLIENT_ID'),
+        'response_type' => 'code',
+        'redirect_uri' => env('SPOTIFY_REDIRECT_URI'),
+        'scope' => 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state'
+    ]);
 
+    return redirect('https://accounts.spotify.com/authorize?' . $query);
+}
+
+public function spotifyCallback(Request $request)
+{
+  // dd($request->all());
+     $response = Http::asForm()
+        ->withHeaders([
+            'Authorization' => 'Basic ' . base64_encode(
+                env('SPOTIFY_CLIENT_ID') . ':' . env('SPOTIFY_CLIENT_SECRET')
+            ),
+        ])
+        ->post('https://accounts.spotify.com/api/token', [
+            'grant_type'   => 'authorization_code',
+            'code'         => $request->code,
+            'redirect_uri' => env('SPOTIFY_REDIRECT_URI'),
+        ]);
+
+    $tokenData = $response->json();
+
+    // session([
+    //     'spotify_access_token'  => $tokenData['access_token'] ?? null,
+    //     'spotify_refresh_token' => $tokenData['refresh_token'] ?? null,
+    // ]);
+    // $user = Http::withToken($tokenData['access_token'])
+    // ->get('https://api.spotify.com/v1/me')
+    // ->json();
+
+// dd($user);
+// $response = Http::withToken($tokenData['access_token'])
+//     ->get('https://api.spotify.com/v1/me');
+
+// dd([
+//     'status' => $response->status(),
+//     'body' => $response->body(),
+//     'json' => $response->json(),
+// ]);
+
+   $tokenData = $response->json();
+
+    if (!isset($tokenData['access_token'])) {
+        return redirect('/en/knowledgehub')
+            ->with('error', 'Spotify authentication failed.');
+    }
+
+    session([
+        'spotify_access_token'  => $tokenData['access_token'],
+        'spotify_refresh_token' => $tokenData['refresh_token'] ?? null,
+        'spotify_connected'     => true,
+    ]);
+
+   
+    return redirect('/en/knowledgehub?spotify_connected=1');
+}
 
 public function extractBranchContacts()
 {

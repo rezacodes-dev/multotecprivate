@@ -9,6 +9,10 @@ class Distributor extends Model
     protected $table = 'distributor';
     protected $primaryKey = "id";
 
+	 public function imageInfo() {
+        return $this->belongsTo('App\Models\Media\Images', 'image_id', 'id');
+    }
+
     public function imageIds() {
 		return $this->hasMany('App\Models\Distributor\DistributorImagesMap', 'distributor_id', 'id');
 	}

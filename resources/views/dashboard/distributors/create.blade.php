@@ -161,6 +161,37 @@
             </div>
 
 
+                  <div class="row">
+            <div class="col-md-10">
+              <h3>Page Banner Information</h3>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Choose banner :</label>
+                <input type="file" name="page_banner" accept="image/*">
+              </div>
+              @if( isset($distributor) && $distributor->image_id != '' && isset($distributor->imageInfo) )
+                <div class="form-group">
+                  <img src="{{ asset('public/uploads/files/media_images/'.$distributor->imageInfo->image) }}" style="width: 260px; height: 100px;">
+                  <a href="{{ route('glbImgDel') }}?tab=distributor_category&id={{ $distributor->id }}" class="btn btn-xs btn-danger" onclick="return confirm('Are you sure to delete this image ?');">Delete Image</a>
+                </div>
+              @endif
+              <div class="form-group">
+                <label>Banner Title :</label>
+                <input type="text" name="image_title" class="form-control" placeholder="Banner image title" value="@if( isset($distributor) ){{ $distributor->image_title??'' }}@endif">
+              </div>
+              <div class="form-group">
+                <label>Banner Alt Tag :</label>
+                <input type="text" name="image_alt" class="form-control" placeholder="Banner image alt title" value="@if( isset($distributor) ){{ $distributor->image_alt??'' }}@endif">
+              </div>
+              <div class="form-group">
+                <label>Banner Caption :</label>
+                <textarea name="image_caption" class="form-control" placeholder="Banner image caption">@if( isset($distributor) ){{ $distributor->image_caption??'' }}@endif</textarea>
+              </div>
+            </div>
+          </div>
+
+
             <div class="row">
          
             <div class="col-md-4">

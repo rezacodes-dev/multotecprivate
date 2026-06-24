@@ -28,6 +28,14 @@
 </style>
 <input type="hidden" id="mLat" name="mLat" value="{{ $allData->latitude??'' }}">
 <input type="hidden" id="mLng" name="mLng" value="{{ $allData->longitude??'' }}">
+
+
+
+@if( isset($allData) && $allData->image_id != '' && isset($allData->imageInfo) )
+<section class="innerpage-banner">
+    <img src="{{ asset('public/uploads/files/media_images/'.$allData->imageInfo->image) }}" title="{{ $allData->image_title }}" alt="{{ $allData->image_alt }}" caption="{{ $allData->image_caption }}">
+</section>
+@endif
     @if(isset($allData) && !empty($allData))
 
       

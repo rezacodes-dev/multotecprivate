@@ -425,11 +425,30 @@ color: #008c5be8;
                    @else
                    @endif
                   @if(!empty($v->podcast_link))
-                  <a href="{{ $v->podcast_link }}" class="open-audio knowledgeicon" 
+                  {{-- <a href="{{ $v->podcast_link }}" class="open-audio knowledgeicon" 
                    style="border:1px solid #1f6b3a; padding:8px;" title="Listen">
                    <img src="{{ asset('public/icons/headphones.png') }}">
                    <span>Listen</span>
-                </a>
+                </a> --}}
+                {{-- <a href="javascript:void(0)"
+                    class="open-audio knowledgeicon"
+                    style="border:1px solid #1f6b3a; padding:8px;"
+                    title="Listen"
+                    data-bs-toggle="modal"
+                    data-bs-target="#spotifyModal">
+
+                        <img src="{{ asset('public/icons/headphones.png') }}">
+                        <span>Listen</span>
+                    </a> --}}
+   <a href="javascript:void(0)"
+   class="open-audio knowledgeicon"
+   style="border:1px solid #1f6b3a; padding:8px;"
+   title="Listen"
+   data-podcast="{{ $v->podcast_link }}">
+
+    <img src="{{ asset('public/icons/headphones.png') }}">
+    <span>Listen</span>
+</a>
                    @else
                    @endif
             </div>
@@ -482,6 +501,84 @@ color: #008c5be8;
 
     </div>
   </div>
+</div>
+
+
+
+<div class="modal fade" id="spotifyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="fa fa-spotify text-success"></i>
+                    Spotify Player
+                </h4>
+            </div>
+
+            <div class="modal-body text-center">
+
+                @if(!session()->has('spotify_access_token'))
+
+                    <p>Please login with Spotify to listen to this audio.</p>
+
+                    <a href="{{ route('spotify.login') }}"
+                       class="btn btn-success">
+                        <i class="fa fa-spotify"></i>
+                        Login with Spotify
+                    </a>
+
+                @else
+
+                    {{-- <p class="text-success">
+                        <i class="fa fa-check-circle"></i>
+                        Spotify connected successfully.
+                    </p> --}}
+
+                    {{-- <iframe
+                        style="border-radius:12px;"
+                        src="https://open.spotify.com/embed/track/4cOdK2wGLETKBW3PvgPWqT"
+                        width="100%"
+                        height="352"
+                        frameborder="0"
+                        allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+                    </iframe> --}}
+
+  {{-- <iframe
+    style="border-radius:12px"
+    src="https://open.spotify.com/embed/episode/3oDrffYQdM9vk095VhstdW"
+    width="100%"
+    height="352"
+    frameborder="0"
+    allowfullscreen
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+</iframe> --}}
+
+<iframe
+    id="spotifyPlayer"
+    style="border-radius:12px"
+    src=""
+    width="100%"
+    height="352"
+    frameborder="0"
+    allowfullscreen
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+</iframe>
+
+                @endif
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -600,6 +697,36 @@ $( function() {
 } );
  
 </script>
+
+
+<script>
+    $(document).on('click', '.open-audio', function () {
+    $('#spotifyModal').modal('show');
+});
+</script>
+
+
+<script>
+$(document).on('click', '.open-audio', function () {
+
+    let spotifyUrl = $(this).data('podcast');
+
+    // Extract episode ID
+    let match = spotifyUrl.match(/episode\/([A-Za-z0-9]+)/);
+
+    if (match) {
+        let episodeId = match[1];
+
+        $('#spotifyPlayer').attr(
+            'src',
+            'https://open.spotify.com/embed/episode/' + episodeId
+        );
+
+        $('#spotifyModal').modal('show');
+    }
+});
+</script>
+
 
 
 

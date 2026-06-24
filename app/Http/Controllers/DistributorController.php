@@ -324,9 +324,56 @@ class DistributorController extends Controller
     $Distributor->country_logo = $filename;
 }
 
+
+   
+
     	if( $Distributor->save() ) {
 
     		$distributor_id = $Distributor->id;
+
+
+
+
+
+
+
+             if( $request->hasFile('page_banner') ) {
+            
+            $img = $request->file('page_banner');
+            $real_path = $img->getRealPath();
+            $file_orgname = $img->getClientOriginalName();
+            $file_size = $img->getSize();
+            $file_ext = strtolower($img->getClientOriginalExtension());
+            $file_newname = "banner"."_".md5(microtime(TRUE).rand(123, 999)).".".$file_ext;
+            $destinationPath = public_path('/uploads/files/media_images');
+            $thumb_path = $destinationPath."/thumb";
+                
+                $imgObj = Image::make($real_path);
+                $imgObj->resize(100, 100, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($thumb_path.'/'.$file_newname);
+
+            $img->move($destinationPath, $file_newname);
+
+            $Images = new Images;
+            $Images->image = $file_newname;
+            $Images->size = $file_size;
+            $Images->extension = $file_ext;
+
+            $Images->name = "Country Banner Image";
+            $Images->alt_title = trim($request->input('image_alt'));
+            $Images->caption = trim($request->input('image_caption'));
+            $Images->title = trim($request->input('image_title'));
+
+            $Images->created_by = Auth::user()->id;
+
+            if($Images->save()) {
+                Distributor::where('id', $distributor_id)
+                    ->update([
+                        'image_id' => $Images->id
+                    ]);
+            }
+        }
     		
             $CmsLinks = new CmsLinks;
     		$CmsLinks->table_id = $distributor_id;
@@ -467,6 +514,44 @@ class DistributorController extends Controller
 
                 $Distributor->country_logo = $filename;
             }
+
+
+
+              if( $request->hasFile('page_banner') ) {
+            
+            $img = $request->file('page_banner');
+            $real_path = $img->getRealPath();
+            $file_orgname = $img->getClientOriginalName();
+            $file_size = $img->getSize();
+            $file_ext = strtolower($img->getClientOriginalExtension());
+            $file_newname = "banner"."_".md5(microtime(TRUE).rand(123, 999)).".".$file_ext;
+            $destinationPath = public_path('/uploads/files/media_images');
+            $thumb_path = $destinationPath."/thumb";
+                
+                $imgObj = Image::make($real_path);
+                $imgObj->resize(100, 100, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($thumb_path.'/'.$file_newname);
+
+            $img->move($destinationPath, $file_newname);
+
+            $Images = new Images;
+            $Images->image = $file_newname;
+            $Images->size = $file_size;
+            $Images->extension = $file_ext;
+
+            $Images->name = "Country Banner Image";
+            $Images->alt_title = trim($request->input('image_alt'));
+            $Images->caption = trim($request->input('image_caption'));
+            $Images->title = trim($request->input('image_title'));
+
+            $Images->created_by = Auth::user()->id;
+
+            if($Images->save()) {
+
+                $Distributor->image_id = $Images->id;  
+            }
+        }
 
     	
     	if( $Distributor->save() ) {
