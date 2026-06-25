@@ -444,7 +444,8 @@ color: #008c5be8;
    class="open-audio knowledgeicon"
    style="border:1px solid #1f6b3a; padding:8px;"
    title="Listen"
-   data-podcast="{{ $v->podcast_link }}">
+   data-podcast="{{ $v->podcast_link }}"
+   data-title="{{ $v->name ?? '' }}">
 
     <img src="{{ asset('public/icons/headphones.png') }}">
     <span>Listen</span>
@@ -574,6 +575,22 @@ color: #008c5be8;
             </div>
 
         </div>
+    </div>
+</div>
+
+<!-- Mini Spotify Player -->
+<div id="spotifyMiniPlayer" style="display:none; position:fixed; bottom:0; left:0; width:100%; z-index:1050; background:#191414; color:#fff; padding:12px 20px; align-items:center; justify-content:space-between; box-shadow:0 -4px 12px rgba(0,0,0,0.3);">
+    <div style="display:flex; align-items:center; gap:12px; overflow:hidden;">
+        <i class="fa fa-spotify" style="color:#1db954; font-size:22px; flex-shrink:0;"></i>
+        <span id="spotifyMiniTitle" style="font-weight:500; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Now Playing on Spotify</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+        <button type="button" id="expandSpotify" class="btn btn-sm" style="background:#1db954; color:#fff; border:none; border-radius:20px; padding:5px 15px; font-weight:500;">
+            <i class="fa fa-expand"></i> Expand
+        </button>
+        <button type="button" id="closeMiniPlayer" class="btn btn-sm" style="background:transparent; color:#fff; border:none; padding:5px 8px; font-size:16px; line-height:1;">
+            <i class="fa fa-times"></i>
+        </button>
     </div>
 </div>
 
@@ -709,8 +726,10 @@ $(document).on('click', '.open-audio', function () {
 
     if (match) {
         let episodeId = match[1];
+        let title = $(this).data('title') || 'Now Playing on Spotify';
 
         localStorage.setItem('pendingSpotifyEpisode', episodeId);
+        localStorage.setItem('pendingSpotifyTitle', title);
 
         let currentSrc = $('#spotifyPlayer').attr('src') || '';
         if (!currentSrc.includes(episodeId)) {
@@ -720,6 +739,7 @@ $(document).on('click', '.open-audio', function () {
             );
         }
 
+        $('#spotifyMiniPlayer').hide();
         $('#spotifyModal').modal('show');
     }
 });
@@ -741,6 +761,7 @@ $(document).ready(function () {
             }
             localStorage.removeItem('pendingSpotifyEpisode');
         }
+        $('#spotifyMiniPlayer').hide();
         $('#spotifyModal').modal('show');
 
         history.replaceState({}, document.title, window.location.pathname);
@@ -748,6 +769,32 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+$(document).ready(function () {
+    // Show mini player when modal is hidden
+    $('#spotifyModal').on('hide.bs.modal', function () {
+        let $player = $('#spotifyPlayer');
+        if ($player.length && $player.attr('src')) {
+            let title = localStorage.getItem('pendingSpotifyTitle') || 'Now Playing on Spotify';
+            $('#spotifyMiniTitle').text(title);
+            $('#spotifyMiniPlayer').css('display', 'flex');
+        }
+    });
+
+    // Expand mini player back to modal
+    $(document).on('click', '#expandSpotify', function () {
+        $('#spotifyMiniPlayer').hide();
+        $('#spotifyModal').modal('show');
+    });
+
+    // Close mini player manually
+    $(document).on('click', '#closeMiniPlayer', function () {
+        $('#spotifyMiniPlayer').hide();
+        localStorage.removeItem('pendingSpotifyEpisode');
+        localStorage.removeItem('pendingSpotifyTitle');
+    });
+});
+</script>
 
 
 
