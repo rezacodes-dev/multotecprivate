@@ -74,13 +74,17 @@ class FrontEndController extends Controller
 
         View::share($shareData);
     }
-    public function spotifyLogin()
+public function spotifyLogin(Request $request)
 {
+    session([
+        'spotify_redirect_after_login' => $request->redirect ?? url()->previous(),
+    ]);
+
     $query = http_build_query([
-        'client_id' => env('SPOTIFY_CLIENT_ID'),
+        'client_id'     => env('SPOTIFY_CLIENT_ID'),
         'response_type' => 'code',
-        'redirect_uri' => env('SPOTIFY_REDIRECT_URI'),
-        'scope' => 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state'
+        'redirect_uri'  => env('SPOTIFY_REDIRECT_URI'),
+        'scope'         => 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state',
     ]);
 
     return redirect('https://accounts.spotify.com/authorize?' . $query);
@@ -135,7 +139,10 @@ public function spotifyCallback(Request $request)
     ]);
 
    
-    return redirect('/en/knowledgehub?spotify_connected=1');
+    // return redirect('/en/knowledgehub?spotify_connected=1');
+    $redirectTo = session()->pull('spotify_redirect_after_login', '/en/knowledgehub');
+
+return redirect($redirectTo . (str_contains($redirectTo, '?') ? '&' : '?') . 'spotify_connected=1');
 }
 
 public function extractBranchContacts()

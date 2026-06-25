@@ -496,11 +496,11 @@ p {
 
                     <p>Please login with Spotify to listen to this audio.</p>
 
-                    <a href="{{ route('spotify.login') }}"
-                       class="btn btn-success">
-                        <i class="fa fa-spotify"></i>
-                        Login with Spotify
-                    </a>
+                  <a href="{{ route('spotify.login', ['redirect' => request()->fullUrl()]) }}"
+   class="btn btn-success">
+    <i class="fa fa-spotify"></i>
+    Login with Spotify
+</a>
 
                 @else
 
@@ -633,10 +633,15 @@ if (email === "") {
         if (match) {
             let episodeId = match[1];
 
-            $('#spotifyPlayer').attr(
-                'src',
-                'https://open.spotify.com/embed/episode/' + episodeId
-            );
+            localStorage.setItem('pendingSpotifyEpisode', episodeId);
+
+            let currentSrc = $('#spotifyPlayer').attr('src') || '';
+            if (!currentSrc.includes(episodeId)) {
+                $('#spotifyPlayer').attr(
+                    'src',
+                    'https://open.spotify.com/embed/episode/' + episodeId
+                );
+            }
 
             $('#spotifyModal').modal('show');
         }
@@ -647,6 +652,30 @@ if (email === "") {
     }
 });
 </script>
+
+<script>
+$(document).ready(function () {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get('spotify_connected') == '1') {
+        let pendingEpisode = localStorage.getItem('pendingSpotifyEpisode');
+        if (pendingEpisode) {
+            let currentSrc = $('#spotifyPlayer').attr('src') || '';
+            if (!currentSrc.includes(pendingEpisode)) {
+                $('#spotifyPlayer').attr(
+                    'src',
+                    'https://open.spotify.com/embed/episode/' + pendingEpisode
+                );
+            }
+            localStorage.removeItem('pendingSpotifyEpisode');
+        }
+        $('#spotifyModal').modal('show');
+
+        history.replaceState({}, document.title, window.location.pathname);
+    }
+});
+</script>
+
 
 
 
