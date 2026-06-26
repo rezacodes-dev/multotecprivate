@@ -3131,7 +3131,7 @@ $query = BrochureMaster::with([
     }
 
  public function sendEmailBrochure(Request $request)
-{
+{   
     try {
 
         // Insert enquiry into DB
@@ -3145,21 +3145,32 @@ $query = BrochureMaster::with([
         ]);
 
         // Prepare email body
-        $brochureLink = $request->brochure_link;
+    $brochureLink = $request->brochure_link;
+$brochureName = $request->brochure_name_email;
 
-        $mailBody  = 'Dear ' . e($request->recipient_name) . ',<br><br>';
-        $mailBody .= 'Here is a link to the Multotec brochure, which I thought you might find interesting:<br><br>';
-        $mailBody .= '<a href="' . $brochureLink . '" target="_blank">Click Here</a><br><br>';
-        $mailBody .= 'Thank you,<br>Multotec';
+$mailBody  = 'Dear ' . e($request->recipient_name) . ',<br><br>';
+
+$mailBody .= 'Here is a link to the latest Multotec <strong>' . e($brochureName) . '</strong> brochure, a quick, insightful look at our mineral-processing solutions and how they can add value to your operations.<br><br>';
+
+$mailBody .= '<a href="' . e($brochureLink) . '" target="_blank"> View the ' . e($brochureName) . ' brochure</a><br><br>';
+
+$mailBody .= 'If you have any questions or would like a quote, please contact us at <a href="mailto:marketing@multotec.com">marketing@multotec.com</a>.<br><br>';
+
+$mailBody .= 'Thank you,<br><strong>Multotec</strong>';
 
         // Send email using Microsoft Graph
         $graphMail = app(MicrosoftGraphMailService::class);
 
+        // $graphMail->sendMail(
+        //     trim($request->recipient_email),
+        //     'Your Requested Brochure',
+        //     html_entity_decode($mailBody, ENT_QUOTES)
+        // );
         $graphMail->sendMail(
-            trim($request->recipient_email),
-            'Your Requested Brochure',
-            html_entity_decode($mailBody, ENT_QUOTES)
-        );
+    trim($request->recipient_email),
+    'Your Requested Multotec Brochure - ' . $brochureName,
+    html_entity_decode($mailBody, ENT_QUOTES)
+);
 
         return response()->json([
             'status'  => true,
@@ -3179,126 +3190,116 @@ $query = BrochureMaster::with([
 }
     
     
-   public function brochureAjax(Request $request)
+  public function brochureAjax(Request $request)
 {
-    // $query = BrochureMaster::with('brochureDetails.brochureProducts')->where('status',1)->orderBy('created_at', 'desc');
-$query = BrochureMaster::with([
-    'brochureDetails.brochureProducts' => function ($q) {
-        $q->orderByRaw('product_id IS NULL, product_id ASC');
-    }
-])
-->where('brochure_master.status', 1)
-->orderBy('brochure_master.name', 'ASC');
-    // Filter by brochure details
+    $lng = app()->getLocale();
+
+    $query = BrochureMaster::with([
+        'brochureDetails.brochureProducts' => function ($q) {
+            $q->orderByRaw('product_id IS NULL, product_id ASC');
+        }
+    ])
+    ->where('brochure_master.status', 1)
+    ->orderBy('brochure_master.name', 'ASC');
+
+    // Filters
     if ($request->filled('brochure_type')) {
-    
         $query->whereHas('brochureDetails', function ($q) use ($request) {
-            $q->where('type_id', $request->input('brochure_type'));
+            $q->where('type_id', $request->brochure_type);
         });
     }
+
     if ($request->filled('brochure_brand')) {
         $query->whereHas('brochureDetails', function ($q) use ($request) {
-            $q->where('brand_id', $request->input('brochure_brand'));
+            $q->where('brand_id', $request->brochure_brand);
         });
     }
+
     if ($request->filled('brochure_language')) {
         $query->whereHas('brochureDetails', function ($q) use ($request) {
-            $q->where('language_id', $request->input('brochure_language'));
+            $q->where('language_id', $request->brochure_language);
         });
     }
 
     if ($request->filled('brochure_product')) {
         $query->whereHas('brochureDetails.brochureProducts', function ($q) use ($request) {
-            $q->where('product_id', $request->input('brochure_product'));
+            $q->where('product_id', $request->brochure_product);
         });
     }
 
-    // Paginate results (6 per page)
-    $listData = $query->paginate(12)->appends($request->except('page'));
+    // Build query params from the query_string sent by JS
+    parse_str($request->query_string ?? '', $params);
 
-    $lng = app()->getLocale();
-    $query_string = $request->query_string??'';
-    // $html = '<div class="row" id="listWebinars">';
+    unset($params['page']);
 
-    // if ($listData->count() > 0) {
-    //     foreach ($listData as $v) {
-    //         $imageURL = !empty($v->thumbnail_image)
-    //             ? asset('public/' . $v->thumbnail_image)
-    //             : asset('public/images/default_multotec.jpg');
+    // Pagination
+    $listData = $query->paginate(12)
+        ->withPath(route('brochure', ['lng' => 'en']))
+        ->appends($params);
 
-    //         $html .= '
-    //             <div class="col-sm-4 col-md-4">
-    //                 <div class="product-card">
-    //                     <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . '">
-    //                         <img src="' . $imageURL . '" alt="' . e($v->name) . '">
-    //                     </a>
-    //                     <div class="product-info">
-    //                         <h5>' . e($v->name) . '</h5>
-    //                         <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . '" class="btn-view">View Content</a>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         ';
-    //     }
-    // } else {
-    //     $html .= '<h3>No Record Found</h3>';
-    // }
+    $queryString = http_build_query($params);
 
-    // $html .= '</div>';
-
-    // // Pagination buttons
-    // $html .= '<div class="prev_next_btn">';
-    // if ($listData->previousPageUrl()) {
-    //     $html .= '<a href="' . $listData->previousPageUrl() . '"> &lt; Prev </a>';
-    // }
-    // if ($listData->nextPageUrl()) {
-    //     $html .= '<a href="' . $listData->nextPageUrl() . '"> Next &gt; </a>';
-    // }
-    // $html .= '</div>';
     $html = '<div class="row" id="listWebinars">';
 
-if ($listData->count() > 0) {
-    foreach ($listData as $v) {
-        $imageURL = !empty($v->thumbnail_image)
-            ? asset('public/' . $v->thumbnail_image)
-            : asset('public/images/default_multotec.jpg');
+    if ($listData->count()) {
 
-     $html .= '
-    <div class="col-sm-6 col-md-4 mb-4">
-        <div class="product-card h-100">
-            <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . (!empty($query_string) ? '?' . $query_string : '') . '">
-                <img src="' . $imageURL . '" alt="' . e($v->name) . '" class="img-fluid">
-            </a>
-            <div class="product-info text-center">
-                <h5>' . e($v->name) . '</h5>
-                <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . (!empty($query_string) ? '?' . $query_string : '') . '" class="btn-view">
-                    View Content
-                </a>
-            </div>
-        </div>
-    </div>
-';
+        foreach ($listData as $v) {
+
+            $imageURL = !empty($v->thumbnail_image)
+                ? asset('public/' . $v->thumbnail_image)
+                : asset('public/images/default_multotec.jpg');
+
+            $url = route('front.brochureCont', [
+                'lng' => $lng,
+                'id'  => $v->slug
+            ]);
+
+            if (!empty($queryString)) {
+                $url .= '?' . $queryString;
+            }
+
+            $html .= '
+            <div class="col-sm-6 col-md-4 mb-4">
+                <div class="product-card h-100">
+                    <a href="' . $url . '">
+                        <img src="' . $imageURL . '" alt="' . e($v->name) . '" class="img-fluid">
+                    </a>
+                    <div class="product-info text-center">
+                        <h5>' . e($v->name) . '</h5>
+                        <a href="' . $url . '" class="btn-view">
+                            View Content
+                        </a>
+                    </div>
+                </div>
+            </div>';
+        }
+
+    } else {
+
+        $html .= '
+        <div class="col-12 text-center">
+            <h3>No Record Found</h3>
+        </div>';
     }
-} else {
-    $html .= '<h3>No Record Found</h3>';
-}
 
-$html .= '</div>';
+    $html .= '</div>';
 
-// Pagination
-$html .= '<div class="prev_next_btn text-center mt-3">';
-if ($listData->previousPageUrl()) {
-    $html .= '<a style="background-color:#fff;color: #008d5c;" href="' . $listData->previousPageUrl() . '" class="btn-view me-2">&lt; Prev</a>';
-}
-if ($listData->nextPageUrl()) {
-    $html .= '<a style="background-color:#fff;color: #008d5c;" href="' . $listData->nextPageUrl() . '" class="btn-view">Next &gt;</a>';
-}
-$html .= '</div>';
+    // Pagination
+    $html .= '<div class="prev_next_btn text-center mt-3">';
 
+    if ($listData->previousPageUrl()) {
+        $html .= '<a href="' . $listData->previousPageUrl() . '" class="btn-view me-2" style="background-color:#fff;color:#008d5c;">&lt; Prev</a>';
+    }
+
+    if ($listData->nextPageUrl()) {
+        $html .= '<a href="' . $listData->nextPageUrl() . '" class="btn-view" style="background-color:#fff;color:#008d5c;">Next &gt;</a>';
+    }
+
+    $html .= '</div>';
 
     return response()->json([
         'success' => true,
-        'html' => $html
+        'html' => $html,
     ]);
 }
 
