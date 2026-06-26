@@ -527,10 +527,10 @@ color: #008c5be8;
                     <p>Please login with Spotify to listen to this audio.</p>
 
                   <a href="{{ route('spotify.login', ['redirect' => request()->fullUrl()]) }}"
-   class="btn btn-success">
-    <i class="fa fa-spotify"></i>
-    Login with Spotify
-</a>
+                    class="btn btn-success">
+                        <i class="fa fa-spotify"></i>
+                        Login with Spotify
+                    </a>
 
                 @else
 
