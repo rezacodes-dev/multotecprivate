@@ -471,47 +471,59 @@ ddaccordion.init({
  
 
 
-function getWebinars() {
-    var brochure_type = $('#brochure_type').val();
-    var brochure_brand = $('#brochure_brand').val();
-    var brochure_language = $('#brochure_language').val();
-    var brochure_product = $('#brochure_product').val();
+function getWebinars(page = 1) {
 
-    // Get current URL params
-    let params = new URLSearchParams(window.location.search);
+    let params = new URLSearchParams();
 
-    // Update params
-    params.set('brochure_type', brochure_type);
-    params.set('brochure_brand', brochure_brand);
-    params.set('brochure_language', brochure_language);
-    params.set('brochure_product', brochure_product);
+    params.set('brochure_type', $('#brochure_type').val() || '');
+    params.set('brochure_brand', $('#brochure_brand').val() || '');
+    params.set('brochure_language', $('#brochure_language').val() || '');
+    params.set('brochure_product', $('#brochure_product').val() || '');
+    params.set('page', page);
 
-    // Update URL without reload
-    let newUrl = window.location.pathname + '?' + params.toString();
-    window.history.pushState({}, '', newUrl);
+    // Update browser URL
+    history.pushState({}, '', window.location.pathname + '?' + params.toString());
 
-    // AJAX call
     $.ajax({
         url: "{{ route('brochureAjax') }}",
         type: "POST",
         dataType: "json",
         data: {
-            brochure_type,
-            brochure_brand,
-            brochure_language,
-            brochure_product,
-             query_string: params.toString(),
+            brochure_type: $('#brochure_type').val() || '',
+            brochure_brand: $('#brochure_brand').val() || '',
+            brochure_language: $('#brochure_language').val() || '',
+            brochure_product: $('#brochure_product').val() || '',
+            page: page,
+            query_string: params.toString(),
             _token: "{{ csrf_token() }}"
         },
-        success: function(data) {
-            if (data.success) {
-                $("#newListWebinars").html(data.html);
+        success: function (response) {
+            if (response.success) {
+                $('#newListWebinars').html(response.html);
             } else {
-                $("#newListWebinars").html("<h3>No Record Found</h3>");
+                $('#newListWebinars').html('<h3>No Record Found</h3>');
             }
         }
     });
 }
+
+$(document).on('click', '.prev_next_btn a', function (e) {
+
+    e.preventDefault();
+
+    let href = $(this).attr('href');
+
+    if (!href) {
+        return;
+    }
+
+    let url = new URL(href);
+
+    let page = url.searchParams.get('page') || 1;
+
+    getWebinars(page);
+
+});
 
  
 var i=1;

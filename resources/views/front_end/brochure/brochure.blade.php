@@ -365,6 +365,7 @@ a.filterbut {
 
         <!-- Right: Content -->
         <div class="col-md-7">
+            <input type="hidden" id="brochure_name_email" value="{{$listData->name}}">
             <h2>{{ $listData->name ?? '' }}</h2>
 
             @if(!empty($listData->description))
@@ -521,6 +522,7 @@ a.filterbut {
             <form id="emailForm" action="javascript:void(0);">
                 @csrf
                 <input type="hidden" name="brochure_link" id="brochure_link">
+                <input type="hidden" name="brochure_name_email" id="brochure_name_email" value="{{$listData->name}}">
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
