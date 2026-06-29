@@ -268,7 +268,7 @@ if en then redirect to FrontEndController2 (where no lng slug)
 
 // });
 
-
+// Route::get('/updateshort', 'FrontEndController@shorturlUpdate')->name('shorturlUpdate');
 
 Route::get('/brazil', 'FrontEndController@landingPagesBrazil')->name('landingPagesBrazil');
 
@@ -287,7 +287,7 @@ Route::get('/clear-cache', function() {
 });
 
 Route::post('/arindam-form-submit', 'FormBuilder@formSubmitData')->name('frm_submit');
-Route::get('/whatsapp/{id?}', 'FrontEndController@openBrochure')->name('openBrochure');
+Route::get('/share-brochure/{id?}', 'FrontEndController@openBrochure')->name('openBrochure');
 
 Route::post('/ajax-brochure-list', 'FrontEndController@brochureAjax')->name('brochureAjax');
 

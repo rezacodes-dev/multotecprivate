@@ -445,7 +445,8 @@ a.filterbut {
                            class="open-email-modal" 
                            data-toggle="modal" 
                            data-target="#emailModal"
-                           data-brochure="{{ asset('public/' . $value->brochure_pdf) }}" 
+                           {{-- data-brochure="{{ asset('public/' . $value->brochure_pdf) }}"  --}}
+                           data-brochure="{{ url($value->short_url) }}" 
                            data-type="{{ $value->brochure_size ?? '' }}">
                             {{ $value->brochure_size ?? '' }}
                         </a>
@@ -469,6 +470,10 @@ a.filterbut {
                     @endif
                 @endforeach
             </div> -->
+
+
+
+
             <div class="outerinner">
   <img src="{{ asset('public/icons/whatsapp-icon.svg') }}">
 <strong>Whatsapp</strong><br>
@@ -483,14 +488,14 @@ a.filterbut {
             // Encode spaces and special characters properly
             $encodedPdf = str_replace('%2F', '/', rawurlencode($brochurePdf));
 
-            $brochureLink = asset('public/' . $encodedPdf);
+             $brochureLink = url($value->short_url);
 
-            $type = $value->brochure_size ?? '';
-            $typeSingle = str_replace(' ', '', trim($type));
+    $type = $value->brochure_size ?? '';
+    $typeSingle = str_replace(' ', '', trim($type));
 
-            $message = urlencode(
-                "Here is a link to the Multotec brochure, which I thought you might find interesting.\n\nClick Here: $brochureLink"
-            );
+    $message = urlencode(
+        "Here is a link to the Multotec brochure, which I thought you might find interesting.\n\nClick Here: $brochureLink"
+    );
         @endphp
 
         <a href="https://wa.me/{{ env('WHATSAPP_NUMBER','') }}?text={{ $message }}" 

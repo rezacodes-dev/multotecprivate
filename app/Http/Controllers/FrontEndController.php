@@ -3626,10 +3626,22 @@ $mailBody .= 'Thank you,<br><strong>Multotec</strong>';
     }
 
     // ✅ Pagination
+    // $listData = $query
+    // ->orderBy('knowledge_hub.created_at','desc')
+    // ->paginate(6)->appends($request->except('page'));
+    parse_str($request->query_string ?? '', $params);
+
+    unset($params['page']);
+
+    // Pagination
     $listData = $query
-    ->orderBy('knowledge_hub.created_at','desc')
-    ->paginate(6)->appends($request->except('page'));
-        
+     ->orderBy('knowledge_hub.created_at','desc')
+
+    ->paginate(12)
+        ->withPath(route('knowledgehub', ['lng' => 'en']))
+        ->appends($params);
+
+    $queryString = http_build_query($params);
     // ✅ Start HTML
     $html = '<div class="row" id="listWebinars">';
 
@@ -3753,6 +3765,39 @@ $html .= '
     return response()->json([
         'success' => true,
         'html'    => $html
+    ]);
+}
+
+
+
+public function shorturlUpdate(Request $request)
+{
+    DB::table('brochure_details')
+        ->orderBy('id')
+        ->chunk(500, function ($details) {
+
+            foreach ($details as $detail) {
+
+                do {
+                    $shortUrl = 'share-brochure/' . bin2hex(random_bytes(5));
+
+                    $exists = DB::table('brochure_details')
+                        ->where('short_url', $shortUrl)
+                        ->exists();
+
+                } while ($exists);
+
+                DB::table('brochure_details')
+                    ->where('id', $detail->id)
+                    ->update([
+                        'short_url' => $shortUrl,
+                    ]);
+            }
+        });
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Short URLs updated successfully.',
     ]);
 }
 
