@@ -635,16 +635,65 @@ ddaccordion.init({
  
 
 
-function getWebinars() {
-    var kh_product = $('#kh_product').val();
-    var kh_commodity = $('#kh_commodity').val();
-    var kh_location = $('#kh_location').val();
-    var kh_type = $('#kh_type').val();
-    var kh_language = $('#kh_language').val();
-    var search = $('#search').val();
+// function getWebinars() {
+//     var kh_product = $('#kh_product').val();
+//     var kh_commodity = $('#kh_commodity').val();
+//     var kh_location = $('#kh_location').val();
+//     var kh_type = $('#kh_type').val();
+//     var kh_language = $('#kh_language').val();
+//     var search = $('#search').val();
+
+//     $.ajax({
+//         url: "{{ route('knowledgeAjax') }}", // Laravel route helper
+//         type: "POST",
+//         dataType: "json",
+//         data: {
+//             kh_product: kh_product,
+//             kh_commodity: kh_commodity,
+//             kh_location: kh_location,
+//             kh_type: kh_type,
+//             kh_language: kh_language,
+//             search: search,
+//             _token: "{{ csrf_token() }}" // CSRF protection
+//         },
+//         success: function(data) {
+//             if (data.success) {
+//                 $("#listWebinars").html(data.html); // use data.html from JSON
+//             } else {
+//                 $("#listWebinars").html("<h3>No Record Found</h3>");
+//             }
+//         },
+//         error: function(jqXHR, ajaxOptions, thrownError) {
+//             alert('No response from server');
+//         }
+//     });
+// }
+
+
+
+function getWebinars(page = 1) {
+
+    let kh_product   = $('#kh_product').val() || '';
+    let kh_commodity = $('#kh_commodity').val() || '';
+    let kh_location  = $('#kh_location').val() || '';
+    let kh_type      = $('#kh_type').val() || '';
+    let kh_language  = $('#kh_language').val() || '';
+    let search       = $('#search').val() || '';
+
+    let params = new URLSearchParams();
+
+    params.set('kh_product', kh_product);
+    params.set('kh_commodity', kh_commodity);
+    params.set('kh_location', kh_location);
+    params.set('kh_type', kh_type);
+    params.set('kh_language', kh_language);
+    params.set('search', search);
+    params.set('page', page);
+
+    history.pushState({}, '', window.location.pathname + '?' + params.toString());
 
     $.ajax({
-        url: "{{ route('knowledgeAjax') }}", // Laravel route helper
+        url: "{{ route('knowledgeAjax') }}",
         type: "POST",
         dataType: "json",
         data: {
@@ -654,20 +703,33 @@ function getWebinars() {
             kh_type: kh_type,
             kh_language: kh_language,
             search: search,
-            _token: "{{ csrf_token() }}" // CSRF protection
+            page: page,
+            query_string: params.toString(),
+            _token: "{{ csrf_token() }}"
         },
-        success: function(data) {
-            if (data.success) {
-                $("#listWebinars").html(data.html); // use data.html from JSON
+        success: function (response) {
+            if (response.success) {
+                $("#listWebinars").html(response.html);
             } else {
                 $("#listWebinars").html("<h3>No Record Found</h3>");
             }
         },
-        error: function(jqXHR, ajaxOptions, thrownError) {
+        error: function () {
             alert('No response from server');
         }
     });
 }
+
+$(document).on('click', '.prev_next_btn a', function (e) {
+    e.preventDefault();
+
+    let href = $(this).attr('href');
+    if (!href) return;
+
+    let page = new URL(href).searchParams.get('page') || 1;
+
+    getWebinars(page);
+});
 
  
 var i=1;

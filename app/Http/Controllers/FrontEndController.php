@@ -28,6 +28,7 @@ use Mail;
 use Redirect;
 use Session;
 use View;
+use Illuminate\Support\Str;
 
 class FrontEndController extends Controller
 {
@@ -3165,6 +3166,37 @@ $query = BrochureMaster::with([
     }
 
 
+public function shorturlUpdate(Request $request)
+{
+    DB::table('brochure_details')
+        ->orderBy('id')
+        ->chunk(500, function ($details) {
+
+            foreach ($details as $detail) {
+
+                do {
+                    $shortUrl = 'share-brochure/' . bin2hex(random_bytes(5));
+
+                    $exists = DB::table('brochure_details')
+                        ->where('short_url', $shortUrl)
+                        ->exists();
+
+                } while ($exists);
+
+                DB::table('brochure_details')
+                    ->where('id', $detail->id)
+                    ->update([
+                        'short_url' => $shortUrl,
+                    ]);
+            }
+        });
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Short URLs updated successfully.',
+    ]);
+}
+
 
  public function brochureContent($lng,$id){
         $DataBag = array();
@@ -3643,7 +3675,7 @@ public function brochureAjax(Request $request)
         //     });
         // }
  
-        $articlesData = $query->orderBy('knowledge_hub.created_at','desc')->paginate(6);
+        $articlesData = $query->orderBy('knowledge_hub.created_at','desc')->paginate(12);
       
         $DataBag['listData'] = $articlesData;
        
@@ -3856,9 +3888,24 @@ public function brochureAjax(Request $request)
     }
 
     // ✅ Pagination
+    // $listData = $query
+    // ->orderBy('knowledge_hub.created_at','desc')
+    // ->paginate(6)->appends($request->except('page'));
+
+        // Build query params from the query_string sent by JS
+    parse_str($request->query_string ?? '', $params);
+
+    unset($params['page']);
+
+    // Pagination
     $listData = $query
-    ->orderBy('knowledge_hub.created_at','desc')
-    ->paginate(6)->appends($request->except('page'));
+     ->orderBy('knowledge_hub.created_at','desc')
+
+    ->paginate(12)
+        ->withPath(route('knowledgehub', ['lng' => 'en']))
+        ->appends($params);
+
+    $queryString = http_build_query($params);
         
     // ✅ Start HTML
     $html = '<div class="row" id="listWebinars">';
@@ -3966,15 +4013,16 @@ $html .= '
 
     $html .= '</div>'; // ✅ close row
 
-    // ✅ Pagination
-    $html .= '<div class="text-center mt-3">';
+   
+     // Pagination
+    $html .= '<div class="prev_next_btn text-center mt-3">';
 
     if ($listData->previousPageUrl()) {
-        $html .= '<a style="background-color:#fff;color: #008d5c;" href="' . $listData->previousPageUrl() . '" class="btn btn-outline-secondary me-2">&lt; Prev</a>';
+        $html .= '<a href="' . $listData->previousPageUrl() . '" class="btn-view me-2" style="background-color:#fff;color:#008d5c;">&lt; Prev</a>';
     }
 
     if ($listData->nextPageUrl()) {
-        $html .= '<a style="background-color:#fff;color: #008d5c;" href="' . $listData->nextPageUrl() . '" class="btn btn-outline-secondary">Next &gt;</a>';
+        $html .= '<a href="' . $listData->nextPageUrl() . '" class="btn-view" style="background-color:#fff;color:#008d5c;">Next &gt;</a>';
     }
 
     $html .= '</div>';

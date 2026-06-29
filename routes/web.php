@@ -20,39 +20,41 @@ now create new controller FrontEndController2
 logic is -> check lng tag is 'en' or not into your current FrontEndController. 
 if en then redirect to FrontEndController2 (where no lng slug)
 **/
-Route::get('/drop-distributor-tables', function () {
+// Route::get('/updateshort', 'FrontEndController@shorturlUpdate')->name('shorturlUpdate');
 
-    DB::statement('SET FOREIGN_KEY_CHECKS=0');
+// Route::get('/drop-distributor-tables', function () {
 
-    $tables = [
-        'distributor',
-        'distributor_categories_map',
-        'distributor_category',
-        'distributor_contents',
-        'distributor_content_files_map',
-        'distributor_content_images_map',
-        'distributor_files_map',
-        'distributor_images_map',
-        'distributor_industries_map',
-        'distributor_product_categories_map',
-    ];
+//     DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
-    foreach ($tables as $table) {
-        DB::statement("DROP TABLE IF EXISTS `$table`");
-    }
+//     $tables = [
+//         'distributor',
+//         'distributor_categories_map',
+//         'distributor_category',
+//         'distributor_contents',
+//         'distributor_content_files_map',
+//         'distributor_content_images_map',
+//         'distributor_files_map',
+//         'distributor_images_map',
+//         'distributor_industries_map',
+//         'distributor_product_categories_map',
+//     ];
 
-    DB::statement('SET FOREIGN_KEY_CHECKS=1');
+//     foreach ($tables as $table) {
+//         DB::statement("DROP TABLE IF EXISTS `$table`");
+//     }
 
-    return 'Tables dropped successfully';
-});
-Route::get('/run-sql', function () {
+//     DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-    $sql = file_get_contents(public_path('distributor.sql'));
+//     return 'Tables dropped successfully';
+// });
+// Route::get('/run-sql', function () {
 
-    DB::unprepared($sql);
+//     $sql = file_get_contents(public_path('distributor.sql'));
 
-    return 'SQL imported successfully';
-});
+//     DB::unprepared($sql);
+
+//     return 'SQL imported successfully';
+// });
 Route::get('/brazil', 'FrontEndController@landingPagesBrazil')->name('landingPagesBrazil');
 Route::get('/spotify/login', 'FrontEndController@spotifyLogin')->name('spotify.login');
 Route::get('/spotify/callback', 'FrontEndController@spotifyCallback')->name('spotify.callback');
@@ -136,7 +138,7 @@ Route::get('/clear-cache', function() {
 });
 
 Route::post('/arindam-form-submit', 'FormBuilder@formSubmitData')->name('frm_submit');
-Route::get('/whatsapp/{id?}', 'FrontEndController@openBrochure')->name('openBrochure');
+Route::get('/share-brochure/{id?}', 'FrontEndController@openBrochure')->name('openBrochure');
 
 Route::post('/ajax-brochure-list', 'FrontEndController@brochureAjax')->name('brochureAjax');
 Route::post('/ajax-knowledge-hub-list', 'FrontEndController@knowledgeAjax')->name('knowledgeAjax');

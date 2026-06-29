@@ -22,7 +22,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Image;
 
-
 class AllBrochureController extends Controller
 {
     public function allBrochureIndustry() {
@@ -271,7 +270,8 @@ public function saveBrochureIndustry(Request $request)
 
          $cleanName = preg_replace('/\s+/', '', $name);
 
-        $short_url = 'whatsapp/' . round(microtime(true) * 1000) . '_' . $key . '_' . $cleanName;
+        
+       
 
         if ($request->hasFile('brochure') && isset($brochure_pdf[$key])) {
             $file = $brochure_pdf[$key];
@@ -286,13 +286,19 @@ public function saveBrochureIndustry(Request $request)
             $brochure_main_pdf = 'uploads/files/pdf_brochures/' . $filename;
         }
 
+        do {
+    $short_url = 'share-brochure/' . bin2hex(random_bytes(8));
+    } while (
+        BrochureDetails::where('short_url', $short_url)->exists()
+    );
+
         $brochureDetailsInsert[] = [
             'brochure_id' => $new_brochure_id,
             'language_id' => $language[$key] ?? '',
             'type_id' => $type[$key] ?? '',
             'size_id' => $size[$key] ?? '',
             'download_name' => $download_name[$key] ?? '',
-            'short_url' => $short_url ?? '',
+            'short_url' =>  $short_url??'',
             'brochure_pdf' => $brochure_main_pdf ?? '',
             'brand_id' => $brand[$key] ?? '',
             'created_at' => now(),
@@ -302,6 +308,15 @@ public function saveBrochureIndustry(Request $request)
 
     // ✅ Insert all brochure details at once
     BrochureDetails::insert($brochureDetailsInsert);
+
+
+    // $details = BrochureDetails::where('brochure_id', $new_brochure_id)->get();
+
+    //     foreach ($details as $detail) {
+    //         $detail->update([
+    //              'short_url' => 'share-brochure/' . bin2hex(random_bytes(8)),
+    //         ]);
+    //     }
 
     // ✅ Fetch the inserted brochure details (to get their IDs)
     $insertedDetails = BrochureDetails::where('brochure_id', $new_brochure_id)->pluck('id')->toArray();
@@ -333,6 +348,7 @@ public function saveBrochureIndustry(Request $request)
 
     return redirect()->route('allBrallId')->with('msg', 'Brochure saved successfully!');
 }
+
 
 
  public function deleteBrochureIndustry($topic_id) {
@@ -442,15 +458,28 @@ public function updateBrochureIndustry(Request $request, $topic_id)
 
     $brochureDetailsInsert = [];
 
+
+    $oldDetailKeys = array_values($oldDetailsIds);
+
     // ✅ Insert new brochure details
     foreach ($sl_no as $key => $value) {
         $brochure_main_pdf = null;
+    if (isset($oldDetailKeys[$key])) {
+        $oldDetailId = $oldDetailKeys[$key];
+        $short_url = $oldDetailsData[$oldDetailId]['short_url'];
+    } else {
+        do {
+            $short_url = 'share-brochure/' . bin2hex(random_bytes(8));
+        } while (
+            BrochureDetails::where('short_url', $short_url)->exists()
+        );
+    }
 
-           $name = $download_name[$key] ?? 'brochure';
 
-           $cleanName = preg_replace('/\s+/', '', $name);
+    
+  
 
-           $short_url = 'whatsapp/' . round(microtime(true) * 1000) . '_' . $key . '_' . $cleanName;
+      
 
         // Use new file if uploaded
         if ($request->hasFile('brochure') && isset($brochure_pdf[$key])) {
@@ -483,7 +512,7 @@ public function updateBrochureIndustry(Request $request, $topic_id)
             'type_id' => $type[$key] ?? '',
             'size_id' => $size[$key] ?? '',
             'download_name' => $download_name[$key] ?? '',
-            'short_url' => $short_url ?? '',
+            'short_url'     => $short_url,
             'brochure_pdf' => $brochure_main_pdf ?? '',
             'brand_id' => $brand[$key] ?? '',
             'created_at' => now(),
@@ -521,7 +550,6 @@ public function updateBrochureIndustry(Request $request, $topic_id)
 
     return redirect()->route('allBrallId')->with('msg', 'Brochure updated successfully!');
 }
-
 
  
 }
