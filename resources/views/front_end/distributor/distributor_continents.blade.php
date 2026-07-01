@@ -178,7 +178,7 @@
         <input type="hidden" id="branchURL" value="{{ url('/en/location') }}">
 
             @foreach($countriesFlag as $val)
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-3">
                 <div class="continentcard">
                     <div class="continentlogo">
                         <img src="{{ asset('public/uploads/files/continent_images/' . $val->logo) }}"
