@@ -19,7 +19,7 @@
             $robot_txt = rtrim($robot_txt , ', ');
         @endphp
    
-        <title>Mineral Processing Insights Podcast</title>
+        <title>Podcasts</title>
         <meta name="description" content="">
         <meta name="keywords" content="">
         <meta name="robots" content="">
