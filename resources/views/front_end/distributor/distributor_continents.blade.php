@@ -18,7 +18,7 @@
     border-top-width: 8px;
     border-top-color: #098c60;
     border-radius: 10px;
-    padding: 18px 36px;
+    padding: 18px 20px;
     margin: 0px 0 26px;
 }
 .continentlogo {
@@ -193,7 +193,7 @@
 
                     <a href="{{ url('en/location/' . $val->continent_name . '/' . $val->country_slug) }}"
                     class="bottomcont">
-                        <span>View Country</span>
+                        <span>Explore trusted support</span>
                         <div class="arrowicon">
                             <img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}"
                                 alt="">

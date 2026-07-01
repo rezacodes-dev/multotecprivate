@@ -179,6 +179,7 @@ Route::group(['prefix' => '{lng?}'], function () {
 
 
 		 Route::get('/knowledgehub', 'FrontEndController@knowledgehub')->name('knowledgehub');
+		  Route::get('mineral-processing-insights-podcasts', 'FrontEndController@knowledgehubpodcasts')->name('knowledgehubpodcasts');
 	//Route::get('/brochures', function () {
 //		abort(404);
 //	})->name('brochure');
