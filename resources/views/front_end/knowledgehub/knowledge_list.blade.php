@@ -522,55 +522,16 @@ color: #008c5be8;
 
             <div class="modal-body text-center">
 
-                @if(!session()->has('spotify_access_token'))
-
-                    <p>Please login with Spotify to listen to this audio.</p>
-
-                  <a href="{{ route('spotify.login', ['redirect' => request()->fullUrl()]) }}"
-                    class="btn btn-success">
-                        <i class="fa fa-spotify"></i>
-                        Login with Spotify
-                    </a>
-
-                @else
-
-                    {{-- <p class="text-success">
-                        <i class="fa fa-check-circle"></i>
-                        Spotify connected successfully.
-                    </p> --}}
-
-                    {{-- <iframe
-                        style="border-radius:12px;"
-                        src="https://open.spotify.com/embed/track/4cOdK2wGLETKBW3PvgPWqT"
-                        width="100%"
-                        height="352"
-                        frameborder="0"
-                        allowfullscreen=""
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-                    </iframe> --}}
-
-  {{-- <iframe
-    style="border-radius:12px"
-    src="https://open.spotify.com/embed/episode/3oDrffYQdM9vk095VhstdW"
-    width="100%"
-    height="352"
-    frameborder="0"
-    allowfullscreen
-    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-</iframe> --}}
-
-<iframe
-    id="spotifyPlayer"
-    style="border-radius:12px"
-    src=""
-    width="100%"
-    height="352"
-    frameborder="0"
-    allowfullscreen
-    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-</iframe>
-
-                @endif
+                <iframe
+                    id="spotifyPlayer"
+                    style="border-radius:12px"
+                    src=""
+                    width="100%"
+                    height="352"
+                    frameborder="0"
+                    allowfullscreen
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+                </iframe>
 
             </div>
 

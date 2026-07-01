@@ -30,7 +30,7 @@
     align-items: center;
     border: 1px solid #e3e3e3;
     border-radius: 8px;
-    margin: 0 0 16px;
+    margin: 0 auto 5px;
 }
 .continentlogo img {
     width: 60px;
@@ -41,6 +41,10 @@
     line-height: 1.2;
     font-weight: 600;
     margin: 0px;
+    text-align: center
+}
+.midblock{
+    margin: 0px !important
 }
 .bottomcont {
     display: flex;
@@ -49,7 +53,7 @@
     justify-content: space-between;
     padding: 10px 0 0;
     border-top: 1px solid #f5f7f6;
-    margin: 25px 0 0;
+    margin: 10px 0 0;
     text-decoration: none;
 }
 .bottomcont span {
