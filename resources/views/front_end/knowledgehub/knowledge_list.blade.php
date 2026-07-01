@@ -522,16 +522,7 @@ color: #008c5be8;
 
             <div class="modal-body text-center">
 
-                <iframe
-                    id="spotifyPlayer"
-                    style="border-radius:12px"
-                    src=""
-                    width="100%"
-                    height="352"
-                    frameborder="0"
-                    allowfullscreen
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-                </iframe>
+                <div id="spotifyPlayerContainer" style="border-radius:12px; min-height:352px;"></div>
 
             </div>
 
@@ -739,84 +730,130 @@ $( function() {
 </script>
 
 
+<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 <script>
-$(document).on('click', '.open-audio', function () {
+    let spotifyController = null;
+    let spotifyControllerReady = false;
+    let spotifyHasStarted = false;
+    let spotifyIsPlaying = false;
+    let currentEpisodeId = null;
 
-    let spotifyUrl = $(this).data('podcast');
+    window.onSpotifyIframeApiReady = function (IFrameAPI) {
+        window.spotifyIFrameAPI = IFrameAPI;
+    };
 
-    // Extract episode ID
-    let match = spotifyUrl.match(/episode\/([A-Za-z0-9]+)/);
+    function loadSpotifyEpisode(episodeId, title) {
+        // Same episode already loaded: just reopen the modal without restarting
+        if (spotifyController && currentEpisodeId === episodeId) {
+            localStorage.setItem('pendingSpotifyTitle', title);
+            $('#spotifyMiniTitle').text(title);
+            $('#spotifyMiniPlayer').hide();
+            $('#spotifyModal').modal('show');
+            return;
+        }
 
-    if (match) {
-        let episodeId = match[1];
-        let title = $(this).data('title') || 'Now Playing on Spotify';
+        // New episode: reset playback state
+        spotifyHasStarted = false;
+        spotifyIsPlaying = false;
+        currentEpisodeId = episodeId;
 
         localStorage.setItem('pendingSpotifyEpisode', episodeId);
         localStorage.setItem('pendingSpotifyTitle', title);
+        $('#spotifyMiniTitle').text(title);
+        $('#spotifyMiniPlayer').hide();
 
-        let currentSrc = $('#spotifyPlayer').attr('src') || '';
-        if (!currentSrc.includes(episodeId)) {
-            $('#spotifyPlayer').attr(
-                'src',
-                'https://open.spotify.com/embed/episode/' + episodeId
-            );
+        if (spotifyController) {
+            spotifyController.loadUri('spotify:episode:' + episodeId);
+            $('#spotifyModal').modal('show');
+            return;
         }
 
-        $('#spotifyMiniPlayer').hide();
-        $('#spotifyModal').modal('show');
-    }
-});
-</script>
+        function waitForApi() {
+            if (window.spotifyIFrameAPI) {
+                window.spotifyIFrameAPI.createController(
+                    document.getElementById('spotifyPlayerContainer'),
+                    {
+                        width: '100%',
+                        height: '352',
+                        uri: 'spotify:episode:' + episodeId
+                    },
+                    function (EmbedController) {
+                        spotifyController = EmbedController;
 
-<script>
-$(document).ready(function () {
-    const params = new URLSearchParams(window.location.search);
+                        EmbedController.addListener('ready', function () {
+                            spotifyControllerReady = true;
+                        });
 
-    if (params.get('spotify_connected') == '1') {
-        let pendingEpisode = localStorage.getItem('pendingSpotifyEpisode');
-        if (pendingEpisode) {
-            let currentSrc = $('#spotifyPlayer').attr('src') || '';
-            if (!currentSrc.includes(pendingEpisode)) {
-                $('#spotifyPlayer').attr(
-                    'src',
-                    'https://open.spotify.com/embed/episode/' + pendingEpisode
+                        EmbedController.addListener('playback_update', function (e) {
+                            if (e && e.data) {
+                                spotifyIsPlaying = !e.data.isPaused;
+                                if (spotifyIsPlaying) {
+                                    spotifyHasStarted = true;
+                                }
+                            }
+                        });
+
+                        $('#spotifyModal').modal('show');
+                    }
                 );
+            } else {
+                setTimeout(waitForApi, 100);
             }
-            localStorage.removeItem('pendingSpotifyEpisode');
         }
-        $('#spotifyMiniPlayer').hide();
-        $('#spotifyModal').modal('show');
 
-        history.replaceState({}, document.title, window.location.pathname);
+        waitForApi();
     }
-});
 </script>
 
 <script>
-$(document).ready(function () {
-    // Show mini player when modal is hidden
-    $('#spotifyModal').on('hide.bs.modal', function () {
-        let $player = $('#spotifyPlayer');
-        if ($player.length && $player.attr('src')) {
-            let title = localStorage.getItem('pendingSpotifyTitle') || 'Now Playing on Spotify';
-            $('#spotifyMiniTitle').text(title);
-            $('#spotifyMiniPlayer').css('display', 'flex');
+    $(document).on('click', '.open-audio', function () {
+        let spotifyUrl = $(this).data('podcast');
+        let match = spotifyUrl.match(/episode\/([A-Za-z0-9]+)/);
+
+        if (match) {
+            let episodeId = match[1];
+            let title = $(this).data('title') || 'Now Playing on Spotify';
+            loadSpotifyEpisode(episodeId, title);
         }
     });
+</script>
 
-    // Expand mini player back to modal
-    $(document).on('click', '#expandSpotify', function () {
-        $('#spotifyMiniPlayer').hide();
-        $('#spotifyModal').modal('show');
-    });
+<script>
+    $(document).ready(function () {
+        // Show mini player when modal is hidden only if playback has started
+        $('#spotifyModal').on('hide.bs.modal', function () {
+            if (spotifyHasStarted) {
+                let title = localStorage.getItem('pendingSpotifyTitle') || 'Now Playing on Spotify';
+                $('#spotifyMiniTitle').text(title);
+                $('#spotifyMiniPlayer').css('display', 'flex');
+            }
+        });
 
-    // Close mini player manually
-    $(document).on('click', '#closeMiniPlayer', function () {
+        // Expand mini player back to modal
+        $(document).on('click', '#expandSpotify', function () {
+            $('#spotifyMiniPlayer').hide();
+            $('#spotifyModal').modal('show');
+        });
+
+        // Close mini player manually
+      $(document).on('click', '#closeMiniPlayer', function () {
         $('#spotifyMiniPlayer').hide();
+
         localStorage.removeItem('pendingSpotifyEpisode');
         localStorage.removeItem('pendingSpotifyTitle');
+
+        if (spotifyController) {
+            spotifyController.pause();
+        }
+
+        spotifyHasStarted = false;
+        spotifyIsPlaying = false;
+        currentEpisodeId = null;
     });
-});
+
+
+        
+    });
 </script>
 
 
