@@ -425,27 +425,16 @@ color: #008c5be8;
                    @else
                    @endif
                   @if(!empty($v->podcast_link))
-                  {{-- <a href="{{ $v->podcast_link }}" class="open-audio knowledgeicon" 
-                   style="border:1px solid #1f6b3a; padding:8px;" title="Listen">
-                   <img src="{{ asset('public/icons/headphones.png') }}">
-                   <span>Listen</span>
-                </a> --}}
-                {{-- <a href="javascript:void(0)"
-                    class="open-audio knowledgeicon"
-                    style="border:1px solid #1f6b3a; padding:8px;"
-                    title="Listen"
-                    data-bs-toggle="modal"
-                    data-bs-target="#spotifyModal">
-
-                        <img src="{{ asset('public/icons/headphones.png') }}">
-                        <span>Listen</span>
-                    </a> --}}
-   <a href="javascript:void(0)"
-   class="open-audio knowledgeicon"
+                  @php
+                      $podcastEpisodeId = '';
+                      if( preg_match('/episode\/([A-Za-z0-9]+)/', $v->podcast_link, $pm) ) {
+                          $podcastEpisodeId = $pm[1];
+                      }
+                  @endphp
+   <a href="{{ route('knowledgehubpodcasts', ['lng' => $lng, 'episode' => $podcastEpisodeId]) }}"
+   class="knowledgeicon"
    style="border:1px solid #1f6b3a; padding:8px;"
-   title="Listen"
-   data-podcast="{{ $v->podcast_link }}"
-   data-title="{{ $v->name ?? '' }}">
+   title="Listen">
 
     <img src="{{ asset('public/icons/headphones.png') }}">
     <span>Listen</span>

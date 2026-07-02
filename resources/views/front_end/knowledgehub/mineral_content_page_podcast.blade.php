@@ -336,7 +336,7 @@ color: #008c5be8;
 
 
 
-
+@if(isset($listData) && !empty($listData))
 <div class="picboxsection">
 <div class="row" id="listWebinars">
 
@@ -415,7 +415,8 @@ color: #008c5be8;
 </div>
 </div>
  
-  
+  @else
+  @endif
 
 
 </section>
@@ -766,6 +767,14 @@ $( function() {
 
 <script>
     $(document).ready(function () {
+        // Auto-select episode passed via ?episode= URL parameter
+        let params = new URLSearchParams(window.location.search);
+        let episode = params.get('episode');
+        if (episode && /^[A-Za-z0-9]+$/.test(episode)) {
+            let embedUrl = 'https://open.spotify.com/embed/episode/' + episode + '?utm_source=iframe-api';
+            $('#mainPodcastIframe').attr('src', embedUrl);
+        }
+
         // Show mini player when modal is hidden only if playback has started
         $('#spotifyModal').on('hide.bs.modal', function () {
             if (spotifyHasStarted) {

@@ -179,7 +179,7 @@ Route::group(['prefix' => '{lng?}'], function () {
 
 
 		 Route::get('/knowledgehub', 'FrontEndController@knowledgehub')->name('knowledgehub');
-		  Route::get('mineral-processing-insights-podcasts', 'FrontEndController@knowledgehubpodcasts')->name('knowledgehubpodcasts');
+		  Route::get('podcasts', 'FrontEndController@knowledgehubpodcasts')->name('knowledgehubpodcasts');
 	//Route::get('/brochures', function () {
 //		abort(404);
 //	})->name('brochure');
@@ -199,7 +199,7 @@ Route::group(['prefix' => '{lng?}'], function () {
 
 
 
-	    Route::get('/podcasts', 'FrontEndController@podcast')->name('podcast');
+	    // Route::get('/podcasts', 'FrontEndController@podcast')->name('podcast');
 		Route::get('/podcast/{id}', 'FrontEndController@podcastContent')->name('front.podcastContent');
 		// Route::get('/webinar-video/{id}', 'FrontEndController@webinarVideo')->name('front.webinarVideo');
 		Route::get('/webinar-video/{id}', function () {
