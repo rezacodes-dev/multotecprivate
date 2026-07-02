@@ -38,6 +38,8 @@
               <option value="PRODUCT_CAT_LINKS">Product Category Links</option>
               <option value="NEWS_LINKS">News Links</option>
               <option value="PEOPLE_LINKS">People Links</option>
+              <option value="BROCHURE_LINKS">Brochure Links</option>
+              <option value="KH_LINKS">KnowledgeHub Links</option>
               @if( isset($contentTypes) && !empty($contentTypes) && count($contentTypes) > 0 )
                 @foreach($contentTypes as $ty)
                 <option value="CONTENT_LINKS-{{ $ty->id }}">{{ $ty->name }}</option>

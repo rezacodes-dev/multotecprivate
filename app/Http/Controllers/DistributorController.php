@@ -298,6 +298,7 @@ class DistributorController extends Controller
     	$Distributor->linkedin = trim($request->input('linkedin'));
     	$Distributor->slug = trim($request->input('slug'));
     	$Distributor->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+       	$Distributor->below_map = trim( htmlentities($request->input('below_map'), ENT_QUOTES) );
     	$Distributor->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
     	$Distributor->created_by = Auth::user()->id;
         $Distributor->language_id = trim( $request->input('language_id') );
@@ -486,6 +487,7 @@ class DistributorController extends Controller
     	$Distributor->linkedin = trim($request->input('linkedin'));
     	$Distributor->slug = trim($request->input('slug'));
     	$Distributor->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
+    	$Distributor->below_map = trim( htmlentities($request->input('below_map'), ENT_QUOTES) );
     	$Distributor->page_content = trim( htmlentities($request->input('page_content'), ENT_QUOTES) );
     	$Distributor->updated_by = Auth::user()->id;
 

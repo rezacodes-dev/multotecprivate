@@ -48,10 +48,10 @@ function getCmsPageInfo( $cms_link_id ) {
 
 		$cms = DB::table('cms_links')->where('id', '=', $cms_link_id)->first();
 		if( isset($cms) && !empty($cms) ) {
-
+           
 			$tabId = $cms->table_id;
 			$tabType = $cms->table_type;
-
+       
 			if( $tabType == 'DYNA_CONTENT' ) {
 				$data = DB::table('contents')->where('id', '=', $tabId)->first();
 			}
@@ -462,9 +462,22 @@ function getLinkOrder($page_builder_id , $slug) {
 
 }
 
-function linkSlugToContent( $slug ) {
-
+function linkSlugToContent( $slug,$builder_type = null ) {
+      
 	$data = array();
+   
+	if($builder_type == 'BROCHURE_LINKS')
+	{
+     	if( $slug != '' ) {
+      
+		$cms = DB::table('brochure_master')->where('slug', '=', $slug)->first();
+		if( !empty($cms) ) {
+			    $cms->slug = 'brochure/' . ltrim($cms->slug, '/');
+                $data = $cms;
+		}
+	}
+	}
+	else{
 	if( $slug != '' ) {
 
 		$cms = DB::table('cms_links')->where('slug_url', '=', trim($slug))->first();
@@ -472,8 +485,11 @@ function linkSlugToContent( $slug ) {
 			$data = getCmsPageInfo( $cms->id );
 		}
 	}
+  
 
-	return $data;
+	}
+		return $data;
+		
 }
 
 

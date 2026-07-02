@@ -26,6 +26,34 @@
 @endif
 
 @if( isset($links) && isset($heading) && isset($ele) && $ele == 'tab')
+{{-- @if($heading == 'Select Brochure Links')
+  @foreach( $links as $v )
+  <tr>
+ <td>
+    <input type="checkbox"
+           name="slugs[]"
+           class="ckblinks"
+           data="{{ $v->id }}"
+           value="/brochure/{{ ltrim($v->slug, '/') }}">
+    {{ $v->name }}
+</td>
+
+<td>
+    <input type="text"
+           name="link_order[]"
+           class="onlyNumber"
+           id="ordbox_{{ $v->id }}"
+           style="width: 35px;"
+           disabled="disabled"
+           value="0">
+</td>
+
+<td>{{ url('brochure/' . ltrim($v->slug, '/')) }}</td>
+  </tr>
+  @endforeach
+@else --}}
+
+
   @foreach( $links as $v )
   <tr>
     <td>
@@ -38,6 +66,10 @@
     <td>{{ url( $v->slug ) }}</td>
   </tr>
   @endforeach
+
+
+{{-- @endif --}}
+
 @endif
 
 

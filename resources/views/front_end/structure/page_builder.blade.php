@@ -139,6 +139,13 @@
             @endif
 @else
 @endif
+                          
+@if (!empty($allData->below_map))
+                              <div class="pgb-extra-content">
+                                    {!! trim(html_entity_decode($allData->below_map, ENT_QUOTES)) !!}
+                                </div>
+                                @else
+                                @endif
          
         </div>
         <div class="col-sm-4">
@@ -468,7 +475,7 @@
                                     <h6 class="midbody_subheading">{!! trim(html_entity_decode($pgd->main_content, ENT_QUOTES)) !!}{{-- $pgd->main_content --}}</h6>
                                 </div>
                             @endif
-
+                                 
                             <!-- Quick Body LINKS -->
                             @if (
                                 ($pgd->builder_type == 'PRODUCT_LINKS' ||
@@ -478,6 +485,7 @@
                                     $pgd->builder_type == 'PEOPLE_LINKS' ||
                                     $pgd->builder_type == 'NEWS_LINKS' ||
                                     $pgd->builder_type == 'CUSTOM_LINKS' ||
+                                    $pgd->builder_type == 'BROCHURE_LINKS' ||
                                     strpos($pgd->builder_type, 'CONTENT_LINKS') !== false) &&
                                     $pgd->position == 'BODY')
                                 <div class="midbody_newsblock pgb-links">
@@ -485,10 +493,19 @@
                                     @if (isset($pgd->links))
                                         <div class="news_list">
                                             <ul class="greendot">
+                                            
+
+
+
+
                                                 @foreach ($pgd->links as $lnk)
+                                              
                                                     @php
-                                                        $linkData = linkSlugToContent($lnk->slug);
+                                                        $linkData = linkSlugToContent($lnk->slug,$pgd->builder_type??'');
                                                     @endphp
+                                                    
+
+                                                    
                                                     @if (!empty($linkData) && $pgd->builder_type != 'CUSTOM_LINKS')
                                                         <li>
                                                             <a
@@ -496,10 +513,12 @@
                                                         </li>
                                                     @else
                                                         <li>
-                                                            <a href="{{ $lnk->slug }}">{{ $lnk->link_text }}</a>
+                                                            <a  href="{{ $lnk->slug }}">{{ $lnk->link_text }}</a>
                                                         </li>
                                                     @endif
                                                 @endforeach
+
+                                              
                                             </ul>
                                         </div>
                                     @endif

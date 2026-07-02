@@ -349,6 +349,11 @@
                 <label>Desktop Content : (Above the fold content)</label>
                 <textarea name="page_content" id="pgConte" class="form-control">@if( isset($distributor) ){{ html_entity_decode($distributor->page_content, ENT_QUOTES) }}@endif</textarea>
               </div>
+
+              <div class="form-group">
+                <label>Extra Content : (Below the map content)</label>
+                <textarea name="below_map" id="pgConte2" class="form-control">@if( isset($distributor) ){{ html_entity_decode($distributor->below_map, ENT_QUOTES) }}@endif</textarea>
+              </div>
             </div>
           </div>
 
@@ -488,6 +493,10 @@ $( function() {
 });
 
 var editor = CKEDITOR.replace( 'pgConte', {
+  customConfig: "{{ asset('public/assets/ckeditor/maxi_config.js') }}",
+} );
+
+var editor2 = CKEDITOR.replace( 'pgConte2', {
   customConfig: "{{ asset('public/assets/ckeditor/maxi_config.js') }}",
 } );
 

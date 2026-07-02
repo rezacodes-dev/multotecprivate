@@ -2294,8 +2294,9 @@ $DataBag['map'] = \App\Models\HomeMap::first();
         $data = \App\Models\Distributor\Distributor::with(['pageBuilderContent'])
             ->where('language_id', '=', $getlngid)->where('language_id', '=', $getlngid)->where('slug', '=', $distbr_slug)
             ->where('status', '=', '1')->first();
-     
+       
         $DataBag['allData'] = $data;
+     
         $distributor_id =$data->id??'';
 
         $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('distributor_contents.distributor_id',$data->id)->where('parent_language_id', '=', '0')->get();

@@ -145,7 +145,11 @@ class PageBuilderController extends Controller
             $msg = 'Product Category Content';   
         }
 
-    
+        if( $builder_type == 'BROCHURE_LINKS' ) {
+            $msg = 'Brochure Links ';   
+        }
+
+        
         if (strpos($builder_type, 'CONTENT_LINKS') !== false) {
             $msg = 'Content Links';  
         }
@@ -180,7 +184,7 @@ class PageBuilderController extends Controller
             $edtTime = PageBuilder::where('insert_id', '=', $insert_id)
             ->where('cms_link_id', '!=', '0')->where('table_id', '!=', '0')
             ->where('table_type', '!=', '')->first(); // Edit Page Insert
-            
+        
             if( !empty($edtTime) ) {
                 
                 $cms_link_id = $edtTime->cms_link_id;
@@ -214,8 +218,9 @@ class PageBuilderController extends Controller
                     $jasonArr['builder_type'] = $builder_type;
                 }
             } else { // Insert Time
+   
         		$PageBuilder = new PageBuilder;
-
+       
         		$PageBuilder->insert_id = $insert_id;
         		$PageBuilder->builder_type = $builder_type;
         		$PageBuilder->main_content = $main_content;
@@ -952,6 +957,7 @@ class PageBuilderController extends Controller
 
         $expArr = explode('-', $link_type);
 
+            
         if( $link_type == 'PRODUCT_LINKS' || $link_type == 'PRODUCT_BOX' ) {
 
             $data = \App\Models\Product\Products::where('status', '=', '1')->where('is_duplicate', '=', '0')
@@ -965,6 +971,22 @@ class PageBuilderController extends Controller
             $data = \App\Models\Product\ProductCategories::where('status', '=', '1')->where('is_duplicate', '=', '0')
             ->where('name', '!=', '')->where('slug', '!=', '')->orderBy('id', 'desc')->get();
             $heading = 'Select Product Category Links';
+            $ele = 'tab';
+        }
+
+        if( $link_type == 'BROCHURE_LINKS' ) {
+
+            $data = \App\Models\BrochureMaster::where('status', '=', '1')
+          ->orderBy('id', 'desc')->get();
+            $heading = 'Select Brochure Links';
+            $ele = 'tab';
+        }
+
+        if( $link_type == 'KH_LINKS' ) {
+
+            $data = \App\Models\Article\KnowledgeHubMaster::where('status', '=', '1')
+            ->where('name', '!=', '')->where('slug', '!=', '')->orderBy('id', 'desc')->get();
+            $heading = 'Select Knowledge Hub Links';
             $ele = 'tab';
         }
 
@@ -1014,9 +1036,9 @@ class PageBuilderController extends Controller
             $ele = 'tab';
         }
         
-
+        
         $linksView = view( 'dashboard.any_render', array('links' => $data, 'heading' => $heading, 'ele' => $ele) )->render();
-
+       
         return response()->json(['html' => $linksView, 'link_type' => $link_type, 'status' => 'ok', 'x' => count($expArr)]);
     }
 
