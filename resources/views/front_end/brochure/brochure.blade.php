@@ -478,27 +478,31 @@ a.filterbut {
   <img src="{{ asset('public/icons/whatsapp-icon.svg') }}">
 <strong>Whatsapp</strong><br>
 
-@foreach($brochures as $value) 
+@foreach($brochures as $value)
 
     @if(!empty($value->brochure_pdf))
-
+         
         @php
-            $brochurePdf = $value->brochure_pdf ?? '';
+            $brochureLink = url($value->short_url);
 
-            // Encode spaces and special characters properly
-            $encodedPdf = str_replace('%2F', '/', rawurlencode($brochurePdf));
+            $type = $value->brochure_size ?? '';
+            $typeSingle = str_replace(' ', '', trim($type));
 
-             $brochureLink = url($value->short_url);
+            // Change this field if your brochure title is stored elsewhere
+            $brochureName = trim($listData->name ?? '');
 
-    $type = $value->brochure_size ?? '';
-    $typeSingle = str_replace(' ', '', trim($type));
+            if (empty($brochureName) ) {
+                $brochureTitle = 'Multotec brochure';
+            } else {
+                $brochureTitle = 'Multotec ' . $brochureName . ' brochure';
+            }
 
-    $message = urlencode(
-        "Here is a link to the Multotec brochure, which I thought you might find interesting.\n\nClick Here: $brochureLink"
-    );
+            $message = urlencode(
+                "Here is a link to the latest {$brochureTitle}, a quick, insightful look at our mineral-processing solutions and how they can add value to your operations.\n\nContact us at marketing@multotec.com for questions or a quote.\n\n{$brochureLink}"
+            );
         @endphp
-
-        <a href="https://wa.me/{{ env('WHATSAPP_NUMBER','') }}?text={{ $message }}" 
+         
+        <a href="https://wa.me/{{ env('WHATSAPP_NUMBER') }}?text={{ $message }}"
            target="_blank">
             {{ $typeSingle }}
         </a>
@@ -506,7 +510,6 @@ a.filterbut {
     @endif
 
 @endforeach
-
 
 
 </div>
