@@ -279,6 +279,16 @@
                 </div>
             </div>
 
+              <div class="col-md-3">
+                <div class="form-group">
+                    <label for="podcast_time_1">Podcast Time</label>
+                    <input type="text" class="form-control" id="podcast_time_1" 
+                          name="podcast_time[]" 
+                          value="{{ $detail['podcast_time'] ?? '' }}">
+                </div>
+            </div>
+
+
 
 
                  <!-- Buttons -->

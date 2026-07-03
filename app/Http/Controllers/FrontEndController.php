@@ -3771,7 +3771,7 @@ public function brochureAjax(Request $request)
     
 
         $query= DB::table('knowledge_hub')
-             ->select('knowledge_hub.name','knowledge_hub.slug','knowledge_hub.id','knowledge_hub.image','knowledge_hub_details.description','knowledge_hub_details.short_description','knowledge_hub_details.webinar_link','knowledge_hub_details.podcast_link','knowledge_hub_details.brochure_link')
+             ->select('knowledge_hub.name','knowledge_hub.slug','knowledge_hub.id','knowledge_hub.image','knowledge_hub_details.description','knowledge_hub_details.short_description','knowledge_hub_details.webinar_link','knowledge_hub_details.podcast_link','knowledge_hub_details.brochure_link','knowledge_hub_details.podcast_time')
              ->leftJoin('knowledge_hub_details','knowledge_hub_details.kh_id','knowledge_hub.id')
              ->leftJoin('kh_language','kh_language.id','knowledge_hub_details.language_id')
              ->where('knowledge_hub.status',1)

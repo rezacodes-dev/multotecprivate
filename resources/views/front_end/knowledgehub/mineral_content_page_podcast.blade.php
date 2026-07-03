@@ -214,6 +214,21 @@ a.filterbut {
     color:#fff;
     background:#006b45;
 }
+
+.episode-item {
+    border-bottom: 2px solid #e0e0e0;
+}
+.episode-item:last-child {
+    border-bottom: none;
+}
+.podcast-play.knowledgeicon {
+    background: transparent;
+    color: #008c5be8;
+}
+.podcast-play.knowledgeicon:hover {
+    background: transparent;
+    color: #008c5be8;
+}
 .product-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -342,38 +357,32 @@ color: #008c5be8;
 
 
 @php
-    $firstEpisodeId = null;
-    $firstEmbedUrl  = null;
+    $firstEpisodeId  = null;
+    $firstEpisodeUri = null;
 
     if( isset($listData) && count($listData) > 0 ) {
         $firstPodcastLink = $listData[0]->podcast_link ?? '';
         if( !empty($firstPodcastLink) ) {
             preg_match('/episode\/([A-Za-z0-9]+)/', $firstPodcastLink, $matches);
             if( isset($matches[1]) ) {
-                $firstEpisodeId = $matches[1];
-                $firstEmbedUrl  = 'https://open.spotify.com/embed/episode/' . $firstEpisodeId . '?utm_source=iframe-api';
+                $firstEpisodeId  = $matches[1];
+                $firstEpisodeUri = 'spotify:episode:' . $firstEpisodeId;
             }
         }
     }
 
-    $defaultEmbedUrl = 'https://open.spotify.com/embed/episode/4WLyPOZmbK9xS2HgKZL0nj?utm_source=iframe-api';
+    $defaultEpisodeUri = 'spotify:episode:4WLyPOZmbK9xS2HgKZL0nj';
 @endphp
 
 <div class="col-sm-12 col-md-12">
 
-    <iframe id="mainPodcastIframe" frameborder="0" allowfullscreen=""
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"
-        width="100%"
-        height="352"
-        src="{{ $firstEmbedUrl ?? $defaultEmbedUrl }}">
-    </iframe>
+    <div id="mainPodcastContainer" style="width:100%; height:352px; border-radius:12px;"></div>
 
 <div class="" style="border:1px solid #ddd;background:#f5f5f5;padding:15px 20px;">
 
 @foreach($listData as $key => $v)
 
-<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
+<div class="episode-item" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
 
     <a href="javascript:void(0);"
        class="podcast-play-trigger"
@@ -382,14 +391,15 @@ color: #008c5be8;
        style="flex:1;text-decoration:none;color:#000;font-size:15px;font-weight:500;line-height:1.4;">
         {{ $key + 1 }}. {{ $v->name ?? '' }}
     </a>
-
-    
-
+     <span>{{$v->podcast_time??''}}</span>
     <a href="javascript:void(0);"
-       class="podcast-play"
+       class="podcast-play knowledgeicon"
        data-podcast="{{ $v->podcast_link ?? '' }}"
-       data-title="{{ $v->name ?? '' }}">
-        <i class="fa fa-play"></i>
+       data-title="{{ $v->name ?? '' }}"
+       style="border:1px solid #1f6b3a; padding:8px;"
+       title="Listen">
+        <img src="{{ asset('public/icons/headphones.png') }}">
+        {{-- <span>Listen</span> --}}
     </a>
 
 </div>
@@ -440,7 +450,7 @@ color: #008c5be8;
 
 
 
-<div class="modal fade" id="spotifyModal" tabindex="-1" role="dialog">
+{{-- <div class="modal fade" id="spotifyModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
@@ -462,23 +472,7 @@ color: #008c5be8;
 
         </div>
     </div>
-</div>
-
-<!-- Mini Spotify Player -->
-<div id="spotifyMiniPlayer" style="display:none; position:fixed; bottom:0; left:0; width:100%; z-index:1050; background:#191414; color:#fff; padding:12px 20px; align-items:center; justify-content:space-between; box-shadow:0 -4px 12px rgba(0,0,0,0.3);">
-    <div style="display:flex; align-items:center; gap:12px; overflow:hidden;">
-        <i class="fa fa-spotify" style="color:#1db954; font-size:22px; flex-shrink:0;"></i>
-        <span id="spotifyMiniTitle" style="font-weight:500; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Now Playing on Spotify</span>
-    </div>
-    <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
-        <button type="button" id="expandSpotify" class="btn btn-sm" style="background:#1db954; color:#fff; border:none; border-radius:20px; padding:5px 15px; font-weight:500;">
-            <i class="fa fa-expand"></i> Expand
-        </button>
-        <button type="button" id="closeMiniPlayer" class="btn btn-sm" style="background:transparent; color:#fff; border:none; padding:5px 8px; font-size:16px; line-height:1;">
-            <i class="fa fa-times"></i>
-        </button>
-    </div>
-</div>
+</div> --}}
 
         </div>
     </div>
@@ -666,148 +660,85 @@ $( function() {
 
 <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 <script>
-    let spotifyController = null;
-    let spotifyControllerReady = false;
-    let spotifyHasStarted = false;
-    let spotifyIsPlaying = false;
-    let currentEpisodeId = null;
+    let mainPodcastController = null;
+    let mainPodcastControllerReady = false;
+    let pendingAutoPlay = false;
 
     window.onSpotifyIframeApiReady = function (IFrameAPI) {
-        window.spotifyIFrameAPI = IFrameAPI;
+        let initialUri = "{{ $firstEpisodeUri ?? $defaultEpisodeUri }}";
+
+        IFrameAPI.createController(
+            document.getElementById('mainPodcastContainer'),
+            {
+                width: '100%',
+                height: '352',
+                uri: initialUri
+            },
+            function (EmbedController) {
+                mainPodcastController = EmbedController;
+
+                EmbedController.addListener('ready', function () {
+                    mainPodcastControllerReady = true;
+                    if (pendingAutoPlay) {
+                        pendingAutoPlay = false;
+                        if (typeof mainPodcastController.play === 'function') {
+                            mainPodcastController.play();
+                        }
+                    }
+                });
+            }
+        );
     };
 
-    function loadSpotifyEpisode(episodeId, title) {
-        // Same episode already loaded: just reopen the modal without restarting
-        if (spotifyController && currentEpisodeId === episodeId) {
-            localStorage.setItem('pendingSpotifyTitle', title);
-            $('#spotifyMiniTitle').text(title);
-            $('#spotifyMiniPlayer').hide();
-            $('#spotifyModal').modal('show');
+    function loadEpisodeInMainPlayer(episodeId, autoPlay) {
+        if (!mainPodcastController) {
+            setTimeout(function () {
+                loadEpisodeInMainPlayer(episodeId, autoPlay);
+            }, 150);
             return;
         }
 
-        // New episode: reset playback state
-        spotifyHasStarted = false;
-        spotifyIsPlaying = false;
-        currentEpisodeId = episodeId;
-
-        localStorage.setItem('pendingSpotifyEpisode', episodeId);
-        localStorage.setItem('pendingSpotifyTitle', title);
-        $('#spotifyMiniTitle').text(title);
-        $('#spotifyMiniPlayer').hide();
-
-        if (spotifyController) {
-            spotifyController.loadUri('spotify:episode:' + episodeId);
-            $('#spotifyModal').modal('show');
-            return;
+        if (autoPlay) {
+            pendingAutoPlay = true;
         }
+        mainPodcastController.loadUri('spotify:episode:' + episodeId);
 
-        function waitForApi() {
-            if (window.spotifyIFrameAPI) {
-                window.spotifyIFrameAPI.createController(
-                    document.getElementById('spotifyPlayerContainer'),
-                    {
-                        width: '100%',
-                        height: '352',
-                        uri: 'spotify:episode:' + episodeId
-                    },
-                    function (EmbedController) {
-                        spotifyController = EmbedController;
-
-                        EmbedController.addListener('ready', function () {
-                            spotifyControllerReady = true;
-                        });
-
-                        EmbedController.addListener('playback_update', function (e) {
-                            if (e && e.data) {
-                                spotifyIsPlaying = !e.data.isPaused;
-                                if (spotifyIsPlaying) {
-                                    spotifyHasStarted = true;
-                                }
-                            }
-                        });
-
-                        $('#spotifyModal').modal('show');
-                    }
-                );
-            } else {
-                setTimeout(waitForApi, 100);
-            }
+        if (autoPlay && mainPodcastControllerReady && typeof mainPodcastController.play === 'function') {
+            mainPodcastController.play();
         }
-
-        waitForApi();
     }
 </script>
 
 <script>
-    $(document).on('click', '.open-audio', function () {
+    // Headphone icon: load and play episode immediately
+    $(document).on('click', '.podcast-play', function () {
         let spotifyUrl = $(this).data('podcast');
         let match = spotifyUrl.match(/episode\/([A-Za-z0-9]+)/);
 
         if (match) {
-            let episodeId = match[1];
-            let title = $(this).data('title') || 'Now Playing on Spotify';
-            loadSpotifyEpisode(episodeId, title);
+            loadEpisodeInMainPlayer(match[1], true);
         }
     });
-</script>
 
-<script>
-    $(document).on('click', '.podcast-play, .podcast-play-trigger', function () {
+    // Episode title: switch episode in the main player
+    $(document).on('click', '.podcast-play-trigger', function () {
         let spotifyUrl = $(this).data('podcast');
         let match = spotifyUrl.match(/episode\/([A-Za-z0-9]+)/);
 
         if (match) {
-            let episodeId = match[1];
-            let embedUrl = 'https://open.spotify.com/embed/episode/' + episodeId + '?utm_source=iframe-api';
-            $('#mainPodcastIframe').attr('src', embedUrl);
+            loadEpisodeInMainPlayer(match[1], false);
         }
     });
 </script>
 
 <script>
     $(document).ready(function () {
-        // Auto-select episode passed via ?episode= URL parameter
+        // Auto-select and auto-play episode passed via ?episode= URL parameter
         let params = new URLSearchParams(window.location.search);
         let episode = params.get('episode');
         if (episode && /^[A-Za-z0-9]+$/.test(episode)) {
-            let embedUrl = 'https://open.spotify.com/embed/episode/' + episode + '?utm_source=iframe-api';
-            $('#mainPodcastIframe').attr('src', embedUrl);
+            loadEpisodeInMainPlayer(episode, true);
         }
-
-        // Show mini player when modal is hidden only if playback has started
-        $('#spotifyModal').on('hide.bs.modal', function () {
-            if (spotifyHasStarted) {
-                let title = localStorage.getItem('pendingSpotifyTitle') || 'Now Playing on Spotify';
-                $('#spotifyMiniTitle').text(title);
-                $('#spotifyMiniPlayer').css('display', 'flex');
-            }
-        });
-
-        // Expand mini player back to modal
-        $(document).on('click', '#expandSpotify', function () {
-            $('#spotifyMiniPlayer').hide();
-            $('#spotifyModal').modal('show');
-        });
-
-        // Close mini player manually
-      $(document).on('click', '#closeMiniPlayer', function () {
-        $('#spotifyMiniPlayer').hide();
-
-        localStorage.removeItem('pendingSpotifyEpisode');
-        localStorage.removeItem('pendingSpotifyTitle');
-
-        if (spotifyController) {
-            spotifyController.pause();
-        }
-
-        spotifyHasStarted = false;
-        spotifyIsPlaying = false;
-        currentEpisodeId = null;
-    });
-
-
-        
     });
 </script>
 

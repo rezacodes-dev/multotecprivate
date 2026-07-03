@@ -218,6 +218,7 @@ public function saveBrochureIndustry(Request $request)
     $webinar_link = $request->input('webinar_link') ?? [];
     $podcast_link = $request->input('podcast_link') ?? [];
     $brochure_link = $request->input('brochure_link') ?? [];
+    $podcast_time = $request->input('podcast_time') ?? [];
    
 
     // Generate slug
@@ -268,6 +269,7 @@ public function saveBrochureIndustry(Request $request)
             'description' => $description[$key] ?? '',
             'webinar_link'  => !empty($webinar_link[$key])  ? $webinar_link[$key]  : NULL,
             'podcast_link'  => !empty($podcast_link[$key])  ? $podcast_link[$key]  : NULL,
+            'podcast_time'  => !empty($podcast_time[$key])  ? $podcast_time[$key]  : NULL,
             'brochure_link' => !empty($brochure_link[$key]) ? $brochure_link[$key] : NULL,
             'created_at' => now(),
             'updated_at' => now()
@@ -376,6 +378,7 @@ public function updateBrochureIndustry(Request $request, $topic_id)
     $shortdescription = $request->input('short_description') ?? [];
     $webinar_link = $request->input('webinar_link') ?? [];
     $podcast_link = $request->input('podcast_link') ?? [];
+    $podcast_time = $request->input('podcast_time') ?? [];
     $brochure_link = $request->input('brochure_link') ?? [];
  
     $brochureDetailsInsert = [];
@@ -393,6 +396,7 @@ public function updateBrochureIndustry(Request $request, $topic_id)
             'description' => $description[$key] ?? '',
             'webinar_link'  => !empty($webinar_link[$key])  ? $webinar_link[$key]  : NULL,
             'podcast_link'  => !empty($podcast_link[$key])  ? $podcast_link[$key]  : NULL,
+            'podcast_time'  => !empty($podcast_time[$key])  ? $podcast_time[$key]  : NULL,
             'brochure_link' => !empty($brochure_link[$key]) ? $brochure_link[$key] : NULL,
             'created_at' => now(),
             'updated_at' => now()
