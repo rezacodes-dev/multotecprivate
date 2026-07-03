@@ -34,6 +34,7 @@
 	        if( $ebox->builder_type == 'METRIC' ) { $builderTag = 'Metric'; }
 	        if( $ebox->builder_type == 'ACCORDION' ) { $builderTag = 'Accordion'; }
 	        if( $ebox->builder_type == 'REUSE' ) { $builderTag = 'Resuable Content'; }
+	        if( $ebox->builder_type == 'BROCHURE_LINKS' ) { $builderTag = 'Brochure Links'; }
 	        if (strpos($ebox->builder_type, 'CONTENT_LINKS') !== false) { $builderTag = 'Content Links'; }
 
 		@endphp
@@ -100,6 +101,7 @@
 	        if( $ebox->builder_type == 'METRIC' ) { $builderTag = 'Metric'; }
 	        if( $ebox->builder_type == 'ACCORDION' ) { $builderTag = 'Accordion'; }
 	        if( $ebox->builder_type == 'REUSE' ) { $builderTag = 'Resuable Content'; }
+		    if( $ebox->builder_type == 'BROCHURE_LINKS' ) { $builderTag = 'Brochure Links'; }
 	        if (strpos($ebox->builder_type, 'CONTENT_LINKS') !== false) { $builderTag = 'Content Links'; }
 	        
 		@endphp

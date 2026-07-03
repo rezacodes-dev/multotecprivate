@@ -140,7 +140,7 @@
 @else
 @endif
                           
-@if (!empty($allData->below_map))
+                                @if (!empty($allData->below_map))
                               <div class="pgb-extra-content">
                                     {!! trim(html_entity_decode($allData->below_map, ENT_QUOTES)) !!}
                                 </div>
@@ -498,7 +498,7 @@
 
 
 
-                                                @foreach ($pgd->links as $lnk)
+                                                {{-- @foreach ($pgd->links as $lnk)
                                               
                                                     @php
                                                         $linkData = linkSlugToContent($lnk->slug,$pgd->builder_type??'');
@@ -516,7 +516,28 @@
                                                             <a  href="{{ $lnk->slug }}">{{ $lnk->link_text }}</a>
                                                         </li>
                                                     @endif
-                                                @endforeach
+                                                @endforeach --}}
+                                                @foreach ($pgd->links as $lnk)
+
+                                                        @php
+                                                            $linkData = linkSlugToContent($lnk->slug, $pgd->builder_type ?? '');
+                                                        @endphp
+
+                                                        @if (!empty($linkData) && $pgd->builder_type == 'BROCHURE_LINKS')
+                                                            <li>
+                                                                <a href="{{ url($lng . '/brochure/' . $lnk->slug) }}">{{ $linkData->name }}</a>
+                                                            </li>
+                                                        @elseif (!empty($linkData) && $pgd->builder_type != 'CUSTOM_LINKS')
+                                                            <li>
+                                                                <a href="{{ url($lng . '/' . $lnk->slug) }}">{{ $linkData->name }}</a>
+                                                            </li>
+                                                        @else
+                                                            <li>
+                                                                <a href="{{ $lnk->slug }}">{{ $lnk->link_text }}</a>
+                                                            </li>
+                                                        @endif
+
+                                                    @endforeach
 
                                               
                                             </ul>
@@ -565,6 +586,7 @@
                                     $pgd->builder_type == 'PEOPLE_LINKS' ||
                                     $pgd->builder_type == 'NEWS_LINKS' ||
                                     $pgd->builder_type == 'CUSTOM_LINKS' ||
+                                      $pgd->builder_type == 'BROCHURE_LINKS' ||
                                     strpos($pgd->builder_type, 'CONTENT_LINKS') !== false) &&
                                     $pgd->position == 'RIGHT')
                                 <div class="midbody_newsblock pgb-links-right">
@@ -572,9 +594,9 @@
                                     @if (isset($pgd->links))
                                         <div class="news_list">
                                             <ul class="arrow-list">
-                                                @foreach ($pgd->links as $lnk)
+                                                {{-- @foreach ($pgd->links as $lnk)
                                                     @php
-                                                        $linkData = linkSlugToContent($lnk->slug);
+                                                        $linkData = linkSlugToContent($lnk->slug,$pgd->builder_type??'');
                                                     @endphp
                                                     @if (!empty($linkData) && $pgd->builder_type != 'CUSTOM_LINKS')
                                                         <li>
@@ -586,7 +608,28 @@
                                                             <a href="{{ $lnk->slug }}">{{ $lnk->link_text }}</a>
                                                         </li>
                                                     @endif
-                                                @endforeach
+                                                @endforeach --}}
+                                                       @foreach ($pgd->links as $lnk)
+
+                                                        @php
+                                                            $linkData = linkSlugToContent($lnk->slug, $pgd->builder_type ?? '');
+                                                        @endphp
+
+                                                        @if (!empty($linkData) && $pgd->builder_type == 'BROCHURE_LINKS')
+                                                            <li>
+                                                                <a href="{{ url($lng . '/brochure/' . $lnk->slug) }}">{{ $linkData->name }}</a>
+                                                            </li>
+                                                        @elseif (!empty($linkData) && $pgd->builder_type != 'CUSTOM_LINKS')
+                                                            <li>
+                                                                <a href="{{ url($lng . '/' . $lnk->slug) }}">{{ $linkData->name }}</a>
+                                                            </li>
+                                                        @else
+                                                            <li>
+                                                                <a href="{{ $lnk->slug }}">{{ $lnk->link_text }}</a>
+                                                            </li>
+                                                        @endif
+
+                                                    @endforeach
                                             </ul>
                                         </div>
                                     @endif

@@ -399,7 +399,7 @@ $( function() {
 						}
 
 
-						if( _builderType == 'PRODUCT_LINKS' || _builderType == 'DISTRIBUTOR' || _builderType == 'DISTRIBUTOR_PAGE' || _builderType == 'PRODUCT_CAT_LINKS' || _builderType == 'PEOPLE_LINKS' || _builderType.includes('CONTENT_LINKS') || _builderType == 'NEWS_LINKS' ) {
+						if( _builderType == 'PRODUCT_LINKS' || _builderType == 'DISTRIBUTOR' || _builderType == 'DISTRIBUTOR_PAGE' || _builderType == 'PRODUCT_CAT_LINKS' || _builderType == 'PEOPLE_LINKS' || _builderType.includes('CONTENT_LINKS') || _builderType == 'NEWS_LINKS' || _builderType == 'BROCHURE_LINKS' ) {
 							
 							$('#LINKS_this_id').val( _ID );
 							$('#link_heading').val( _mainTitle );

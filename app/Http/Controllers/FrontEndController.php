@@ -648,7 +648,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
             $table_id = $cms->table_id;
             $table_type = $cms->table_type;
-        
+          
             /** PRODUCT **/
             if ($table_type == 'PRODUCT') {
 

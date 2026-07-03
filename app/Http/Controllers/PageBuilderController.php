@@ -397,7 +397,7 @@ class PageBuilderController extends Controller
 	}
 
 	public function getContent(Request $request) {
-
+           
 		$r = PageBuilder::where('id', '=', trim( $request->input('id') ) )
 		->where('builder_type', '=', trim( $request->input('builder_type') ) )->first();
 
@@ -422,7 +422,52 @@ class PageBuilderController extends Controller
 			$jsonArr['link_text'] = $r->link_text;
 			$jsonArr['link_url'] = $r->link_url;
             $jsonArr['device'] = $r->device;
+             
 
+                 if( $request->input('builder_type') == 'BROCHURE_LINKS' ) {
+                
+                // $linkArr = array();
+                // $linkData = PageBuilderLinks::where('page_builder_id', '=', trim( $request->input('id') ) )
+                //    ->get();
+              
+                // if( !empty($linkData) ) {
+                //     foreach( $linkData as $v ) {
+                //         $arr = array();
+                //         $arr['id'] = $v->id;
+                //         $arr['slug'] = $v->slug;
+                //         $arr['text'] = $v->link_text;
+                //         array_push($linkArr, $arr);
+                //     }
+                // }
+
+                // $jsonArr['all_links'] = $linkArr;
+                  $linkArr = array();
+                $masterData = \App\Models\BrochureMaster::where('status', '=', '1')
+                ->orderBy('id', 'desc')->get();
+                if( !empty($masterData) ) {
+               
+                    foreach($masterData as $lnk) {
+                        $arr = array();
+                        $arr['id'] = $lnk->id;
+                        $arr['slug'] = $lnk->slug;
+                        $arr['display_slug'] = url( $lnk->slug );
+                        $arr['name'] = $lnk->name;
+                        $arr['order'] = getLinkOrder( trim( $request->input('id') ) , trim( $lnk->slug ) );
+                        $isLinkSelected = isLinkSelected( trim( $request->input('id') ) , trim( $lnk->slug ) );
+
+                        if( $isLinkSelected != '' && $isLinkSelected == 'SELECTED' ) {
+                            $arr['isSelected'] = 'YES';
+                        } else {
+                            $arr['isSelected'] = 'NO';
+                        }
+
+                        array_push($linkArr, $arr);
+                    }
+                }
+
+                $jsonArr['all_links'] = $linkArr;
+               
+            }
             if( $request->input('builder_type') == 'IMAGE_CAROUSEL' ) {
                 
                 $imgArr = array();
@@ -525,6 +570,8 @@ class PageBuilderController extends Controller
 
                     $jsonArr['SeleSubCats'] = $seleScat;
                 }
+
+      
 
                 /*$fileArr = array();
                 $fileData = PageBuilderFiles::with('masterFileInfo')->where('page_builder_id', '=', trim( $request->input('id') ) )->get();

@@ -469,12 +469,13 @@ function linkSlugToContent( $slug,$builder_type = null ) {
 	if($builder_type == 'BROCHURE_LINKS')
 	{
      	if( $slug != '' ) {
-      
+       
 		$cms = DB::table('brochure_master')->where('slug', '=', $slug)->first();
 		if( !empty($cms) ) {
 			    $cms->slug = 'brochure/' . ltrim($cms->slug, '/');
                 $data = $cms;
 		}
+		
 	}
 	}
 	else{
@@ -488,6 +489,7 @@ function linkSlugToContent( $slug,$builder_type = null ) {
   
 
 	}
+	
 		return $data;
 		
 }
