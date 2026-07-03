@@ -152,7 +152,7 @@
             <div class="rightpanel">
                 <!-- Loop -->
                 @if (isset($allData->pageBuilderContent) && !empty($allData->pageBuilderContent) && isset($device))
-                    @foreach ($allData->pageBuilderContent as $pgd)
+                    @foreach ($allData->pageBuilderContent as $pgd) 
                         <!-- Eform -->
                         @if ($pgd->builder_type == 'EFORM' && $pgd->position == 'RIGHT')
                             @if ($device == '1')
@@ -163,40 +163,68 @@
                                     {!! getHtmlFormBySCODE($pgd->main_content) !!}
                                 </div>
                             {{-- @if (url()->current() == 'https://www.multotec.icedev.co.za/en/location/north-america/multotec-canada') --}}
- @if(
-    !empty($allData->youtube) ||
-    !empty($allData->linkedin) ||
-    !empty($allData->facebook) ||
-    !empty($allData->twitter)
-)
-<p style="text-align:center;">
-    <strong style="font-size:24px;vertical-align:middle;">Follow us:</strong>
+                            @if(
+                                !empty($allData->youtube) ||
+                                !empty($allData->linkedin) ||
+                                !empty($allData->facebook) ||
+                                !empty($allData->twitter)
+                            )
+                            <p style="text-align:center;">
+                                <strong style="font-size:24px;vertical-align:middle;">Follow us:</strong>
 
-    @if(!empty($allData->youtube))
-        <a href="{{ $allData->youtube }}" target="_blank">
-            <img src="{{ asset('public/uploads/files/youtube.jpg') }}" width="50" height="50">
-        </a>
-    @endif
+                                @if(!empty($allData->youtube))
+                                    <a href="{{ $allData->youtube }}" target="_blank">
+                                        <img src="{{ asset('public/uploads/files/youtube.jpg') }}" width="50" height="50">
+                                    </a>
+                                @endif
 
-    @if(!empty($allData->linkedin))
-        <a href="{{ $allData->linkedin }}" target="_blank">
-            <img src="{{ asset('public/uploads/files/linkedin.jpg') }}" width="50" height="50">
-        </a>
-    @endif
+                                @if(!empty($allData->linkedin))
+                                    <a href="{{ $allData->linkedin }}" target="_blank">
+                                        <img src="{{ asset('public/uploads/files/linkedin.jpg') }}" width="50" height="50">
+                                    </a>
+                                @endif
 
-    @if(!empty($allData->facebook))
-        <a href="{{ $allData->facebook }}" target="_blank">
-            <img src="{{ asset('public/uploads/files/facebook.jpg') }}" width="50" height="50">
-        </a>
-    @endif
+                                @if(!empty($allData->facebook))
+                                    <a href="{{ $allData->facebook }}" target="_blank">
+                                        <img src="{{ asset('public/uploads/files/facebook.jpg') }}" width="50" height="50">
+                                    </a>
+                                @endif
 
-    @if(!empty($allData->twitter))
-        <a href="{{ $allData->twitter }}" target="_blank">
-            <img src="{{ asset('public/uploads/files/twitter.png') }}" width="50" height="50">
-        </a>
-    @endif
-</p>
-@endif
+                                @if(!empty($allData->twitter))
+                                    <a href="{{ $allData->twitter }}" target="_blank">
+                                        <img src="{{ asset('public/uploads/files/twitter.png') }}" width="50" height="50">
+                                    </a>
+                                @endif
+                            </p>
+                            @endif
+
+                                @if(!empty($pgd->table_type == 'DISTRIBUTOR'))
+                                                            <div style="display:block;">
+
+                                    <div class="buttom-row dwn-btn" style="margin:8px 0; width:100%;">
+                                        <a class="squre-btn"
+                                        href="{{ route('brochure') }}"
+                                        style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
+                                            <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
+                                                Brochures
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div class="buttom-row dwn-btn" style="margin:8px 0; width:100%;">
+                                        <a class="squre-btn"
+                                        href="{{ route('knowledgehub') }}"
+                                        style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
+                                            <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
+                                                Knowledge Hub
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                </div>
+
+                                @else
+                                @endif
 
 {{-- @endif --}}
                                 <!-- For Desktop Popup -->
