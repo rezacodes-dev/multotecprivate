@@ -204,7 +204,7 @@
                                     <div class="buttom-row dwn-btn" style="margin:8px 0; width:100%;">
                                         <a class="squre-btn"
                                         target="_blank"
-                                        href="{{ route('brochure') }}"
+                                        href="{{ url('en/brochure-library') }}"
                                         style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
                                             <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
                                                 Brochures
@@ -215,7 +215,7 @@
                                     <div class="buttom-row dwn-btn" style="margin:8px 0; width:100%;">
                                         <a class="squre-btn"
                                          target="_blank"
-                                        href="{{ route('knowledgehub') }}"
+                                        href="{{ url('en/knowledgehub') }}"
                                         style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
                                             <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
                                                 Knowledge Hub
