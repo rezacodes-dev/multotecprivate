@@ -203,6 +203,7 @@
 
                                     <div class="buttom-row dwn-btn" style="margin:8px 0; width:100%;">
                                         <a class="squre-btn"
+                                        target="_blank"
                                         href="{{ route('brochure') }}"
                                         style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
                                             <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
@@ -213,6 +214,7 @@
 
                                     <div class="buttom-row dwn-btn" style="margin:8px 0; width:100%;">
                                         <a class="squre-btn"
+                                         target="_blank"
                                         href="{{ route('knowledgehub') }}"
                                         style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
                                             <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
