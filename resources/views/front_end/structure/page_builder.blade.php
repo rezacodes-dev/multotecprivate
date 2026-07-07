@@ -37,10 +37,10 @@
 
                             <!-- Buttons-->
                             @if ($pgd->builder_type == 'BROCHURE_BUTT' && $pgd->position == 'BODY')
-                                <div class="buttom-row dwn-btn">
-                                    <a class="squre-btn" href="{{ route('viewTechResLst', ['lng' => $lng]) }}"> <i
+                                <div class="buttom-row dwn-btn" style="display:none">
+                                    {{-- <a class="squre-btn" href="{{ route('viewTechResLst', ['lng' => $lng]) }}"> <i
                                             class="fa fa-angle-down" aria-hidden="true"></i> <span>Technical
-                                            Resources</span></a>
+                                            Resources</span></a> --}}
                                 </div>
                             @endif
 
