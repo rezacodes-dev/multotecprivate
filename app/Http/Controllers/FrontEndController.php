@@ -4171,10 +4171,15 @@ if (!empty($v->brochure_link) || !empty($v->webinar_link) || !empty($v->podcast_
     }
 
     if (!empty($v->podcast_link)) {
-        $html .= '<a href="' . htmlspecialchars($v->podcast_link, ENT_QUOTES) . '" 
+        $podcastEpisodeId = '';
+        if (preg_match('/episode\/([A-Za-z0-9]+)/', $v->podcast_link, $pm)) {
+            $podcastEpisodeId = $pm[1];
+        }
+        $podcastUrl = route('knowledgehubpodcasts', ['lng' => $lng, 'episode' => $podcastEpisodeId]);
+        $html .= '<a href="' . $podcastUrl . '" 
                     title="Listen" 
-                    class="open-audio knowledgeicon"
-                    style="">
+                    class="knowledgeicon"
+                    style="border:1px solid #1f6b3a; padding:8px;">
                     <img src="' . asset('public/icons/headphones.png') . '">
                     <span>Listen</span>
                 </a>';

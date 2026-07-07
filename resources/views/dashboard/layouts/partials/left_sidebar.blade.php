@@ -367,7 +367,7 @@
           </li>
 
 
-           <li class="treeview @if(isset($parentMenu) && $parentMenu == '') active @endif">
+           {{-- <li class="treeview @if(isset($parentMenu) && $parentMenu == '') active @endif">
             <a href="#">
               <i class="fa fa-university" aria-hidden="true"></i> <span>Podcast  Page</span>
               <span class="pull-right-container">
@@ -380,7 +380,7 @@
               </li>
               
             </ul>
-          </li>
+          </li> --}}
 
 
 
@@ -683,7 +683,7 @@
       </li>
 
       {{-- Podcast management --}}
-    <li class="treeview @if(isset($parentMenu) && $parentMenu == '') active @endif">
+    {{-- <li class="treeview @if(isset($parentMenu) && $parentMenu == '') active @endif">
         <a href="#">
           <i class="fa fa-retweet" aria-hidden="true"></i> <span>Podcast Management</span>
           <span class="pull-right-container">
@@ -706,7 +706,7 @@
           </li>
   
         </ul>
-      </li>
+      </li> --}}
 
       {{-- Podcast Management --}}
 
