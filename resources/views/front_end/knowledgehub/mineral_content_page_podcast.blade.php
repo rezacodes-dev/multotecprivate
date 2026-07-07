@@ -387,15 +387,15 @@ color: #008c5be8;
     <a href="javascript:void(0);"
        class="podcast-play-trigger"
        data-podcast="{{ $v->podcast_link ?? '' }}"
-       data-title="{{ $v->name ?? '' }}"
+       data-title="{{ $v->podcast_title ?? '' }}"
        style="flex:1;text-decoration:none;color:#000;font-size:15px;font-weight:500;line-height:1.4;">
-        {{ $key + 1 }}. {{ $v->name ?? '' }}
+        {{ $key + 1 }}. {{ $v->podcast_title ?? '' }}
     </a>
      <span>{{$v->podcast_time??''}}</span>
     <a href="javascript:void(0);"
        class="podcast-play knowledgeicon"
        data-podcast="{{ $v->podcast_link ?? '' }}"
-       data-title="{{ $v->name ?? '' }}"
+       data-title="{{ $v->podcast_title ?? '' }}"
        style="border:1px solid #1f6b3a; padding:8px;"
        title="Listen">
         <img src="{{ asset('public/icons/headphones.png') }}">
