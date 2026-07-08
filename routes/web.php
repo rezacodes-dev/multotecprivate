@@ -314,6 +314,7 @@ Route::get('/get-event-countries', 'EventManagementController@getCountries')->na
 Route::get('/get-countries', 'FrontEndController@getCountries')->name('getCountries');
 
 Route::get('commodities-api','CommoditiesApiController@fetchApi');
+Route::get('sitemap-api','SitemapController@update');
 
 
 /* ------------ admin login redirect ------------------------- */
