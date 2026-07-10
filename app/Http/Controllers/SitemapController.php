@@ -9,6 +9,7 @@ use App\Models\BrochureProduct;
 use App\Models\BrochureProductDetails;
 use App\Models\CmsLinks;
 use App\Models\Distributor\DistributorContents;
+use App\Models\Media\ImageCategories;
 use App\Models\Menu\MenuMaster;
 use App\Models\Menu\NaviMaster;
 use App\Models\Referral;
@@ -23,12 +24,12 @@ use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Jenssegers\Agent\Agent;
 use Mail;
 use Redirect;
 use Session;
 use View;
-use Illuminate\Support\Str;
 
 class SitemapController extends Controller
 {
@@ -262,6 +263,50 @@ class SitemapController extends Controller
             url('en/' . $newflowvalue->slug)
         );
     }
+
+     /*
+    |--------------------------------------------------------------------------
+    | Landing  Page
+    |--------------------------------------------------------------------------
+    */
+
+    $landing = DB::table('landing_pages')
+         ->orderBy('id', 'desc')->get();
+ 
+    foreach ($landing as $lval) {
+        $newUrlsAdded += $this->appendUrl(
+            $xml,
+            $existing,
+            url('en/landing-pages/' . $lval->slug)
+        );
+    }
+
+
+    //image categories
+
+    
+    $csub = ImageCategories::with(['parent'])->where('status', '!=', '3')->orderBy('created_at', 'desc')->get();
+ 
+foreach ($csub as $cat) {
+
+    if ($cat->parent) {
+
+        $newUrlsAdded += $this->appendUrl(
+            $xml,
+            $existing,
+            url('en/gallery/images/' . ltrim($cat->parent->slug, '/') . '/' . ltrim($cat->slug, '/'))
+        );
+
+    } else {
+
+        $newUrlsAdded += $this->appendUrl(
+            $xml,
+            $existing,
+            url('en/gallery/images/' . ltrim($cat->slug, '/'))
+        );
+    }
+}
+
 
 
 
