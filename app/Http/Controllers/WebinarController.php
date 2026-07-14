@@ -575,6 +575,8 @@ class WebinarController extends Controller
 			$Webinar->short_description = trim(ucfirst($request->input('short_description')));
 			$Webinar->speaker = trim(ucfirst($request->input('speaker')));
 			$Webinar->sub_heading = trim(ucfirst($request->input('sub_heading')));
+		    $Webinar->index_tag = trim($request->input('index_tag'));
+            $Webinar->follow = trim($request->input('follow'));
 
 			$Webinar->duration = trim($request->input('duration'));
 
@@ -758,6 +760,8 @@ class WebinarController extends Controller
 			$Webinar->slug = trim($request->input('slug'));
 
 			$Webinar->duration = trim($request->input('duration'));
+		    $Webinar->index_tag = trim($request->input('index_tag'));
+            $Webinar->follow = trim($request->input('follow'));
 
 			$Webinar->webinar_type = trim($request->input('webinar_type'));
 
