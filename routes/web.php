@@ -269,7 +269,6 @@ if en then redirect to FrontEndController2 (where no lng slug)
 // });
 
 // Route::get('/updateshort', 'FrontEndController@shorturlUpdate')->name('shorturlUpdate');
-
 Route::get('/brazil', 'FrontEndController@landingPagesBrazil')->name('landingPagesBrazil');
 
 Route::get('/updateapp', function()
@@ -314,8 +313,7 @@ Route::get('/get-event-countries', 'EventManagementController@getCountries')->na
 Route::get('/get-countries', 'FrontEndController@getCountries')->name('getCountries');
 
 Route::get('commodities-api','CommoditiesApiController@fetchApi');
-Route::get('sitemap-api','SitemapController@update');
-
+// Route::get('sitemap-api','SitemapController@update');
 
 /* ------------ admin login redirect ------------------------- */
  
