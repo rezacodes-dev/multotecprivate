@@ -134,6 +134,26 @@
                 <input type="text" name="speaker" required id="speaker" class="form-control" placeholder="Enter Speaker" value="@if( isset($prodCat) ){{ $prodCat->speaker }}@endif">
               </div> 
               </div>
+
+             
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Add No Follow Tag :</label>
+                    <select name="follow" class="form-control">
+                      <option value="1" @if(isset($prodCat) && $prodCat->follow == '1') selected="selected" @endif>FOLLOW</option>
+                      <option value="0" @if(isset($prodCat) && $prodCat->follow == '0') selected="selected" @endif>NO FOLLOW</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Add No Index Tag :</label>
+                    <select name="index_tag" class="form-control">
+                      <option value="1" @if(isset($prodCat) && $prodCat->index_tag == '1') selected="selected" @endif>INDEX</option>
+                      <option value="0" @if(isset($prodCat) && $prodCat->index_tag == '0') selected="selected" @endif>NO INDEX</option>
+                    </select>
+                  </div>
+                </div>
   
               <div class="col-md-10">
               <div class="form-group">
