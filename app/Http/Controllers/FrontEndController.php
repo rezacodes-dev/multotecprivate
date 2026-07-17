@@ -62,7 +62,7 @@ class FrontEndController extends Controller
         $mainMenu = NaviMaster::where('menu_id', '=', '2')->where('parent_page_id', '=', '0')
             ->where('lng_id', '=', $currlngid)->orderBy('oid', 'asc')->get();
         $shareData['mainMenu'] = $mainMenu;
-   
+        
         $stickyFooter = NaviMaster::where('menu_id', '=', '4')->where('parent_page_id', '=', '0')
             ->where('lng_id', '=', $currlngid)->orderBy('oid', 'asc')->get();
         $shareData['stickyFooter'] = $stickyFooter;
@@ -72,7 +72,7 @@ class FrontEndController extends Controller
 
         $socialLinks = \App\Models\SocialLinks::where('status', '=', '1')->orderBy('display_order', 'asc')->get();
         $shareData['socialLinks'] = $socialLinks;
-
+    
         View::share($shareData);
     }
 public function spotifyLogin(Request $request)
@@ -2299,7 +2299,18 @@ $DataBag['map'] = \App\Models\HomeMap::first();
      
         $distributor_id =$data->id??'';
 
-        $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('distributor_contents.distributor_id',$data->id)->where('parent_language_id', '=', '0')->get();
+       $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')
+    ->where('distributor_contents.distributor_id', $data->id)
+    ->where('parent_language_id', '0')
+    ->orderByRaw("
+        TRIM(
+            SUBSTRING(
+                name,
+                LOCATE(' ', name) + 1
+            )
+        ) ASC
+    ")
+    ->get();
         
       
 

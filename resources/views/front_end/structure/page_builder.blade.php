@@ -141,7 +141,7 @@
 @endif
                           
                                 @if (!empty($allData->below_map))
-                              <div class="pgb-extra-content">
+                              <div class="pgb-extra-content" style="margin-top:50px">
                                     {!! trim(html_entity_decode($allData->below_map, ENT_QUOTES)) !!}
                                 </div>
                                 @else
