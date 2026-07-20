@@ -161,6 +161,58 @@
             </div>
 
 
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Brochure Link</label>
+                        <input type="text"
+                              name="brochure_link"
+                              id="brochure_link"
+                              class="form-control"
+                             value="@if( isset($distributor) ){{ $distributor->brochure_link }}@endif"
+                             >
+
+                     
+                    </div>
+                </div>
+            </div>
+
+
+
+                <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Knowledge Hub Link</label>
+                        <input type="text"
+                              name="kh_link"
+                              id="kh_link"
+                              class="form-control"
+                                value="@if( isset($distributor) ){{ $distributor->kh_link }}@endif"
+                             >
+
+                     
+                    </div>
+                </div>
+            </div>
+
+
+                <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Label for country link in continent page</label>
+                        <input type="text"
+                              name="country_text"
+                              id="country_text"
+                              class="form-control"
+                                value="@if( isset($distributor) ){{ $distributor->country_text }}@endif"
+                             >
+
+                     
+                    </div>
+                </div>
+            </div>
+
+
                   <div class="row">
             <div class="col-md-10">
               <h3>Page Banner Information</h3>

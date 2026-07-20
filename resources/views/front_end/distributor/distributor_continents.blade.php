@@ -193,7 +193,7 @@
 
                     <a href="{{ url('en/location/' . $val->continent_name . '/' . $val->country_slug) }}"
                     class="bottomcont">
-                        <span>Explore trusted support</span>
+                        <span>{{ $val->country_text??'Explore trusted support' }}</span>
                         <div class="arrowicon">
                             <img src="{{ asset('public/uploads/files/continent_images/arrow-right.svg') }}"
                                 alt="">

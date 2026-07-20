@@ -296,6 +296,9 @@ class DistributorController extends Controller
     	$Distributor->facebook = trim($request->input('facebook'));
     	$Distributor->twitter = trim($request->input('twitter'));
     	$Distributor->linkedin = trim($request->input('linkedin'));
+     	$Distributor->brochure_link = trim($request->input('brochure_link'));
+    	$Distributor->kh_link = trim($request->input('kh_link'));
+    	$Distributor->country_text = trim($request->input('country_text'));
     	$Distributor->slug = trim($request->input('slug'));
     	$Distributor->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
        	$Distributor->below_map = trim( htmlentities($request->input('below_map'), ENT_QUOTES) );
@@ -485,6 +488,9 @@ class DistributorController extends Controller
     	$Distributor->facebook = trim($request->input('facebook'));
     	$Distributor->twitter = trim($request->input('twitter'));
     	$Distributor->linkedin = trim($request->input('linkedin'));
+    	$Distributor->brochure_link = trim($request->input('brochure_link'));
+    	$Distributor->kh_link = trim($request->input('kh_link'));
+      	$Distributor->country_text = trim($request->input('country_text'));
     	$Distributor->slug = trim($request->input('slug'));
     	$Distributor->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
     	$Distributor->below_map = trim( htmlentities($request->input('below_map'), ENT_QUOTES) );
