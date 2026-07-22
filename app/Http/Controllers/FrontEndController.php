@@ -3934,7 +3934,7 @@ public function brochureAjax(Request $request)
         // $uniqueYear = array_unique( $yearArr );
         // $DataBag['yearList'] = $uniqueYear;
           
-        $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'KnowledgeHub')->first();
+        $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'PODCAST')->first();
 
         $DataBag['page_metadata'] = $DataBag['extraContent'];
         // dd($DataBag['listData'] );
