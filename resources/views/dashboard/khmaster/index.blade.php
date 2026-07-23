@@ -77,7 +77,7 @@
 
             
               @php $url=route('editKhallId', array('id' => $pc->id))  @endphp
-              <a href="{{ url('en' . route('front.knowledgehubCont', ['id' => $pc->slug], false)) }}" target="_blank">
+              <a href="{{ url('/en' . route('front.knowledgehubCont', ['id' => $pc->slug??''], false)) }}" target="_blank">
                   <i class="fa fa-eye fa-2x base-green"></i>
               </a>
 

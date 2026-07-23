@@ -22,13 +22,11 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 use Jenssegers\Agent\Agent;
 use Mail;
 use Redirect;
 use Session;
 use View;
-use Illuminate\Support\Str;
 
 class FrontEndController extends Controller
 {
@@ -62,7 +60,7 @@ class FrontEndController extends Controller
         $mainMenu = NaviMaster::where('menu_id', '=', '2')->where('parent_page_id', '=', '0')
             ->where('lng_id', '=', $currlngid)->orderBy('oid', 'asc')->get();
         $shareData['mainMenu'] = $mainMenu;
-        
+
         $stickyFooter = NaviMaster::where('menu_id', '=', '4')->where('parent_page_id', '=', '0')
             ->where('lng_id', '=', $currlngid)->orderBy('oid', 'asc')->get();
         $shareData['stickyFooter'] = $stickyFooter;
@@ -72,114 +70,9 @@ class FrontEndController extends Controller
 
         $socialLinks = \App\Models\SocialLinks::where('status', '=', '1')->orderBy('display_order', 'asc')->get();
         $shareData['socialLinks'] = $socialLinks;
-    
+
         View::share($shareData);
     }
-public function spotifyLogin(Request $request)
-{
-    session([
-        'spotify_redirect_after_login' => $request->redirect ?? url()->previous(),
-    ]);
-
-    $query = http_build_query([
-        'client_id'     => env('SPOTIFY_CLIENT_ID'),
-        'response_type' => 'code',
-        'redirect_uri'  => env('SPOTIFY_REDIRECT_URI'),
-        'scope'         => 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state',
-    ]);
-
-    return redirect('https://accounts.spotify.com/authorize?' . $query);
-}
-
-public function spotifyCallback(Request $request)
-{
-  // dd($request->all());
-     $response = Http::asForm()
-        ->withHeaders([
-            'Authorization' => 'Basic ' . base64_encode(
-                env('SPOTIFY_CLIENT_ID') . ':' . env('SPOTIFY_CLIENT_SECRET')
-            ),
-        ])
-        ->post('https://accounts.spotify.com/api/token', [
-            'grant_type'   => 'authorization_code',
-            'code'         => $request->code,
-            'redirect_uri' => env('SPOTIFY_REDIRECT_URI'),
-        ]);
-
-    $tokenData = $response->json();
-
-    // session([
-    //     'spotify_access_token'  => $tokenData['access_token'] ?? null,
-    //     'spotify_refresh_token' => $tokenData['refresh_token'] ?? null,
-    // ]);
-    // $user = Http::withToken($tokenData['access_token'])
-    // ->get('https://api.spotify.com/v1/me')
-    // ->json();
-
-// dd($user);
-// $response = Http::withToken($tokenData['access_token'])
-//     ->get('https://api.spotify.com/v1/me');
-
-// dd([
-//     'status' => $response->status(),
-//     'body' => $response->body(),
-//     'json' => $response->json(),
-// ]);
-
-   $tokenData = $response->json();
-
-    if (!isset($tokenData['access_token'])) {
-        return redirect('/en/knowledgehub')
-            ->with('error', 'Spotify authentication failed.');
-    }
-
-    session([
-        'spotify_access_token'  => $tokenData['access_token'],
-        'spotify_refresh_token' => $tokenData['refresh_token'] ?? null,
-        'spotify_connected'     => true,
-    ]);
-
-   
-    // return redirect('/en/knowledgehub?spotify_connected=1');
-    $redirectTo = session()->pull('spotify_redirect_after_login', '/en/knowledgehub');
-
-return redirect($redirectTo . (str_contains($redirectTo, '?') ? '&' : '?') . 'spotify_connected=1');
-}
-
-public function extractBranchContacts()
-{
-    DB::table('branch_temp_contact')->truncate();
-
-    $contents = DB::table('distributor_contents')
-        ->select('id', 'page_content')
-        ->get();
-
-    foreach ($contents as $dc) {
-
-        $html = html_entity_decode(html_entity_decode($dc->page_content ?? ''));
-
-        $addressContent = '';
-
-        if (preg_match('/<strong>\s*Address:\s*<\/strong>(.*?)<\/p>/is', $html, $addressMatch)) {
-            $addressContent .= '<p><strong>Address:</strong>' . trim($addressMatch[1]) . '</p>';
-        }
-
-        if (preg_match('/<strong>\s*Tel:?\s*<\/strong>(.*?)<\/p>/is', $html, $telMatch)) {
-            $addressContent .= '<p><strong>Tel:</strong>' . trim($telMatch[1]) . '</p>';
-        }
-
-        if (preg_match('/<strong>\s*Email:?\s*<\/strong>(.*?)<\/p>/is', $html, $emailMatch)) {
-            $addressContent .= '<p><strong>Email:</strong>' . trim($emailMatch[1]) . '</p>';
-        }
-
-        DB::table('branch_temp_contact')->insert([
-            'branch_id'       => $dc->id,
-            'address_content' => $addressContent,
-        ]);
-    }
-
-    return 'Done';
-}
 
 
     public function saveWbUser(Request $request)
@@ -643,12 +536,9 @@ $DataBag['map'] = \App\Models\HomeMap::first();
        
         if (!empty($cms)) {
             
-           
-
-
             $table_id = $cms->table_id;
             $table_type = $cms->table_type;
-          
+        
             /** PRODUCT **/
             if ($table_type == 'PRODUCT') {
 
@@ -2223,7 +2113,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
 
         $DataBag['currContinent'] = \App\Models\Distributor\DistributorCategories::where('slug', '=', $cat_slug)
             ->where('language_id', '=', $getlngid)->where('status', '=', '1')->first();
-        
+
         $DataBag['page_metadata'] = $DataBag['currContinent'];
 
         if (!empty($DataBag['currContinent'])) {
@@ -2237,35 +2127,19 @@ $DataBag['map'] = \App\Models\HomeMap::first();
             $countries = $query->orderBy('name', 'asc')->get();
             $DataBag['seleCountries'] = $countries;
         }
-       
+
         $map = DB::table('distributor_categories_map as dcm')
             ->join('distributor_category as dcat', 'dcat.id', '=', 'dcm.distributor_category_id')
             ->join('distributor', 'distributor.id', '=', 'dcm.distributor_id')
             ->join('distributor_contents as dc', 'dc.distributor_id', '=', 'distributor.id')
-            ->where('dc.status', '=', '1')
-            ->where('dc.latitude', '!=', '')->where('dc.longitude', '!=', '')
+            ->where('dc.status', '=', '1')->where('dc.latitude', '!=', '')->where('dc.longitude', '!=', '')
             ->where('dcat.slug', '=', $cat_slug);
 
         $mapData = $map->select('dc.name as name', 'dc.latitude as lat', 'dc.longitude as lng', 'dc.address as address', 'dc.slug as branch_slug', 'dc.branch_type', 'distributor.slug as country_slug', 'dcat.slug as continent_slug')->get();
-      
+
         $DataBag['map_data'] = json_encode($mapData);
 
-            $continent_id = $DataBag['currContinent']->id??'';
-        $countriesFlag =  DB::table('distributor_categories_map')
-            ->join('distributor', 'distributor.id', '=', 'distributor_categories_map.distributor_id')
-            ->join('distributor_category', 'distributor_category.id', '=', 'distributor_categories_map.distributor_category_id')
-            ->where('distributor_category.status', 1)   
-            ->where('distributor.status', 1)
-            ->where('distributor_categories_map.distributor_category_id', $continent_id)
-            ->select('distributor.*', 'distributor_categories_map.*')
-            ->select('distributor.name as country_name', 'distributor.slug as country_slug' ,'distributor_category.slug as continent_name','distributor.country_logo as logo','distributor.country_text')
-            ->get();
-            
-
-          $DataBag['countriesFlag'] = $countriesFlag;
-          
-    //    return view('front_end.distributor.distributor_category', $DataBag);
-        return view('front_end.distributor.distributor_continents', $DataBag);
+        return view('front_end.distributor.distributor_category', $DataBag);
     }
 
     public function distributor($lng, $cat_slug, $distbr_slug)
@@ -2294,25 +2168,13 @@ $DataBag['map'] = \App\Models\HomeMap::first();
         $data = \App\Models\Distributor\Distributor::with(['pageBuilderContent'])
             ->where('language_id', '=', $getlngid)->where('language_id', '=', $getlngid)->where('slug', '=', $distbr_slug)
             ->where('status', '=', '1')->first();
-       
-        $DataBag['allData'] = $data;
      
+        $DataBag['allData'] = $data;
         $distributor_id =$data->id??'';
 
-       $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')
-    ->where('distributor_contents.distributor_id', $data->id)
-    ->where('parent_language_id', '0')
-    ->orderByRaw("
-        TRIM(
-            SUBSTRING(
-                name,
-                LOCATE(' ', name) + 1
-            )
-        ) ASC
-    ")
-    ->get();
+        $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('distributor_contents.distributor_id',$data->id)->where('parent_language_id', '=', '0')->get();
         
-      
+     
 
         $DataBag['page_metadata'] = $DataBag['allData'];
         $DataBag['country'] = $distbr_slug??'';
@@ -2366,29 +2228,15 @@ $DataBag['map'] = \App\Models\HomeMap::first();
         $getlngid = getLngIDbyCode($lng);
         $DataBag['lng_id'] = $getlngid;
 
-    //     $data = \App\Models\Distributor\DistributorContents::with(['pageBuilderContent'])
-    //         ->where('language_id', '=', $getlngid)->where('slug', '=', $cont_slug)->where('status', '=', '1')->first();
-    //   //  dd($data);
-    //     $DataBag['allData'] = $data;
-
-       $data = \App\Models\Distributor\Distributor::with(['pageBuilderContent'])
-            ->where('language_id', '=', $getlngid)->where('language_id', '=', $getlngid)->where('slug', '=', $cont_slug)
-            ->where('status', '=', '1')->first();
-        
+        $data = \App\Models\Distributor\DistributorContents::with(['pageBuilderContent'])
+            ->where('language_id', '=', $getlngid)->where('slug', '=', $cont_slug)->where('status', '=', '1')->first();
+      //  dd($data);
         $DataBag['allData'] = $data;
 
-        $distributor_id =$data->id??'';
-        
-        $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('distributor_contents.distributor_id',$distributor_id)->where('parent_language_id', '=', '0')->get();
-  
         $DataBag['country'] = $distbr_slug??'';
         $DataBag['country_alt'] = $cont_slug??'';
 
         $DataBag['page_metadata'] = $DataBag['allData'];
-
-        //  $DataBag['allDisConts'] = DistributorContents::where('status', '!=', '3')->where('id',$data->id)->where('parent_language_id', '=', '0')->get();
-
-       //   dd($DataBag['allDisConts'],$data->id);
 
          return view('front_end.distributor.distributor_content', $DataBag);
     }
@@ -2998,8 +2846,7 @@ $results_page = DB::select($query_page);
         return view('front_end.home', $DataBag);
     }
 
-
-   public function brochures($lng)
+  public function brochures($lng)
     {
 
         $DataBag = array();
@@ -3181,37 +3028,6 @@ $query = BrochureMaster::with([
     }
 
 
-public function shorturlUpdate(Request $request)
-{
-    DB::table('brochure_details')
-        ->orderBy('id')
-        ->chunk(500, function ($details) {
-
-            foreach ($details as $detail) {
-
-                do {
-                    $shortUrl = 'share-brochure/' . bin2hex(random_bytes(5));
-
-                    $exists = DB::table('brochure_details')
-                        ->where('short_url', $shortUrl)
-                        ->exists();
-
-                } while ($exists);
-
-                DB::table('brochure_details')
-                    ->where('id', $detail->id)
-                    ->update([
-                        'short_url' => $shortUrl,
-                    ]);
-            }
-        });
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Short URLs updated successfully.',
-    ]);
-}
-
 
  public function brochureContent($lng,$id){
         $DataBag = array();
@@ -3292,8 +3108,8 @@ public function shorturlUpdate(Request $request)
         $DataBag['extraContent'] = \App\Models\Media\MediaExtraContent::where('type', '=', 'ARTICLE')->first();
 
         $DataBag['page_metadata'] = $DataBag['extraContent'];
-      $DataBag['query_string'] = request()->getQueryString() ?? '';
-       
+           $DataBag['query_string'] = request()->getQueryString() ?? '';
+        // dd($DataBag['listData'] );
         return view('front_end.brochure.brochure', $DataBag);
     
     }
@@ -3374,103 +3190,7 @@ $mailBody .= 'Thank you,<br><strong>Multotec</strong>';
 }
     
     
-//    public function brochureAjax(Request $request)
-// {
-//     // $query = BrochureMaster::with('brochureDetails.brochureProducts')->where('status',1)->orderBy('created_at', 'desc');
-// $query = BrochureMaster::with([
-//     'brochureDetails.brochureProducts' => function ($q) {
-//         $q->orderByRaw('product_id IS NULL, product_id ASC');
-//     }
-// ])
-// ->where('brochure_master.status', 1)
-// ->orderBy('brochure_master.name', 'ASC');
-//     // Filter by brochure details
-//     if ($request->filled('brochure_type')) {
-    
-//         $query->whereHas('brochureDetails', function ($q) use ($request) {
-//             $q->where('type_id', $request->input('brochure_type'));
-//         });
-//     }
-//     if ($request->filled('brochure_brand')) {
-//         $query->whereHas('brochureDetails', function ($q) use ($request) {
-//             $q->where('brand_id', $request->input('brochure_brand'));
-//         });
-//     }
-//     if ($request->filled('brochure_language')) {
-//         $query->whereHas('brochureDetails', function ($q) use ($request) {
-//             $q->where('language_id', $request->input('brochure_language'));
-//         });
-//     }
-
-//     if ($request->filled('brochure_product')) {
-//         $query->whereHas('brochureDetails.brochureProducts', function ($q) use ($request) {
-//             $q->where('product_id', $request->input('brochure_product'));
-//         });
-//     }
-
-//     // Paginate results (6 per page)
-//     // $listData = $query->paginate(12)->appends($request->except('page'));
-
-//     $lng = app()->getLocale();
-
-//     // $listData = $query->paginate(12)
-//     // ->withPath(url('/en/brochure-library'))
-//     // ->appends($request->except('page'));
-
-//       $listData =$query->paginate(12)
-//     ->withPath(route('brochure', ['lng' => $lng]))
-//     ->appends($request->query());
-
-//     $query_string = $request->query_string??'';
-  
-//     $html = '<div class="row" id="listWebinars">';
-
-// if ($listData->count() > 0) {
-//     foreach ($listData as $v) {
-//         $imageURL = !empty($v->thumbnail_image)
-//             ? asset('public/' . $v->thumbnail_image)
-//             : asset('public/images/default_multotec.jpg');
-
-//      $html .= '
-//     <div class="col-sm-6 col-md-4 mb-4">
-//         <div class="product-card h-100">
-//             <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . (!empty($query_string) ? '?' . $query_string : '') . '">
-//                 <img src="' . $imageURL . '" alt="' . e($v->name) . '" class="img-fluid">
-//             </a>
-//             <div class="product-info text-center">
-//                 <h5>' . e($v->name) . '</h5>
-//                 <a href="' . route('front.brochureCont', ['lng' => $lng, 'id' => $v->slug]) . (!empty($query_string) ? '?' . $query_string : '') . '" class="btn-view">
-//                     View Content
-//                 </a>
-//             </div>
-//         </div>
-//     </div>
-// ';
-//     }
-// } else {
-//     $html .= '<h3>No Record Found</h3>';
-// }
-
-// $html .= '</div>';
-
-// // Pagination
-// $html .= '<div class="prev_next_btn text-center mt-3">';
-// if ($listData->previousPageUrl()) {
-//     $html .= '<a style="background-color:#fff;color: #008d5c;" href="' . $listData->previousPageUrl() . '" class="btn-view me-2">&lt; Prev</a>';
-// }
-// if ($listData->nextPageUrl()) {
-//     $html .= '<a style="background-color:#fff;color: #008d5c;" href="' . $listData->nextPageUrl() . '" class="btn-view">Next &gt;</a>';
-// }
-// $html .= '</div>';
-
-
-//     return response()->json([
-//         'success' => true,
-//         'html' => $html
-//     ]);
-// }
-
-public function brochureAjax(Request $request)
+  public function brochureAjax(Request $request)
 {
     $lng = app()->getLocale();
 
@@ -3583,6 +3303,9 @@ public function brochureAjax(Request $request)
     ]);
 }
 
+
+
+
   public function knowledgehub($lng,Request $request)
     {
 
@@ -3690,7 +3413,7 @@ public function brochureAjax(Request $request)
         //     });
         // }
  
-        $articlesData = $query->orderBy('knowledge_hub.created_at','desc')->paginate(12);
+        $articlesData = $query->orderBy('knowledge_hub.created_at','desc')->paginate(6);
       
         $DataBag['listData'] = $articlesData;
        
@@ -3763,7 +3486,9 @@ public function brochureAjax(Request $request)
         return view('front_end.knowledgehub.knowledge_list', $DataBag);
     }
 
-    public function knowledgehubpodcasts($lng,Request $request){
+
+      public function knowledgehubpodcasts($lng,Request $request){
+         abort(404);
   $DataBag = array();
 
         $device = 1;
@@ -3941,7 +3666,7 @@ public function brochureAjax(Request $request)
         return view('front_end.knowledgehub.mineral_content_page_podcast', $DataBag);
     }
 
-     public function knowledgehubContent(Request $request,$lng="en",$id='NULL'){
+    public function knowledgehubContent(Request $request,$lng="en",$id='NULL'){
         $DataBag = array();
 
         $device = 1;
@@ -4022,8 +3747,7 @@ public function brochureAjax(Request $request)
         return view('front_end.knowledgehub.knowledge', $DataBag);
     
     }
-
-   public function knowledgeAjax(Request $request)
+ public function knowledgeAjax(Request $request)
 {
     $lng = app()->getLocale();
 
@@ -4212,8 +3936,20 @@ $html .= '
     $html .= '</div>'; // ✅ close row
 
    
-     // Pagination
-    $html .= '<div class="prev_next_btn text-center mt-3">';
+    //  // Pagination
+    // $html .= '<div class="prev_next_btn text-center mt-3">';
+
+    // if ($listData->previousPageUrl()) {
+    //     $html .= '<a href="' . $listData->previousPageUrl() . '" class="btn-view me-2" style="background-color:#fff;color:#008d5c;">&lt; Prev</a>';
+    // }
+
+    // if ($listData->nextPageUrl()) {
+    //     $html .= '<a href="' . $listData->nextPageUrl() . '" class="btn-view" style="background-color:#fff;color:#008d5c;">Next &gt;</a>';
+    // }
+
+    // $html .= '</div>';
+
+        $html .= '<div class="prev_next_btn text-center mt-3">';
 
     if ($listData->previousPageUrl()) {
         $html .= '<a href="' . $listData->previousPageUrl() . '" class="btn-view me-2" style="background-color:#fff;color:#008d5c;">&lt; Prev</a>';
@@ -4231,5 +3967,39 @@ $html .= '
         'html'    => $html
     ]);
 }
+
+
+
+public function shorturlUpdate(Request $request)
+{
+    DB::table('brochure_details')
+        ->orderBy('id')
+        ->chunk(500, function ($details) {
+
+            foreach ($details as $detail) {
+
+                do {
+                    $shortUrl = 'share-brochure/' . bin2hex(random_bytes(5));
+
+                    $exists = DB::table('brochure_details')
+                        ->where('short_url', $shortUrl)
+                        ->exists();
+
+                } while ($exists);
+
+                DB::table('brochure_details')
+                    ->where('id', $detail->id)
+                    ->update([
+                        'short_url' => $shortUrl,
+                    ]);
+            }
+        });
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Short URLs updated successfully.',
+    ]);
+}
+
 
 }

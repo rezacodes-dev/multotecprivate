@@ -205,7 +205,7 @@ class BackendKnowledgeHubController extends Controller
 public function saveBrochureIndustry(Request $request)
 {  
     $mainbrochure = new KnowledgeHubMaster();
-    $mainbrochure->name = $request->name;
+    $mainbrochure->name = $request->name??'';
  
 
     $sl_no = $request->input('sl_no') ?? [];
@@ -221,7 +221,7 @@ public function saveBrochureIndustry(Request $request)
     $podcast_time = $request->input('podcast_time') ?? [];
     $podcast_title = $request->input('podcast_title') ?? [];
    
-
+    if(!empty($request->name)){
     // Generate slug
     $slug = Str::slug($request->name);
     $originalSlug = $slug;
@@ -232,7 +232,7 @@ public function saveBrochureIndustry(Request $request)
     }
 
     $mainbrochure->slug = $slug;
-
+    }
     // Handle brochure image upload
     if ($request->hasFile('brochure_image')) {
         $file = $request->file('brochure_image');
@@ -337,9 +337,10 @@ public function updateBrochureIndustry(Request $request, $topic_id)
     $mainbrochure = KnowledgeHubMaster::findOrFail($topic_id);
 
     // ✅ Update basic fields
-    $mainbrochure->name = $request->name;
+    $mainbrochure->name = $request->name??'';
 
     // ✅ Slug generation (exclude current ID)
+    if(!empty($request->name)){
     $slug = Str::slug($request->name);
     $originalSlug = $slug;
     $count = 1;
@@ -349,6 +350,7 @@ public function updateBrochureIndustry(Request $request, $topic_id)
     }
 
     $mainbrochure->slug = $slug;
+    }
 
     // ✅ Image upload (same as add)
     if ($request->hasFile('brochure_image')) {
