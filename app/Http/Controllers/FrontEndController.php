@@ -3865,7 +3865,7 @@ $mailBody .= 'Thank you,<br><strong>Multotec</strong>';
             
 
 // ✅ Icons section (same as Blade)
-if (!empty($v->brochure_link) || !empty($v->webinar_link) || !empty($v->podcast_link)) {
+
 
     $html .= '<div style="display:flex; justify-content:center; gap:15px;">';
 
@@ -3921,7 +3921,7 @@ if (!empty($v->brochure_link) || !empty($v->webinar_link) || !empty($v->podcast_
     }
 
     $html .= '</div>';
-}
+
 
 $html .= '
         </div>
