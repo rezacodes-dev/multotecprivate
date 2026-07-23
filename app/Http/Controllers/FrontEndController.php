@@ -3413,7 +3413,7 @@ $mailBody .= 'Thank you,<br><strong>Multotec</strong>';
         //     });
         // }
  
-        $articlesData = $query->orderBy('knowledge_hub.created_at','desc')->paginate(6);
+        $articlesData = $query->orderBy('knowledge_hub.created_at','desc')->paginate(12);
       
         $DataBag['listData'] = $articlesData;
        
