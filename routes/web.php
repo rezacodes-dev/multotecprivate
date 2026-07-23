@@ -331,10 +331,11 @@ Route::group(['prefix' => '{lng?}'], function () {
 
 
 	 		 Route::get('/knowledgehub', 'FrontEndController@knowledgehub')->name('knowledgehub');
+			 	  Route::get('podcasts', 'FrontEndController@knowledgehubpodcasts')->name('knowledgehubpodcasts');
 	//Route::get('/brochures', function () {
 //		abort(404);
 //	})->name('brochure');
-    Route::get('/knowledgehub-content/{id}', 'FrontEndController@knowledgehubContent')->name('front.knowledgehubCont');
+      Route::get('/knowledgehub-content/{id}', 'FrontEndController@knowledgehubContent')->name('front.knowledgehubCont');
  
 	Route::get('/login', 'FrontEndController@login')->name('user_login');
 	Route::post('/login', 'FrontEndController@loginAction')->name('user_login_action');

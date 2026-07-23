@@ -94,7 +94,7 @@
                 <div class="form-group">
                     <label> Name (H1): <em>*</em></label>
                     <input type="text" name="name" id="name" class="form-control" placeholder="Enter Brochure Name" 
-                           value="{{ isset($khdetails) ? $khdetails->name : '' }}">
+                           value="{{ isset($khdetails) ? $khdetails->name : '' }}" required>
                 </div>
             </div>
             </div>
@@ -279,6 +279,25 @@
                 </div>
             </div>
 
+            {{-- <div class="col-md-3">
+                <div class="form-group">
+                    <label for="podcast_time_1">Podcast Time</label>
+                    <input type="text" class="form-control" id="podcast_time_1" 
+                          name="podcast_time[]" 
+                          value="{{ $detail['podcast_time'] ?? '' }}">
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="podcast_time_1">Podcast Title</label>
+                    <input type="text" class="form-control" id="podcast_title_1" 
+                          name="podcast_title[]" 
+                          value="{{ $detail['podcast_title'] ?? '' }}">
+                </div>
+            </div> --}}
+
+
 
 
                  <!-- Buttons -->
@@ -458,6 +477,24 @@
                    
                 </div>
             </div>
+
+                   {{-- <div class="col-md-3">
+                <div class="form-group">
+                    <label for="podcast_time_1">Podcast Time</label>
+                    <input type="text" class="form-control" id="podcast_time_1" 
+                          name="podcast_time[]" 
+                          value="">
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="podcast_time_1">Podcast Title</label>
+                    <input type="text" class="form-control" id="podcast_title_1" 
+                          name="podcast_title[]" 
+                          value="">
+                </div>
+            </div> --}}
 
             <!-- Brochure File -->
             <!-- <div class="col-md-3">

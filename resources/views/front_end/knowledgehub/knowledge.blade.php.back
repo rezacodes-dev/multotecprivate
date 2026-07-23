@@ -402,20 +402,10 @@ p {
                    @else
                    @endif
                   @if(!empty($listData->podcast_link))
-                  @php
-                      $podcastEpisodeId = '';
-                      if( preg_match('/episode\/([A-Za-z0-9]+)/', $listData->podcast_link, $pm) ) {
-                          $podcastEpisodeId = $pm[1];
-                      }
-                  @endphp
-   <a href="{{ route('knowledgehubpodcasts', ['lng' => $lng, 'episode' => $podcastEpisodeId]) }}"
-   class="knowledgeicon"
-   style="border:1px solid #1f6b3a; padding:8px;"
-   title="Listen">
-
-    <img src="{{ asset('public/icons/headphones.png') }}">
-    <span>Listen</span>
-</a>
+                  <a href="{{ $listData->podcast_link }}" class="open-audio knowledgeicon"  target="_blank"
+                   style="" title="Listen"><img src="{{ asset('public/icons/headphones.png') }}">
+                      <span>Listen</span>
+                   </a>
                    @else
                    @endif
 
@@ -472,55 +462,6 @@ p {
     </div>
   </div>
 </div>
-<div class="modal fade" id="spotifyModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h4 class="modal-title">
-                    <i class="fa fa-spotify text-success"></i>
-                    Spotify Player
-                </h4>
-
-                {{-- <button type="button"
-                        class="btn btn-sm btn-secondary mr-2"
-                        id="minimizeSpotify">
-                    Minimize
-                </button> --}}
-
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body text-center">
-
-                <div id="spotifyPlayerContainer" style="border-radius:12px; min-height:352px;"></div>
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- Mini Spotify Player -->
-<div id="spotifyMiniPlayer" style="display:none; position:fixed; bottom:0; left:0; width:100%; z-index:1050; background:#191414; color:#fff; padding:12px 20px; align-items:center; justify-content:space-between; box-shadow:0 -4px 12px rgba(0,0,0,0.3);">
-    <div style="display:flex; align-items:center; gap:12px; overflow:hidden;">
-        <i class="fa fa-spotify" style="color:#1db954; font-size:22px; flex-shrink:0;"></i>
-        <span id="spotifyMiniTitle" style="font-weight:500; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Now Playing on Spotify</span>
-    </div>
-    <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
-        <button type="button" id="expandSpotify" class="btn btn-sm" style="background:#1db954; color:#fff; border:none; border-radius:20px; padding:5px 15px; font-weight:500;">
-            <i class="fa fa-expand"></i> Expand
-        </button>
-        <button type="button" id="closeMiniPlayer" class="btn btn-sm" style="background:transparent; color:#fff; border:none; padding:5px 8px; font-size:16px; line-height:1;">
-            <i class="fa fa-times"></i>
-        </button>
-    </div>
-</div>
-
 @endsection
 
 
@@ -619,133 +560,6 @@ if (email === "") {
     });
 });
 
-</script>
-<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
-<script>
-    let spotifyController = null;
-    let spotifyControllerReady = false;
-    let spotifyHasStarted = false;
-    let spotifyIsPlaying = false;
-    let currentEpisodeId = null;
-
-    window.onSpotifyIframeApiReady = function (IFrameAPI) {
-        window.spotifyIFrameAPI = IFrameAPI;
-    };
-
-    function loadSpotifyEpisode(episodeId, title) {
-        // Same episode already loaded: just reopen the modal without restarting
-        if (spotifyController && currentEpisodeId === episodeId) {
-            localStorage.setItem('pendingSpotifyTitle', title);
-            $('#spotifyMiniTitle').text(title);
-            $('#spotifyMiniPlayer').hide();
-            $('#spotifyModal').modal('show');
-            return;
-        }
-
-        // New episode: reset playback state
-        spotifyHasStarted = false;
-        spotifyIsPlaying = false;
-        currentEpisodeId = episodeId;
-
-        localStorage.setItem('pendingSpotifyEpisode', episodeId);
-        localStorage.setItem('pendingSpotifyTitle', title);
-        $('#spotifyMiniTitle').text(title);
-        $('#spotifyMiniPlayer').hide();
-
-        if (spotifyController) {
-            spotifyController.loadUri('spotify:episode:' + episodeId);
-            $('#spotifyModal').modal('show');
-            return;
-        }
-
-        function waitForApi() {
-            if (window.spotifyIFrameAPI) {
-                window.spotifyIFrameAPI.createController(
-                    document.getElementById('spotifyPlayerContainer'),
-                    {
-                        width: '100%',
-                        height: '352',
-                        uri: 'spotify:episode:' + episodeId
-                    },
-                    function (EmbedController) {
-                        spotifyController = EmbedController;
-
-                        EmbedController.addListener('ready', function () {
-                            spotifyControllerReady = true;
-                        });
-
-                        EmbedController.addListener('playback_update', function (e) {
-                            if (e && e.data) {
-                                spotifyIsPlaying = !e.data.isPaused;
-                                if (spotifyIsPlaying) {
-                                    spotifyHasStarted = true;
-                                }
-                            }
-                        });
-
-                        $('#spotifyModal').modal('show');
-                    }
-                );
-            } else {
-                setTimeout(waitForApi, 100);
-            }
-        }
-
-        waitForApi();
-    }
-</script>
-
-<script>
-    $(document).on('click', '.open-audio', function () {
-        let podcastUrl = $(this).data('podcast');
-
-        if (podcastUrl.includes('open.spotify.com')) {
-            let match = podcastUrl.match(/episode\/([A-Za-z0-9]+)/);
-
-            if (match) {
-                let episodeId = match[1];
-                let title = $(this).data('title') || 'Now Playing on Spotify';
-                loadSpotifyEpisode(episodeId, title);
-            }
-        } else {
-            window.open(podcastUrl, '_blank');
-        }
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        // Show mini player when modal is hidden only if playback has started
-        $('#spotifyModal').on('hide.bs.modal', function () {
-            if (spotifyHasStarted) {
-                let title = localStorage.getItem('pendingSpotifyTitle') || 'Now Playing on Spotify';
-                $('#spotifyMiniTitle').text(title);
-                $('#spotifyMiniPlayer').css('display', 'flex');
-            }
-        });
-
-        // Expand mini player back to modal
-        $(document).on('click', '#expandSpotify', function () {
-            $('#spotifyMiniPlayer').hide();
-            $('#spotifyModal').modal('show');
-        });
-
-        // Close mini player manually
-        $(document).on('click', '#closeMiniPlayer', function () {
-            $('#spotifyMiniPlayer').hide();
-
-            localStorage.removeItem('pendingSpotifyEpisode');
-            localStorage.removeItem('pendingSpotifyTitle');
-
-            if (spotifyController) {
-                spotifyController.pause();
-            }
-
-            spotifyHasStarted = false;
-            spotifyIsPlaying = false;
-            currentEpisodeId = null;
-        });
-    });
 </script>
 
 
