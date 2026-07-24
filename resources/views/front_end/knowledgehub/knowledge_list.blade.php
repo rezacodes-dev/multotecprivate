@@ -235,7 +235,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             transition: 0.3s ease;
-            min-height: 472px;
+            min-height: 500px;
             margin: 0 0 30px;
         }
 
@@ -244,11 +244,17 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .product-card img {
+     /* .product-card img {
             width: 100%;
             height: auto;
             display: block;
-        }
+        } */
+      .product-card .k-hubimage {
+    height: 260px;
+    width: 100%;
+    object-fit: cover;
+}
+    
 
         .product-info {
             padding: 10px;
@@ -440,13 +446,13 @@
         </form>
 
         <div class="picboxsection" id="newListWebinars">
-            <div class="row" id="listWebinars">
+            <div class="row k-hub" id="listWebinars">
 
                 @if (isset($listData))
                     @forelse($listData as $v)
                         <div class="col-sm-4 col-md-4">
                             <div class="product-card"
-                                style="border:1px solid #ddd; background:#f5f5f5; padding:10px; text-align:center;">
+                                style="border:1px solid #ddd; background:#f5f5f5; padding:0px; text-align:center;">
                                 @php
                                     $imageURL =
                                         isset($v->image) && $v->image != ''
@@ -454,13 +460,13 @@
                                             : asset('public/images/default_multotec.jpg');
                                 @endphp
                                 <!-- Image clickable -->
-                                <div>
+                             
                                     <a
                                         href="{{ route('front.knowledgehubCont', ['lng' => $lng, 'id' => $v->slug, 'language_id' => $language_id]) }}">
-                                        <img src="{{ $imageURL }}" alt="Knowledge Hub"
-                                            style="width:100%; height:200px;object-fit: cover;">
+                                        <img src="{{ $imageURL }}" class="k-hubimage" alt="Knowledge Hub"
+                                         >
                                     </a>
-                                </div>
+                                
 
                                 <!-- Content -->
                                 <div style="padding:15px;">

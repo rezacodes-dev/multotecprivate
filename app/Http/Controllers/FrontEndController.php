@@ -3825,7 +3825,7 @@ $mailBody .= 'Thank you,<br><strong>Multotec</strong>';
     $queryString = http_build_query($params);
         
     // ✅ Start HTML
-    $html = '<div class="row" id="listWebinars">';
+    $html = '<div class="row k-hub" id="listWebinars">';
 
     if ($listData->count() > 0) {
 
@@ -3843,11 +3843,11 @@ $mailBody .= 'Thank you,<br><strong>Multotec</strong>';
 
    $html .= '
 <div class="col-sm-4 col-md-4">
-    <div class="product-card" style="border:1px solid #ddd; background:#f5f5f5; padding:10px; text-align:center;">
+    <div class="product-card" style="border:1px solid #ddd; background:#f5f5f5; padding:0px; text-align:center;">
         
         <div>
             <a href="' . $url . '">
-                <img src="' . $imageURL . '" alt="Knowledge Hub" style="width:100%; height:200px;object-fit: cover;">
+                <img class="k-hubimage" src="' . $imageURL . '" alt="Knowledge Hub"   >
             </a>
         </div>
 
