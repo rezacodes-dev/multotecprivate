@@ -228,14 +228,14 @@
             padding-right: 46px;
         }
 
-        .product-card {
+         .product-card {
             background: #fff;
             border-radius: 4px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             transition: 0.3s ease;
-            min-height: 472px;
+            min-height: 500px;
             margin: 0 0 30px;
         }
 
@@ -244,11 +244,12 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .product-card img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+  
+      .product-card .k-hubimage {
+    height: 260px;
+    width: 100%;
+    object-fit: cover;
+}
 
         .product-info {
             padding: 10px;
@@ -458,7 +459,7 @@
                                     <a
                                         href="{{ route('front.knowledgehubCont', ['lng' => $lng, 'id' => $v->slug, 'language_id' => $language_id]) }}">
                                         <img src="{{ $imageURL }}" alt="Knowledge Hub"
-                                            style="width:100%; height:200px;object-fit: cover;">
+                                            class="k-hubimage">
                                     </a>
                                 </div>
 

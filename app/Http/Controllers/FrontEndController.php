@@ -4123,7 +4123,7 @@ public function brochureAjax(Request $request)
         
         <div>
             <a href="' . $url . '">
-                <img src="' . $imageURL . '" alt="Knowledge Hub" style="width:100%; height:200px;object-fit: cover;">
+                <img src="' . $imageURL . '" alt="Knowledge Hub" class="k-hubimage">
             </a>
         </div>
 
