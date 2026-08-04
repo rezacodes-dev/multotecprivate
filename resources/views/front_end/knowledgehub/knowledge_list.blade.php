@@ -516,7 +516,7 @@
                                                     $podcastEpisodeId = $pm[1];
                                                 }
                                             @endphp
-                                            <a href="{{ route('knowledgehubpodcasts', ['lng' => $lng, 'episode' => $podcastEpisodeId]) }}"
+                                            <a style="display:none;" href="{{ route('knowledgehubpodcasts', ['lng' => $lng, 'episode' => $podcastEpisodeId]) }}"
                                                 class="knowledgeicon" style="border:1px solid #1f6b3a; padding:8px;"
                                                 title="Listen">
 

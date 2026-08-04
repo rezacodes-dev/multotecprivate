@@ -183,7 +183,7 @@ a.filterbut {
 }
 .product-card img {
     width: 100%;
-    height: 200px;      /* fixed height for alignment */
+    height: 260px;      /* fixed height for alignment */
     object-fit: cover;  /* keep aspect ratio without stretching */
 }
 .product-card .card-body {

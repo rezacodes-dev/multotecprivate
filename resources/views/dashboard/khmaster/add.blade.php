@@ -279,7 +279,7 @@
                 </div>
             </div>
 
-            {{-- <div class="col-md-3">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label for="podcast_time_1">Podcast Time</label>
                     <input type="text" class="form-control" id="podcast_time_1" 
@@ -295,7 +295,7 @@
                           name="podcast_title[]" 
                           value="{{ $detail['podcast_title'] ?? '' }}">
                 </div>
-            </div> --}}
+            </div>
 
 
 
@@ -478,7 +478,7 @@
                 </div>
             </div>
 
-                   {{-- <div class="col-md-3">
+                   <div class="col-md-3">
                 <div class="form-group">
                     <label for="podcast_time_1">Podcast Time</label>
                     <input type="text" class="form-control" id="podcast_time_1" 
@@ -494,7 +494,7 @@
                           name="podcast_title[]" 
                           value="">
                 </div>
-            </div> --}}
+            </div>
 
             <!-- Brochure File -->
             <!-- <div class="col-md-3">
