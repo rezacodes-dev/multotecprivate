@@ -329,6 +329,10 @@ p {
 .menuzord-menu>li {
     margin: 5px 0px 0 5px;
 }
+#wrapper ul li, #wrapper ol li {
+    list-style: disc;
+    margin: 0 0 10px;
+}
 </style>
 
 
@@ -445,7 +449,7 @@ p {
     <!-- Bottom Description -->
     <div style="background:#ffffff; padding:20px 0px; font-size:13px; color:#555; line-height:1.7;">
 
-       @if(!empty($listData->description))
+   @if(!empty($listData->description))
             {!! html_entity_decode( $listData->description ) !!}
             @else
             @endif
