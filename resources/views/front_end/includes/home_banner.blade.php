@@ -6,12 +6,12 @@
             @if(isset($hb->BannerImages) && !empty($hb->BannerImages) && $hb->BannerImages->status == '1')
             <div class="item">
                 <div class="innerslide">
-                    {{-- <img src="{{ asset('public/uploads/files/media_images/' . $hb->BannerImages->image) }}"
+                    <img src="{{ asset('public/uploads/files/media_images/' . $hb->BannerImages->image) }}"
                          alt="{{ $hb->BannerImages->alt_title }}"
                          title="{{ $hb->BannerImages->title }}"
                          fetchpriority="high"
                          loading="eager"
-                    /> --}}
+                    />
                     @if(!empty($hb->BannerImages->caption))
                         <div class="caption">
                             <p>{{ $hb->BannerImages->caption }}</p>

@@ -329,6 +329,10 @@ p {
 .menuzord-menu>li {
     margin: 5px 0px 0 5px;
 }
+#wrapper ul li, #wrapper ol li {
+    list-style: disc;
+    margin: 0 0 10px;
+}
 </style>
 
 

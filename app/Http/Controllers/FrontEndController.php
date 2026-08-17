@@ -2259,6 +2259,7 @@ $DataBag['map'] = \App\Models\HomeMap::first();
             ->where('distributor_categories_map.distributor_category_id', $continent_id)
             ->select('distributor.*', 'distributor_categories_map.*')
             ->select('distributor.name as country_name', 'distributor.slug as country_slug' ,'distributor_category.slug as continent_name','distributor.country_logo as logo','distributor.country_text')
+            ->orderBy('distributor.name','ASC')
             ->get();
             
 
