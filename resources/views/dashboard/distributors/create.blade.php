@@ -196,6 +196,39 @@
             </div>
 
 
+               <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Brochure Label Text</label>
+                        <input type="text"
+                              name="brochure_text"
+                              id="brochure_text"
+                              class="form-control"
+                             value="@if( isset($distributor) ){{ $distributor->brochure_text }}@endif"
+                             >
+
+                     
+                    </div>
+                </div>
+            </div>
+
+
+
+                <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Knowledge Hub Label Text</label>
+                        <input type="text"
+                              name="kh_text"
+                              id="kh_text"
+                              class="form-control"
+                                value="@if( isset($distributor) ){{ $distributor->kh_text }}@endif"
+                             >
+
+                     
+                    </div>
+                </div>
+            </div>
                 <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">

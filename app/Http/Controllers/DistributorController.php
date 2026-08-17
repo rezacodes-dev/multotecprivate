@@ -299,6 +299,8 @@ class DistributorController extends Controller
      	$Distributor->brochure_link = trim($request->input('brochure_link'));
     	$Distributor->kh_link = trim($request->input('kh_link'));
     	$Distributor->country_text = trim($request->input('country_text'));
+       	$Distributor->brochure_text = trim($request->input('brochure_text'));
+      	$Distributor->kh_text = trim($request->input('kh_text'));
     	$Distributor->slug = trim($request->input('slug'));
     	$Distributor->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
        	$Distributor->below_map = trim( htmlentities($request->input('below_map'), ENT_QUOTES) );
@@ -491,6 +493,8 @@ class DistributorController extends Controller
     	$Distributor->brochure_link = trim($request->input('brochure_link'));
     	$Distributor->kh_link = trim($request->input('kh_link'));
       	$Distributor->country_text = trim($request->input('country_text'));
+      	$Distributor->brochure_text = trim($request->input('brochure_text'));
+      	$Distributor->kh_text = trim($request->input('kh_text'));
     	$Distributor->slug = trim($request->input('slug'));
     	$Distributor->description = trim( htmlentities($request->input('description'), ENT_QUOTES) );
     	$Distributor->below_map = trim( htmlentities($request->input('below_map'), ENT_QUOTES) );

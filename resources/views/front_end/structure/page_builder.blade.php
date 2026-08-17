@@ -201,7 +201,7 @@
                                 @if(!empty($pgd->table_type == 'DISTRIBUTOR'))
                                   <div style="display:block;">
                                   
-                                    @if($allData->brochure_link != '')
+                                         @if($allData->brochure_link != '')
 
                                     <div class="buttom-row dwn-btn" style="margin:8px 0; width:100%;">
                                         <a class="squre-btn"
@@ -209,7 +209,7 @@
                                         href="{{ $allData->brochure_link }}"
                                         style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
                                             <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
-                                                Brochures
+                                                {{ $allData->brochure_text??'Brochures' }}
                                             </span>
                                         </a>
                                     </div>
@@ -227,12 +227,13 @@
                                         href="{{ $allData->kh_link }}"
                                         style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
                                             <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
-                                                Knowledge Hub
+                                              {{ $allData->kh_text??'Knowledge Hub' }}
                                             </span>
                                         </a>
                                     </div>
 
                                 </div>
+
 
 
                                     @else
