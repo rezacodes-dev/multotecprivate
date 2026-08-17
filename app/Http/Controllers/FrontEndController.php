@@ -3911,7 +3911,7 @@ $mailBody .= 'Thank you,<br><strong>Multotec</strong>';
             $podcastEpisodeId = $pm[1];
         }
         $podcastUrl = route('knowledgehubpodcasts', ['lng' => $lng, 'episode' => $podcastEpisodeId]);
-        $html .= '<a style="display:none" href="' . $podcastUrl . '" 
+        $html .= '<a  href="' . $podcastUrl . '" 
                     title="Listen" 
                     class="knowledgeicon"
                     style="border:1px solid #1f6b3a; padding:8px;">

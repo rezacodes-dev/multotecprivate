@@ -171,7 +171,8 @@
                             @foreach($pgd->links as $lnk)
                                 @php
                                     $linkData = linkSlugToContent( $lnk->slug );
-                                @endphp
+                                @endphp  
+                     
                                 @if( !empty( $linkData ) )
                                 @php $proImgArr = getProductImage($linkData->id); @endphp
                                 <div class="col-sm-3 ar-pbox">
