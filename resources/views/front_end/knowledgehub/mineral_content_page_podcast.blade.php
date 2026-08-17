@@ -80,7 +80,7 @@ background: #ebebeb;
 a.filterbut {
     float: right;
     padding: 13px 33px;
-    background: #3b8d65;
+    background: #1DB954;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -92,7 +92,7 @@ a.filterbut {
     margin: 15px 0 ;
     background: #f5f5f5;
     border-radius: 0 0 5px 5px;
-    border-bottom: 3px solid #3b8d65;
+    border-bottom: 3px solid #1DB954;
 	box-shadow: 0px 8px 13px #ccc;
 }
 .filterbox select.form-control{
@@ -113,7 +113,7 @@ a.filterbut {
 .picinner h4 {
     margin: 0;
     padding: 13px 10px;
-    background: #3b8d65;
+    background: #1DB954;
     color: #fff;
 }
 
@@ -143,12 +143,12 @@ a.filterbut {
     font-size: 13px;
     font-weight: 600;
     margin: 0 5px 5px 0;
-    color: #3b8d65;
-    border: 1px solid #3b8d65;
+    color: #1DB954;
+    border: 1px solid #1DB954;
     border-radius: 23px;
 }	
 	
-.piccont ul li a:hover{background:#3b8d65; color:#fff;}
+.piccont ul li a:hover{background:#1DB954; color:#fff;}
 .catagorydetails{padding:0 0 25px;}
 .youtubevideo{padding:15px; background:#f6f6f6; margin:20px 5%;}
 .youtubevideo iframe {
@@ -173,7 +173,7 @@ a.filterbut {
     top: 11px;
     background: none;
     border: none;
-    color: #3b8d65;
+    color: #1DB954;
     font-size: 21px;
 }
 .filtersecrch input.filtersearch {
@@ -291,6 +291,15 @@ color: #008c5be8;
 .menuzord-menu>li {
     margin: 5px 0px 0 5px;
 }
+.main-podcast-wrapper {
+    position: relative;
+    width: 100%;
+    height: 352px;
+    border-radius: 12px;
+    overflow: hidden;
+    /* background: #1DB954; */
+}
+
 </style>
 
 
@@ -359,6 +368,7 @@ color: #008c5be8;
 @php
     $firstEpisodeId  = null;
     $firstEpisodeUri = null;
+    $firstEmbedUrl   = null;
 
     if( isset($listData) && count($listData) > 0 ) {
         $firstPodcastLink = $listData[0]->podcast_link ?? '';
@@ -367,17 +377,29 @@ color: #008c5be8;
             if( isset($matches[1]) ) {
                 $firstEpisodeId  = $matches[1];
                 $firstEpisodeUri = 'spotify:episode:' . $firstEpisodeId;
+                $firstEmbedUrl   = 'https://open.spotify.com/embed/episode/' . $firstEpisodeId . '?theme=0';
             }
         }
     }
 
-    $defaultEpisodeUri = 'spotify:episode:4WLyPOZmbK9xS2HgKZL0nj';
+    $defaultEpisodeId  = '4WLyPOZmbK9xS2HgKZL0nj';
+    $defaultEpisodeUri = 'spotify:episode:' . $defaultEpisodeId;
+    $defaultEmbedUrl   = 'https://open.spotify.com/embed/episode/' . $defaultEpisodeId . '?theme=0';
 @endphp
 
 <div class="col-sm-12 col-md-12">
 
-    <div id="mainPodcastContainer" style="width:100%; height:352px; border-radius:12px;"></div>
+<div id="mainPodcastWrapper" class="main-podcast-wrapper">
 
+    <iframe
+        id="mainPodcastIframe"
+        style="display:block; width:100%; height:352px; border:0; border-radius:12px;"
+        src="{{ $firstEmbedUrl ?? $defaultEmbedUrl }}"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="eager">
+    </iframe>
+
+</div>
 <div class="" style="border:1px solid #ddd;background:#f5f5f5;padding:15px 20px;">
 
 @foreach($listData as $key => $v)
@@ -658,86 +680,45 @@ $( function() {
 </script>
 
 
-<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 <script>
-    let mainPodcastController = null;
-    let mainPodcastControllerReady = false;
-    let pendingAutoPlay = false;
+    function buildSpotifyEmbedUrl(spotifyUrl) {
+        let match = spotifyUrl.match(/episode\/([A-Za-z0-9]+)/);
+        if (!match) return null;
+        return 'https://open.spotify.com/embed/episode/' + match[1] + '?theme=0';
+    }
 
-    window.onSpotifyIframeApiReady = function (IFrameAPI) {
-        let initialUri = "{{ $firstEpisodeUri ?? $defaultEpisodeUri }}";
+    function swapPodcastEmbed(spotifyUrl) {
+        let embedUrl = buildSpotifyEmbedUrl(spotifyUrl);
+        if (!embedUrl) return;
 
-        IFrameAPI.createController(
-            document.getElementById('mainPodcastContainer'),
-            {
-                width: '100%',
-                height: '352',
-                uri: initialUri
-            },
-            function (EmbedController) {
-                mainPodcastController = EmbedController;
-
-                EmbedController.addListener('ready', function () {
-                    mainPodcastControllerReady = true;
-                    if (pendingAutoPlay) {
-                        pendingAutoPlay = false;
-                        if (typeof mainPodcastController.play === 'function') {
-                            mainPodcastController.play();
-                        }
-                    }
-                });
-            }
-        );
-    };
-
-    function loadEpisodeInMainPlayer(episodeId, autoPlay) {
-        if (!mainPodcastController) {
-            setTimeout(function () {
-                loadEpisodeInMainPlayer(episodeId, autoPlay);
-            }, 150);
-            return;
-        }
-
-        if (autoPlay) {
-            pendingAutoPlay = true;
-        }
-        mainPodcastController.loadUri('spotify:episode:' + episodeId);
-
-        if (autoPlay && mainPodcastControllerReady && typeof mainPodcastController.play === 'function') {
-            mainPodcastController.play();
+        let iframe = document.getElementById('mainPodcastIframe');
+        if (iframe) {
+            iframe.src = embedUrl;
         }
     }
-</script>
 
-<script>
-    // Headphone icon: load and play episode immediately
+    // Headphone icon: load episode immediately
     $(document).on('click', '.podcast-play', function () {
         let spotifyUrl = $(this).data('podcast');
-        let match = spotifyUrl.match(/episode\/([A-Za-z0-9]+)/);
-
-        if (match) {
-            loadEpisodeInMainPlayer(match[1], true);
+        if (spotifyUrl) {
+            swapPodcastEmbed(spotifyUrl);
         }
     });
 
     // Episode title: switch episode in the main player
     $(document).on('click', '.podcast-play-trigger', function () {
         let spotifyUrl = $(this).data('podcast');
-        let match = spotifyUrl.match(/episode\/([A-Za-z0-9]+)/);
-
-        if (match) {
-            loadEpisodeInMainPlayer(match[1], false);
+        if (spotifyUrl) {
+            swapPodcastEmbed(spotifyUrl);
         }
     });
-</script>
 
-<script>
+    // Honor ?episode= URL parameter by swapping the iframe to that episode
     $(document).ready(function () {
-        // Auto-select and auto-play episode passed via ?episode= URL parameter
         let params = new URLSearchParams(window.location.search);
         let episode = params.get('episode');
         if (episode && /^[A-Za-z0-9]+$/.test(episode)) {
-            loadEpisodeInMainPlayer(episode, true);
+            swapPodcastEmbed('https://open.spotify.com/episode/' + episode);
         }
     });
 </script>
