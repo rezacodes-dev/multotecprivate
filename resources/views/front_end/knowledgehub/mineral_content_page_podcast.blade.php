@@ -297,7 +297,7 @@ color: #008c5be8;
     height: 352px;
     border-radius: 12px;
     overflow: hidden;
-    background: #1DB954;
+    /* background: #1DB954; */
 }
 
 </style>
