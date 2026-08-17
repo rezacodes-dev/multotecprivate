@@ -208,9 +208,15 @@
                                         target="_blank"
                                         href="{{ $allData->brochure_link }}"
                                         style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
-                                            <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
-                                                {{ $allData->brochure_text??'Brochures' }}
+                                        @if(!empty($allData->brochure_text))   
+                                           <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
+                                                {{$allData->brochure_text}}
                                             </span>
+                                        @else
+                                             <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
+                                               Brochures
+                                            </span>
+                                        @endif
                                         </a>
                                     </div>
 
@@ -226,9 +232,16 @@
                                          target="_blank"
                                         href="{{ $allData->kh_link }}"
                                         style="display:block; background-color:#92c654 !important; color:#fff !important; text-decoration:none;">
-                                            <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
-                                              {{ $allData->kh_text??'Knowledge Hub' }}
+                                          
+                                            @if(!empty($allData->kh_text)) 
+                                           <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
+                                              {{ $allData->kh_text }}
                                             </span>
+                                            @else
+                                        <span style="width:auto; display:flex; padding:0; height:50px; justify-content:center; align-items:center; font-size:23px; color:#fff !important;">
+                                              Knowledge Hub
+                                            </span>
+                                            @endif
                                         </a>
                                     </div>
 
